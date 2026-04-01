@@ -1,0 +1,11 @@
+participant_id,puzzle_id,window_start,gaze_entropy,clue_ratio,switch_rate,action_count,idle_time,time_since_action,error_count,puzzle_active
+P01,puzzle_1,0,0.2,0.7,0.1,1,10.0,8.0,0,1
+P01,puzzle_1,5,0.2,0.75,0.1,0,12.0,12.0,1,1
+P01,puzzle_1,10,0.25,0.8,0.15,0,14.0,14.0,2,1
+P01,puzzle_1,15,0.15,0.85,0.1,1,9.0,7.0,3,1
+P01,puzzle_2,20,0.8,0.3,0.7,6,1.0,1.0,4,1
+P01,puzzle_2,25,0.75,0.25,0.6,7,0.5,0.8,5,1
+P02,puzzle_1,0,0.5,0.5,0.3,3,5.0,6.0,0,1
+P02,puzzle_1,5,0.2,0.65,0.2,4,3.0,4.0,1,1
+P02,puzzle_1,10,0.2,0.7,0.15,5,1.5,2.0,0,1
+P02,puzzle_2,0,0.85,0.2,0.8,0,15.0,20.0,0,0
