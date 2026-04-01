@@ -13,72 +13,36 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import os
+import sys
 
-# ---------------------------------------------------------------------------
-# Config
-# ---------------------------------------------------------------------------
+# Add src/ to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), "outputs", "agent_outputs.csv")
 
-AGENT_COLORS = {
-    # Attention
-    "focused": "#2196F3",
-    "searching": "#FF9800",
-    "locked": "#F44336",
-    "ambiguous": "#BDBDBD",
-    # Action
-    "active": "#4CAF50",
-    "hesitant": "#FFC107",
-    "inactive": "#E91E63",
-    "unknown": "#BDBDBD",
-    # Performance
-    "progressing": "#4CAF50",
-    "stalled": "#FF5722",
-    "failing": "#B71C1C",
-    # Temporal
-    "transient": "#90CAF9",
-    "persistent": "#FF9800",
-    "looping": "#F44336",
-}
-
-SUPPORT_COLORS = {
-    "procedural_hint": "#F44336",
-    "spatial_hint": "#FF5722",
-    "reorientation_prompt": "#FF9800",
-    "encouragement_and_spatial_hint": "#FFC107",
-    "light_guidance": "#FFEB3B",
-    "monitor": "#90CAF9",
-    "wait": "#C8E6C9",
-    "none": "#EEEEEE",
-}
-
-SUPPORT_ICONS = {
-    "procedural_hint": "🔧",
-    "spatial_hint": "🧭",
-    "reorientation_prompt": "🔄",
-    "encouragement_and_spatial_hint": "💡",
-    "light_guidance": "👆",
-    "monitor": "👁",
-    "wait": "⏸",
-    "none": "",
-}
-
-PATTERN_DESCRIPTIONS = {
-    "focused_but_stuck": "Focused on clues but can't proceed → procedural hint",
-    "searching_without_grounding": "Scanning environment without direction → spatial hint",
-    "searching_and_hesitant": "Looking around, acting tentatively → encouragement + spatial hint",
-    "searching_but_progressing": "Scattered attention but making progress → wait",
-    "active_but_unguided": "Acting frequently but failing → light guidance",
-    "productive_struggle": "Focused effort, temporarily stalled → wait",
-    "locked_and_idle": "Fixated on clue area, doing nothing → reorientation",
-    "progressing_but_ambiguous": "Making progress, attention unclear → monitor",
-    "no_clear_pattern": "No strong signal from agents",
-}
-
-
 # ---------------------------------------------------------------------------
-# Data loading
+# Colors
 # ---------------------------------------------------------------------------
+
+AGENT_LABEL_COLORS = {
+    "focused": "#2196F3", "searching": "#FF9800", "locked": "#F44336", "ambiguous": "#BDBDBD",
+    "active": "#4CAF50", "hesitant": "#FFC107", "inactive": "#E91E63", "unknown": "#BDBDBD",
+    "progressing": "#4CAF50", "stalled": "#FF5722", "failing": "#B71C1C",
+    "transient": "#90CAF9", "persistent": "#FF9800", "looping": "#F44336",
+}
+
+CATEGORY_COLORS = {
+    "consensus_intervene": "#F44336",
+    "probe": "#FF9800",
+    "watch": "#4CAF50",
+}
+
+CATEGORY_ICONS = {
+    "consensus_intervene": "🚨",
+    "probe": "🔍",
+    "watch": "👁",
+}
+
 
 @st.cache_data
 def load_data():
@@ -87,201 +51,154 @@ def load_data():
     return df
 
 
-# ---------------------------------------------------------------------------
-# Visualization functions
-# ---------------------------------------------------------------------------
-
-def make_agent_timeline(pdf, show_support=True):
-    """Build a multi-row timeline showing agent states + support suggestions."""
-
-    n_rows = 5 if show_support else 4
-    row_titles = ["Attention Agent", "Action Agent", "Performance Agent", "Temporal Agent"]
-    if show_support:
-        row_titles.append("Support Suggestion")
-
-    heights = [1] * 4 + ([1.2] if show_support else [])
-
-    fig = make_subplots(
-        rows=n_rows, cols=1,
-        shared_xaxes=True,
-        vertical_spacing=0.04,
-        row_titles=row_titles,
-        row_heights=heights,
-    )
-
-    time = pdf["time_min"]
-
-    # --- Agent state rows ---
-    agent_rows = [
-        ("attention_state", 1),
-        ("action_state", 2),
-        ("performance_state", 3),
-        ("temporal_state", 4),
+def make_agent_confidence_timeline(pdf):
+    """Show agent confidence over time with color = label."""
+    agents = [
+        ("attention", "Attention Agent"),
+        ("action", "Action Agent"),
+        ("performance", "Performance Agent"),
+        ("temporal", "Temporal Agent"),
     ]
 
-    for col, row_num in agent_rows:
-        states = pdf[col].unique()
-        for state in states:
-            mask = pdf[col] == state
-            color = AGENT_COLORS.get(state, "#BDBDBD")
-            fig.add_trace(
-                go.Scatter(
-                    x=time[mask],
-                    y=[state] * mask.sum(),
-                    mode="markers",
-                    marker=dict(size=8, color=color, symbol="square"),
-                    name=state,
-                    showlegend=(row_num == 1),
-                    hovertemplate=(
-                        f"<b>{col.replace('_state','').title()} Agent</b>: {state}<br>"
-                        "Time: %{x:.1f} min<br>"
-                        "<extra></extra>"
-                    ),
-                ),
-                row=row_num, col=1,
-            )
-
-    # --- Support suggestion row ---
-    if show_support:
-        for support_type in pdf["suggested_support"].unique():
-            mask = pdf["suggested_support"] == support_type
-            if support_type == "none":
-                continue
-            color = SUPPORT_COLORS.get(support_type, "#BDBDBD")
-            icon = SUPPORT_ICONS.get(support_type, "")
-            fig.add_trace(
-                go.Scatter(
-                    x=time[mask],
-                    y=[support_type] * mask.sum(),
-                    mode="markers",
-                    marker=dict(
-                        size=12,
-                        color=color,
-                        symbol="diamond",
-                        line=dict(width=1, color="#333"),
-                    ),
-                    name=f"{icon} {support_type}",
-                    showlegend=True,
-                    hovertemplate=(
-                        f"<b>Support</b>: {icon} {support_type}<br>"
-                        "Time: %{x:.1f} min<br>"
-                        "Pattern: %{customdata}<br>"
-                        "<extra></extra>"
-                    ),
-                    customdata=pdf.loc[mask, "disagreement_pattern"],
-                ),
-                row=n_rows, col=1,
-            )
-
-    fig.update_xaxes(title_text="Time (minutes)", row=n_rows, col=1)
-    fig.update_layout(
-        height=180 * n_rows,
-        margin=dict(l=20, r=20, t=40, b=20),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        template="plotly_white",
+    fig = make_subplots(
+        rows=4, cols=1, shared_xaxes=True, vertical_spacing=0.05,
+        row_titles=[title for _, title in agents],
     )
 
+    for i, (agent, title) in enumerate(agents, 1):
+        label_col = f"{agent}_label"
+        conf_col = f"{agent}_confidence"
+
+        for label in pdf[label_col].unique():
+            mask = pdf[label_col] == label
+            color = AGENT_LABEL_COLORS.get(label, "#BDBDBD")
+            fig.add_trace(
+                go.Scatter(
+                    x=pdf["time_min"][mask],
+                    y=pdf[conf_col][mask],
+                    mode="markers",
+                    marker=dict(size=5, color=color, opacity=0.7),
+                    name=f"{label}",
+                    showlegend=(i == 1),
+                    hovertemplate=(
+                        f"<b>{title}</b>: {label}<br>"
+                        "Confidence: %{y:.0%}<br>"
+                        "Time: %{x:.1f} min<br>"
+                        "<extra></extra>"
+                    ),
+                ),
+                row=i, col=1,
+            )
+        fig.update_yaxes(range=[0, 1], dtick=0.25, row=i, col=1)
+
+    fig.update_xaxes(title_text="Time (minutes)", row=4, col=1)
+    fig.update_layout(
+        height=600, template="plotly_white",
+        margin=dict(l=20, r=20, t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+    )
     return fig
 
 
 def make_disagreement_timeline(pdf):
-    """Show disagreement score over time with pattern annotations."""
+    """Disagreement intensity over time, colored by type."""
     fig = go.Figure()
 
-    # Disagreement score line
-    fig.add_trace(go.Scatter(
-        x=pdf["time_min"],
-        y=pdf["disagreement_score"],
-        mode="lines+markers",
-        marker=dict(size=4, color="#5C6BC0"),
-        line=dict(width=1.5, color="#5C6BC0"),
-        name="Disagreement Score",
-        hovertemplate=(
-            "Time: %{x:.1f} min<br>"
-            "Score: %{y}<br>"
-            "Pattern: %{customdata}<br>"
-            "<extra></extra>"
-        ),
-        customdata=pdf["disagreement_pattern"],
-    ))
+    type_colors = {
+        "contradictory": "#F44336",
+        "constructive": "#4CAF50",
+        "unstructured": "#9E9E9E",
+    }
 
-    # Highlight intervention points
-    interventions = pdf[~pdf["suggested_support"].isin(["none", "wait", "monitor"])]
+    for dtype in pdf["disagreement_type"].unique():
+        mask = pdf["disagreement_type"] == dtype
+        color = type_colors.get(dtype, "#9E9E9E")
+        fig.add_trace(go.Scatter(
+            x=pdf["time_min"][mask],
+            y=pdf["disagreement_intensity"][mask],
+            mode="markers",
+            marker=dict(size=5, color=color, opacity=0.7),
+            name=dtype,
+            hovertemplate=(
+                f"Type: {dtype}<br>"
+                "Intensity: %{y:.0%}<br>"
+                "Tension: %{customdata}<br>"
+                "Time: %{x:.1f} min<br>"
+                "<extra></extra>"
+            ),
+            customdata=pdf["dominant_tension"][mask],
+        ))
+
+    # Mark intervention points
+    interventions = pdf[pdf["support_category"] == "consensus_intervene"]
     if len(interventions) > 0:
         fig.add_trace(go.Scatter(
             x=interventions["time_min"],
-            y=interventions["disagreement_score"],
+            y=interventions["disagreement_intensity"],
             mode="markers",
-            marker=dict(size=12, color="#F44336", symbol="star", line=dict(width=1, color="#B71C1C")),
-            name="Intervention Point",
+            marker=dict(size=12, color="#F44336", symbol="star",
+                        line=dict(width=1, color="#B71C1C")),
+            name="Intervention",
             hovertemplate=(
-                "<b>INTERVENTION</b><br>"
+                "<b>INTERVENE</b><br>"
+                "Action: %{customdata}<br>"
                 "Time: %{x:.1f} min<br>"
-                "Support: %{customdata}<br>"
                 "<extra></extra>"
             ),
             customdata=interventions["suggested_support"],
         ))
 
+    # Mark probes
+    probes = pdf[pdf["support_category"] == "probe"]
+    if len(probes) > 0:
+        fig.add_trace(go.Scatter(
+            x=probes["time_min"],
+            y=probes["disagreement_intensity"],
+            mode="markers",
+            marker=dict(size=9, color="#FF9800", symbol="diamond",
+                        line=dict(width=1, color="#E65100")),
+            name="Probe",
+            hovertemplate=(
+                "<b>PROBE</b><br>"
+                "Action: %{customdata}<br>"
+                "Time: %{x:.1f} min<br>"
+                "<extra></extra>"
+            ),
+            customdata=probes["suggested_support"],
+        ))
+
     fig.update_layout(
-        height=250,
+        height=300, template="plotly_white",
         xaxis_title="Time (minutes)",
-        yaxis_title="Disagreement Score",
-        yaxis=dict(dtick=1, range=[0, 5]),
-        template="plotly_white",
+        yaxis_title="Disagreement Intensity",
+        yaxis=dict(range=[0, 1]),
         margin=dict(l=20, r=20, t=20, b=20),
     )
     return fig
 
 
-def make_support_summary_chart(pdf):
-    """Pie chart of support suggestions."""
-    counts = pdf["suggested_support"].value_counts()
-    colors = [SUPPORT_COLORS.get(s, "#BDBDBD") for s in counts.index]
-    fig = go.Figure(go.Pie(
-        labels=counts.index,
-        values=counts.values,
-        marker=dict(colors=colors),
-        hole=0.4,
-        textinfo="label+percent",
-    ))
-    fig.update_layout(
-        height=300,
-        margin=dict(l=20, r=20, t=20, b=20),
-        showlegend=False,
-    )
-    return fig
-
-
-def make_cluster_vs_pattern_heatmap(pdf):
-    """Cross-tabulation: K-means cluster vs agent disagreement pattern."""
-    if "cluster_id" not in pdf.columns:
+def make_cluster_vs_tension_heatmap(df):
+    """Cross-tab: K-means cluster vs dominant tension."""
+    if "cluster_id" not in df.columns:
         return None
 
-    ct = pd.crosstab(pdf["cluster_id"], pdf["disagreement_pattern"], normalize="index")
-    ct = ct.round(3)
+    ct = pd.crosstab(df["cluster_id"], df["dominant_tension"], normalize="index").round(3)
 
     cluster_labels = {
-        0: "C0: Transition",
-        1: "C1: Waiting",
-        2: "C2: Active Solving",
-        3: "C3: Exploration",
-        4: "C4: Stuck-on-Clue",
+        0: "C0: Transition", 1: "C1: Waiting", 2: "C2: Active Solving",
+        3: "C3: Exploration", 4: "C4: Stuck-on-Clue",
     }
     y_labels = [cluster_labels.get(c, f"C{c}") for c in ct.index]
 
     fig = go.Figure(go.Heatmap(
-        z=ct.values,
-        x=ct.columns,
-        y=y_labels,
+        z=ct.values, x=ct.columns, y=y_labels,
         colorscale="YlOrRd",
         text=[[f"{v:.0%}" for v in row] for row in ct.values],
         texttemplate="%{text}",
-        hovertemplate="Cluster: %{y}<br>Pattern: %{x}<br>Proportion: %{text}<extra></extra>",
     ))
     fig.update_layout(
         height=350,
-        xaxis_title="Agent Disagreement Pattern",
+        xaxis_title="Dominant Tension (Agent Negotiation)",
         yaxis_title="K-Means Cluster (FDG)",
         margin=dict(l=20, r=20, t=20, b=20),
         xaxis=dict(tickangle=30),
@@ -289,88 +206,79 @@ def make_cluster_vs_pattern_heatmap(pdf):
     return fig
 
 
-def make_playback_timeline(pdf, current_step):
-    """Animated-style view: show agent states up to current_step."""
-    window = pdf.iloc[:current_step + 1]
-    current = pdf.iloc[current_step]
-
-    fig = make_subplots(
-        rows=2, cols=2,
-        subplot_titles=["Attention", "Action", "Performance", "Temporal"],
-        vertical_spacing=0.15,
-        horizontal_spacing=0.1,
-    )
-
+def render_negotiation_panel(current):
+    """Render the negotiation transcript for a single time step."""
     agents = [
-        ("attention_state", 1, 1),
-        ("action_state", 1, 2),
-        ("performance_state", 2, 1),
-        ("temporal_state", 2, 2),
+        ("attention", "🔵 Attention"),
+        ("action", "🟢 Action"),
+        ("performance", "🟠 Performance"),
+        ("temporal", "⏱ Temporal"),
     ]
 
-    for col, r, c in agents:
-        states = window[col].unique()
-        for state in states:
-            mask = window[col] == state
-            color = AGENT_COLORS.get(state, "#BDBDBD")
-            fig.add_trace(
-                go.Scatter(
-                    x=window["time_min"][mask],
-                    y=[state] * mask.sum(),
-                    mode="markers",
-                    marker=dict(size=6, color=color, opacity=0.4),
-                    showlegend=False,
-                ),
-                row=r, col=c,
-            )
+    # Agent cards
+    cols = st.columns(4)
+    for col, (agent, icon) in zip(cols, agents):
+        label = current.get(f"{agent}_label", "unknown")
+        conf = current.get(f"{agent}_confidence", 0.0)
+        reasoning = current.get(f"{agent}_reasoning", "")
+        color = AGENT_LABEL_COLORS.get(label, "#BDBDBD")
 
-        # Highlight current
-        curr_state = current[col]
-        curr_color = AGENT_COLORS.get(curr_state, "#BDBDBD")
-        fig.add_trace(
-            go.Scatter(
-                x=[current["time_min"]],
-                y=[curr_state],
-                mode="markers",
-                marker=dict(size=16, color=curr_color, symbol="star", line=dict(width=2, color="#000")),
-                showlegend=False,
-            ),
-            row=r, col=c,
+        col.markdown(
+            f"**{icon}**<br>"
+            f"<span style='color:{color}; font-size:1.3em; font-weight:bold'>{label}</span><br>"
+            f"Confidence: **{conf:.0%}**<br>"
+            f"<small>{reasoning}</small>",
+            unsafe_allow_html=True,
         )
 
-    fig.update_layout(
-        height=400,
-        template="plotly_white",
-        margin=dict(l=20, r=20, t=40, b=20),
-    )
-    return fig
+    # Negotiation result
+    st.markdown("---")
+    d_type = current.get("disagreement_type", "unstructured")
+    d_intensity = current.get("disagreement_intensity", 0)
+    tension = current.get("dominant_tension", "none")
+    support = current.get("suggested_support", "none")
+    s_conf = current.get("support_confidence", 0)
+    rationale = current.get("support_rationale", "")
+    category = current.get("support_category", "watch")
+
+    icon = CATEGORY_ICONS.get(category, "")
+    cat_color = CATEGORY_COLORS.get(category, "#9E9E9E")
+
+    if category == "consensus_intervene":
+        st.error(
+            f"**{icon} INTERVENE: {support}** (confidence: {s_conf:.0%})\n\n"
+            f"Disagreement: {d_type} — *{tension}* (intensity: {d_intensity:.0%})\n\n"
+            f"{rationale}"
+        )
+    elif category == "probe":
+        st.warning(
+            f"**{icon} PROBE: {support}** (confidence: {s_conf:.0%})\n\n"
+            f"Disagreement: {d_type} — *{tension}* (intensity: {d_intensity:.0%})\n\n"
+            f"{rationale}"
+        )
+    else:
+        st.success(
+            f"**{icon} {support.upper()}** (confidence: {s_conf:.0%})\n\n"
+            f"Disagreement: {d_type} — *{tension}* (intensity: {d_intensity:.0%})\n\n"
+            f"{rationale}"
+        )
 
 
 # ---------------------------------------------------------------------------
-# App layout
+# App
 # ---------------------------------------------------------------------------
 
 def main():
-    st.set_page_config(
-        page_title="Inside Out: Multi-Agent VR Cognitive State",
-        layout="wide",
-    )
-
+    st.set_page_config(page_title="Inside Out: Multi-Agent VR", layout="wide")
     st.title("🧠 Inside Out")
     st.caption("Multi-Agent Negotiation of Cognitive States in VR Escape Room")
 
     df = load_data()
 
-    # --- Sidebar ---
+    # Sidebar
     st.sidebar.header("Controls")
-
     participants = sorted(df["participant_id"].unique())
-    selected_pid = st.sidebar.selectbox(
-        "Player",
-        participants,
-        format_func=lambda x: f"Player {x}",
-    )
-
+    selected_pid = st.sidebar.selectbox("Player", participants, format_func=lambda x: f"Player {x}")
     pdf = df[df["participant_id"] == selected_pid].sort_values("window_start").reset_index(drop=True)
 
     puzzles = ["All"] + list(pdf["puzzle_id"].unique())
@@ -378,125 +286,97 @@ def main():
     if selected_puzzle != "All":
         pdf = pdf[pdf["puzzle_id"] == selected_puzzle].reset_index(drop=True)
 
+    # Stats
     st.sidebar.markdown("---")
+    n_intervene = pdf[pdf.get("support_category", pd.Series()) == "consensus_intervene"].shape[0] if "support_category" in pdf.columns else 0
+    n_probe = pdf[pdf.get("support_category", pd.Series()) == "probe"].shape[0] if "support_category" in pdf.columns else 0
     st.sidebar.markdown(f"**Windows:** {len(pdf)}")
     st.sidebar.markdown(f"**Duration:** {pdf['time_min'].max() - pdf['time_min'].min():.1f} min")
+    st.sidebar.markdown(f"**🚨 Interventions:** {n_intervene}")
+    st.sidebar.markdown(f"**🔍 Probes:** {n_probe}")
 
-    n_interventions = pdf[~pdf["suggested_support"].isin(["none", "wait", "monitor"])].shape[0]
-    st.sidebar.markdown(f"**Interventions:** {n_interventions}")
-
-    # --- Tabs ---
+    # Tabs
     tab1, tab2, tab3, tab4 = st.tabs([
-        "📊 Agent Timeline",
-        "⚡ Disagreement & Interventions",
-        "🔬 Cluster vs Agent Analysis",
+        "📊 Agent Confidence",
+        "⚡ Negotiation Timeline",
+        "🔬 Cluster vs Agents",
         "▶️ Playback",
     ])
 
-    # --- Tab 1: Agent Timeline ---
     with tab1:
-        st.subheader("Agent Interpretations Over Time")
+        st.subheader("Agent Confidence Over Time")
         st.markdown(
-            "Each row shows one agent's interpretation of the player's cognitive state. "
-            "The bottom row shows when the system would intervene and how."
+            "Each dot = one 5-second window. Height = agent confidence. "
+            "Color = agent's interpretation. When agents are confident about "
+            "**different things**, that's where negotiation matters most."
         )
-        fig = make_agent_timeline(pdf)
+        fig = make_agent_confidence_timeline(pdf)
         st.plotly_chart(fig, use_container_width=True)
 
-    # --- Tab 2: Disagreement ---
     with tab2:
-        st.subheader("Disagreement Score & Intervention Points")
+        st.subheader("Disagreement Intensity & System Responses")
         st.markdown(
-            "Higher scores = more agents disagree. "
-            "⭐ marks moments where the system would actively intervene."
+            "**Red** = contradictory (agents disagree). "
+            "**Green** = constructive (agents align). "
+            "⭐ = system intervenes. ◆ = system probes."
         )
         fig = make_disagreement_timeline(pdf)
         st.plotly_chart(fig, use_container_width=True)
 
+        # Summary
         col1, col2 = st.columns(2)
         with col1:
-            st.subheader("Support Distribution")
-            fig = make_support_summary_chart(pdf)
-            st.plotly_chart(fig, use_container_width=True)
+            st.subheader("Response Categories")
+            if "support_category" in pdf.columns:
+                for cat in ["consensus_intervene", "probe", "watch"]:
+                    n = (pdf["support_category"] == cat).sum()
+                    pct = n / len(pdf) * 100
+                    icon = CATEGORY_ICONS.get(cat, "")
+                    st.markdown(f"{icon} **{cat}**: {n} ({pct:.0f}%)")
 
         with col2:
-            st.subheader("Disagreement Patterns")
-            pattern_counts = pdf["disagreement_pattern"].value_counts()
-            for pattern, count in pattern_counts.items():
-                desc = PATTERN_DESCRIPTIONS.get(pattern, "")
-                pct = count / len(pdf) * 100
-                st.markdown(f"**{pattern}** ({count}, {pct:.0f}%) — {desc}")
+            st.subheader("Top Tensions")
+            if "dominant_tension" in pdf.columns:
+                for tension, count in pdf["dominant_tension"].value_counts().head(5).items():
+                    pct = count / len(pdf) * 100
+                    st.markdown(f"**{tension}**: {count} ({pct:.0f}%)")
 
-    # --- Tab 3: Cluster vs Agent ---
     with tab3:
-        st.subheader("K-Means Cluster vs Agent Disagreement Pattern")
+        st.subheader("K-Means Cluster vs Agent Tensions")
         st.markdown(
-            "Shows how FDG's clustering (single-label) maps to multi-agent disagreement patterns. "
-            "If a single cluster contains diverse patterns, it means classification loses information."
+            "Shows what the agents' negotiation reveals **within** each K-means cluster. "
+            "If a single cluster maps to multiple tensions, classification loses information."
         )
-        fig = make_cluster_vs_pattern_heatmap(df)  # use full dataset
+        fig = make_cluster_vs_tension_heatmap(df)
         if fig:
             st.plotly_chart(fig, use_container_width=True)
         else:
-            st.warning("No cluster_id column found in data.")
+            st.warning("No cluster_id column found.")
 
-        # Per-cluster breakdown
         if "cluster_id" in df.columns:
             st.subheader("Within-Cluster Diversity")
             for cid in sorted(df["cluster_id"].unique()):
                 cdf = df[df["cluster_id"] == cid]
-                n_patterns = cdf["disagreement_pattern"].nunique()
-                dominant = cdf["disagreement_pattern"].value_counts().index[0]
-                dominant_pct = cdf["disagreement_pattern"].value_counts().values[0] / len(cdf) * 100
+                n_tensions = cdf["dominant_tension"].nunique()
+                top = cdf["dominant_tension"].value_counts()
+                dominant = top.index[0]
+                dominant_pct = top.values[0] / len(cdf) * 100
                 st.markdown(
-                    f"**C{cid}**: {n_patterns} distinct patterns, "
+                    f"**C{cid}**: {n_tensions} tension types, "
                     f"dominant = *{dominant}* ({dominant_pct:.0f}%)"
                 )
 
-    # --- Tab 4: Playback ---
     with tab4:
-        st.subheader("Step-by-Step Playback")
-        st.markdown("Scrub through the timeline to see how agents interpret each moment.")
+        st.subheader("Step-by-Step Negotiation Playback")
+        st.markdown("Scrub through the timeline to see agents debate each moment.")
 
-        step = st.slider(
-            "Time Step",
-            min_value=0,
-            max_value=len(pdf) - 1,
-            value=0,
-            key="playback_step",
-        )
-
+        step = st.slider("Time Step", 0, len(pdf) - 1, 0, key="play")
         current = pdf.iloc[step]
 
-        # Current state summary
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("Time", f"{current['time_min']:.1f} min")
-            st.metric("Puzzle", current.get("puzzle_id", "—"))
-        with col2:
-            st.metric("Attention", current["attention_state"])
-            st.metric("Action", current["action_state"])
-        with col3:
-            st.metric("Performance", current["performance_state"])
-            st.metric("Temporal", current["temporal_state"])
+        st.markdown(f"**Time:** {current['time_min']:.1f} min | "
+                    f"**Puzzle:** {current.get('puzzle_id', '—')}")
 
-        # Disagreement info
-        pattern = current["disagreement_pattern"]
-        support = current["suggested_support"]
-        icon = SUPPORT_ICONS.get(support, "")
-
-        if support not in ("none", "wait", "monitor"):
-            st.error(f"**{icon} INTERVENE NOW:** {support} — Pattern: *{pattern}*")
-        elif support == "monitor":
-            st.info(f"**👁 MONITORING** — Pattern: *{pattern}*")
-        elif support == "wait":
-            st.success(f"**⏸ WAIT** — Pattern: *{pattern}*")
-        else:
-            st.markdown(f"No intervention — *{pattern}*")
-
-        # Agent panel visualization
-        fig = make_playback_timeline(pdf, step)
-        st.plotly_chart(fig, use_container_width=True)
+        render_negotiation_panel(current)
 
 
 if __name__ == "__main__":

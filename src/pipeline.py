@@ -10,11 +10,10 @@ import os
 import sys
 import argparse
 
-# Ensure src/ is on the path so sibling imports work
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 import pandas as pd
-from config import INPUT_CSV, OUTPUT_DIR, AGENT_OUTPUT_FILE, DISAGREEMENT_FILE, SUPPORT_FILE
+from config import INPUT_CSV, OUTPUT_DIR
 from load_data import load_csv
 from agents import attention_agent, action_agent, performance_agent, temporal_agent
 from negotiation import run_negotiation
@@ -28,29 +27,43 @@ def parse_args():
     return parser.parse_args()
 
 
+def _unpack_agent(df, col_prefix, agent_func, apply_args=None):
+    """Run an agent and unpack its dict output into separate columns."""
+    if apply_args is not None:
+        results = apply_args
+    else:
+        results = df.apply(agent_func, axis=1)
+
+    df[f"{col_prefix}_label"] = results.apply(lambda r: r["label"])
+    df[f"{col_prefix}_confidence"] = results.apply(lambda r: r["confidence"])
+    df[f"{col_prefix}_reasoning"] = results.apply(lambda r: r["reasoning"])
+    return df
+
+
 def run_pipeline(input_path: str, output_dir: str):
     # ---- Step 1: Load data ----
     df = load_csv(input_path)
 
     # ---- Step 2: Run single-row agents ----
     print("[INFO] Running AttentionAgent...")
-    df["attention_state"] = df.apply(attention_agent, axis=1)
+    _unpack_agent(df, "attention", attention_agent)
 
     print("[INFO] Running ActionAgent...")
-    df["action_state"] = df.apply(action_agent, axis=1)
+    _unpack_agent(df, "action", action_agent)
 
     print("[INFO] Running PerformanceAgent...")
-    df["performance_state"] = df.apply(performance_agent, axis=1)
+    _unpack_agent(df, "performance", performance_agent)
 
     # ---- Step 3: Run TemporalAgent (needs prior agent outputs) ----
     print("[INFO] Running TemporalAgent...")
     state_columns = {
-        "attention": "attention_state",
-        "performance": "performance_state",
+        "attention": "attention_label",
+        "performance": "performance_label",
     }
-    df["temporal_state"] = [
+    temporal_results = pd.Series([
         temporal_agent(idx, df, state_columns) for idx in df.index
-    ]
+    ])
+    _unpack_agent(df, "temporal", None, apply_args=temporal_results)
 
     # ---- Step 4: Negotiation ----
     print("[INFO] Running negotiation layer...")
@@ -67,15 +80,18 @@ def run_pipeline(input_path: str, output_dir: str):
     disagree_out = os.path.join(output_dir, "disagreement_summary.csv")
     support_out = os.path.join(output_dir, "support_summary.csv")
 
-    # Full output: original columns + all derived columns
     df.to_csv(agent_out, index=False)
     print(f"[INFO] Saved agent outputs -> {agent_out}")
 
     # Disagreement summary
     disagree_cols = [
         "participant_id", "puzzle_id", "window_start",
-        "attention_state", "action_state", "performance_state", "temporal_state",
-        "disagreement_score", "disagreement_pattern",
+        "attention_label", "attention_confidence",
+        "action_label", "action_confidence",
+        "performance_label", "performance_confidence",
+        "temporal_label", "temporal_confidence",
+        "disagreement_type", "disagreement_intensity", "dominant_tension",
+        "n_contradictions", "n_constructive", "confidence_spread",
     ]
     disagree_cols = [c for c in disagree_cols if c in df.columns]
     df[disagree_cols].to_csv(disagree_out, index=False)
@@ -84,7 +100,8 @@ def run_pipeline(input_path: str, output_dir: str):
     # Support summary
     support_cols = [
         "participant_id", "puzzle_id", "window_start",
-        "disagreement_pattern", "suggested_support",
+        "dominant_tension", "suggested_support", "support_confidence",
+        "support_rationale", "support_category",
     ]
     support_cols = [c for c in support_cols if c in df.columns]
     df[support_cols].to_csv(support_out, index=False)
@@ -93,12 +110,17 @@ def run_pipeline(input_path: str, output_dir: str):
     # ---- Summary statistics ----
     print("\n--- Pipeline Summary ---")
     print(f"Total windows: {len(df)}")
-    print(f"\nAttention states:\n{df['attention_state'].value_counts().to_string()}")
-    print(f"\nAction states:\n{df['action_state'].value_counts().to_string()}")
-    print(f"\nPerformance states:\n{df['performance_state'].value_counts().to_string()}")
-    print(f"\nTemporal states:\n{df['temporal_state'].value_counts().to_string()}")
-    print(f"\nDisagreement patterns:\n{df['disagreement_pattern'].value_counts().to_string()}")
+    for agent in ["attention", "action", "performance", "temporal"]:
+        print(f"\n{agent.title()} Agent:")
+        print(f"  Labels: {df[f'{agent}_label'].value_counts().to_dict()}")
+        print(f"  Avg confidence: {df[f'{agent}_confidence'].mean():.3f}")
+
+    print(f"\nDisagreement types:\n{df['disagreement_type'].value_counts().to_string()}")
+    print(f"\nDominant tensions:\n{df['dominant_tension'].value_counts().to_string()}")
+    print(f"\nMean disagreement intensity: {df['disagreement_intensity'].mean():.3f}")
+
     print(f"\nSupport suggestions:\n{df['suggested_support'].value_counts().to_string()}")
+    print(f"\nSupport categories:\n{df['support_category'].value_counts().to_string()}")
     print("--- Done ---")
 
 
