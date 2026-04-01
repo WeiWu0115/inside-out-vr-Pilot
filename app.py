@@ -48,6 +48,37 @@ CATEGORY_ICONS = {
 def load_data():
     df = pd.read_csv(DATA_PATH)
     df["time_min"] = df["window_start"] / 60.0
+
+    # Handle both old (attention_state) and new (attention_label) column names
+    renames = {}
+    for agent in ["attention", "action", "performance", "temporal"]:
+        old_state = f"{agent}_state"
+        new_label = f"{agent}_label"
+        if old_state in df.columns and new_label not in df.columns:
+            renames[old_state] = new_label
+        # Ensure confidence column exists
+        conf_col = f"{agent}_confidence"
+        if conf_col not in df.columns:
+            df[conf_col] = 0.5
+        # Ensure reasoning column exists
+        reason_col = f"{agent}_reasoning"
+        if reason_col not in df.columns:
+            df[reason_col] = ""
+    if renames:
+        df = df.rename(columns=renames)
+
+    # Ensure negotiation columns exist
+    for col, default in [
+        ("disagreement_type", "unstructured"),
+        ("disagreement_intensity", 0.5),
+        ("dominant_tension", "none"),
+        ("support_category", "watch"),
+        ("support_confidence", 0.5),
+        ("support_rationale", ""),
+    ]:
+        if col not in df.columns:
+            df[col] = default
+
     return df
 
 
