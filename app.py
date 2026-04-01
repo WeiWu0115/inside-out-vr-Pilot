@@ -10,6 +10,7 @@ Usage:
 
 import streamlit as st
 import pandas as pd
+import numpy as np
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import os
@@ -29,6 +30,9 @@ AGENT_LABEL_COLORS = {
     "active": "#4CAF50", "hesitant": "#FFC107", "inactive": "#E91E63", "unknown": "#BDBDBD",
     "progressing": "#4CAF50", "stalled": "#FF5722", "failing": "#B71C1C",
     "transient": "#90CAF9", "persistent": "#FF9800", "looping": "#F44336",
+    # Population agent labels
+    "transitioning": "#9E9E9E", "disoriented": "#E91E63", "actively_solving": "#4CAF50",
+    "exploring": "#FF9800", "cognitively_stuck": "#F44336",
 }
 
 CATEGORY_COLORS = {
@@ -51,7 +55,7 @@ def load_data():
 
     # Handle both old (attention_state) and new (attention_label) column names
     renames = {}
-    for agent in ["attention", "action", "performance", "temporal"]:
+    for agent in ["attention", "action", "performance", "temporal", "population"]:
         old_state = f"{agent}_state"
         new_label = f"{agent}_label"
         if old_state in df.columns and new_label not in df.columns:
@@ -89,10 +93,11 @@ def make_agent_confidence_timeline(pdf):
         ("action", "Action Agent"),
         ("performance", "Performance Agent"),
         ("temporal", "Temporal Agent"),
+        ("population", "Population Agent"),
     ]
 
     fig = make_subplots(
-        rows=4, cols=1, shared_xaxes=True, vertical_spacing=0.05,
+        rows=5, cols=1, shared_xaxes=True, vertical_spacing=0.04,
         row_titles=[title for _, title in agents],
     )
 
@@ -122,9 +127,9 @@ def make_agent_confidence_timeline(pdf):
             )
         fig.update_yaxes(range=[0, 1], dtick=0.25, row=i, col=1)
 
-    fig.update_xaxes(title_text="Time (minutes)", row=4, col=1)
+    fig.update_xaxes(title_text="Time (minutes)", row=5, col=1)
     fig.update_layout(
-        height=600, template="plotly_white",
+        height=750, template="plotly_white",
         margin=dict(l=20, r=20, t=30, b=20),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
     )
@@ -244,10 +249,11 @@ def render_negotiation_panel(current):
         ("action", "🟢 Action"),
         ("performance", "🟠 Performance"),
         ("temporal", "⏱ Temporal"),
+        ("population", "👥 Population"),
     ]
 
     # Agent cards
-    cols = st.columns(4)
+    cols = st.columns(5)
     for col, (agent, icon) in zip(cols, agents):
         label = str(current.get(f"{agent}_label", "unknown"))
         conf = float(current.get(f"{agent}_confidence", 0) or 0)
@@ -306,6 +312,7 @@ def make_dominance_chart(pdf):
         ("action", "Action", "#4CAF50"),
         ("performance", "Performance", "#FF9800"),
         ("temporal", "Temporal", "#9C27B0"),
+        ("population", "Population", "#795548"),
     ]
 
     time = pdf["time_min"].values
@@ -313,7 +320,8 @@ def make_dominance_chart(pdf):
     # Collect raw confidences
     raw = {}
     for agent, _, _ in agents:
-        raw[agent] = pdf[f"{agent}_confidence"].fillna(0).values
+        col = f"{agent}_confidence"
+        raw[agent] = pdf[col].fillna(0).values if col in pdf.columns else np.zeros(len(pdf))
 
     # Normalize so they sum to 1 at each time step
     total = sum(raw.values())
@@ -329,6 +337,7 @@ def make_dominance_chart(pdf):
         "action": "rgba(76,175,80,0.6)",
         "performance": "rgba(255,152,0,0.6)",
         "temporal": "rgba(156,39,176,0.6)",
+        "population": "rgba(121,85,72,0.6)",
     }
 
     for agent, label, color in agents:
@@ -394,6 +403,7 @@ def make_dominance_line_chart(pdf):
         ("action", "Action", "#4CAF50"),
         ("performance", "Performance", "#FF9800"),
         ("temporal", "Temporal", "#9C27B0"),
+        ("population", "Population", "#795548"),
     ]
 
     fig = go.Figure()

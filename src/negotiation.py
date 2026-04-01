@@ -26,6 +26,12 @@ CONTRADICTIONS = {
     ("action", "active", "performance", "stalled"): "acting_without_progress",
     ("action", "active", "performance", "failing"): "active_but_failing",
     ("action", "inactive", "performance", "progressing"): "idle_but_progressing",
+    # Population agent conflicts with rule-based agents
+    ("population", "exploring", "attention", "focused"): "pop_says_exploring_but_focused",
+    ("population", "disoriented", "attention", "searching"): "pop_says_stuck_but_searching",
+    ("population", "actively_solving", "performance", "stalled"): "pop_says_solving_but_stalled",
+    ("population", "cognitively_stuck", "action", "active"): "pop_says_stuck_but_active",
+    ("population", "exploring", "action", "inactive"): "pop_says_exploring_but_inactive",
 }
 
 CONSTRUCTIVE_PAIRS = {
@@ -34,6 +40,11 @@ CONSTRUCTIVE_PAIRS = {
     ("attention", "searching", "action", "active"): "active_exploration",
     ("action", "inactive", "performance", "stalled"): "passive_and_stuck",
     ("attention", "locked", "action", "inactive"): "frozen_on_clue",
+    # Population agent agreements
+    ("population", "exploring", "attention", "searching"): "pop_confirms_exploration",
+    ("population", "cognitively_stuck", "attention", "locked"): "pop_confirms_impasse",
+    ("population", "disoriented", "action", "inactive"): "pop_confirms_disorientation",
+    ("population", "actively_solving", "performance", "progressing"): "pop_confirms_progress",
 }
 
 
@@ -48,7 +59,7 @@ def _get_agent_output(row, agent_name):
 def detect_tensions(row: pd.Series) -> list:
     """Find all pairwise tensions between agents."""
     agents = {}
-    for name in ["attention", "action", "performance"]:
+    for name in ["attention", "action", "performance", "population"]:
         agents[name] = _get_agent_output(row, name)
 
     tensions = []
