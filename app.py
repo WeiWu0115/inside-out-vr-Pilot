@@ -249,9 +249,9 @@ def render_negotiation_panel(current):
     # Agent cards
     cols = st.columns(4)
     for col, (agent, icon) in zip(cols, agents):
-        label = current.get(f"{agent}_label", "unknown")
-        conf = current.get(f"{agent}_confidence", 0.0)
-        reasoning = current.get(f"{agent}_reasoning", "")
+        label = str(current.get(f"{agent}_label", "unknown"))
+        conf = float(current.get(f"{agent}_confidence", 0) or 0)
+        reasoning = str(current.get(f"{agent}_reasoning", "") or "")
         color = AGENT_LABEL_COLORS.get(label, "#BDBDBD")
 
         col.markdown(
@@ -264,13 +264,13 @@ def render_negotiation_panel(current):
 
     # Negotiation result
     st.markdown("---")
-    d_type = current.get("disagreement_type", "unstructured")
-    d_intensity = current.get("disagreement_intensity", 0)
-    tension = current.get("dominant_tension", "none")
-    support = current.get("suggested_support", "none")
-    s_conf = current.get("support_confidence", 0)
-    rationale = current.get("support_rationale", "")
-    category = current.get("support_category", "watch")
+    d_type = str(current.get("disagreement_type", "unstructured") or "unstructured")
+    d_intensity = float(current.get("disagreement_intensity", 0) or 0)
+    tension = str(current.get("dominant_tension", "none") or "none")
+    support = str(current.get("suggested_support", "none") or "none")
+    s_conf = float(current.get("support_confidence", 0) or 0)
+    rationale = str(current.get("support_rationale", "") or "")
+    category = str(current.get("support_category", "watch") or "watch")
 
     icon = CATEGORY_ICONS.get(category, "")
     cat_color = CATEGORY_COLORS.get(category, "#9E9E9E")
@@ -324,6 +324,13 @@ def make_dominance_chart(pdf):
 
     fig = go.Figure()
 
+    fill_colors = {
+        "attention": "rgba(33,150,243,0.6)",
+        "action": "rgba(76,175,80,0.6)",
+        "performance": "rgba(255,152,0,0.6)",
+        "temporal": "rgba(156,39,176,0.6)",
+    }
+
     for agent, label, color in agents:
         fig.add_trace(go.Scatter(
             x=time, y=normed[agent],
@@ -331,7 +338,7 @@ def make_dominance_chart(pdf):
             name=label,
             stackgroup="one",
             line=dict(width=0.5, color=color),
-            fillcolor=color.replace(")", ", 0.6)").replace("rgb", "rgba") if "rgb" in color else color + "99",
+            fillcolor=fill_colors[agent],
             hovertemplate=(
                 f"<b>{label} Agent</b><br>"
                 "Dominance: %{y:.0%}<br>"
@@ -459,8 +466,8 @@ def main():
 
     # Stats
     st.sidebar.markdown("---")
-    n_intervene = pdf[pdf.get("support_category", pd.Series()) == "consensus_intervene"].shape[0] if "support_category" in pdf.columns else 0
-    n_probe = pdf[pdf.get("support_category", pd.Series()) == "probe"].shape[0] if "support_category" in pdf.columns else 0
+    n_intervene = (pdf["support_category"] == "consensus_intervene").sum() if "support_category" in pdf.columns else 0
+    n_probe = (pdf["support_category"] == "probe").sum() if "support_category" in pdf.columns else 0
     st.sidebar.markdown(f"**Windows:** {len(pdf)}")
     st.sidebar.markdown(f"**Duration:** {pdf['time_min'].max() - pdf['time_min'].min():.1f} min")
     st.sidebar.markdown(f"**🚨 Interventions:** {n_intervene}")
