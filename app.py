@@ -295,6 +295,146 @@ def render_negotiation_panel(current):
         )
 
 
+def make_dominance_chart(pdf):
+    """
+    Stacked area chart showing which agent dominates at each time step.
+    Each agent's confidence is normalized so they sum to 1.0 — the agent
+    with the largest area is "winning the debate" at that moment.
+    """
+    agents = [
+        ("attention", "Attention", "#2196F3"),
+        ("action", "Action", "#4CAF50"),
+        ("performance", "Performance", "#FF9800"),
+        ("temporal", "Temporal", "#9C27B0"),
+    ]
+
+    time = pdf["time_min"].values
+
+    # Collect raw confidences
+    raw = {}
+    for agent, _, _ in agents:
+        raw[agent] = pdf[f"{agent}_confidence"].fillna(0).values
+
+    # Normalize so they sum to 1 at each time step
+    total = sum(raw.values())
+    total = [max(t, 0.01) for t in total]  # avoid division by zero
+    normed = {}
+    for agent in raw:
+        normed[agent] = [r / t for r, t in zip(raw[agent], total)]
+
+    fig = go.Figure()
+
+    for agent, label, color in agents:
+        fig.add_trace(go.Scatter(
+            x=time, y=normed[agent],
+            mode="lines",
+            name=label,
+            stackgroup="one",
+            line=dict(width=0.5, color=color),
+            fillcolor=color.replace(")", ", 0.6)").replace("rgb", "rgba") if "rgb" in color else color + "99",
+            hovertemplate=(
+                f"<b>{label} Agent</b><br>"
+                "Dominance: %{y:.0%}<br>"
+                "Time: %{x:.1f} min<br>"
+                "<extra></extra>"
+            ),
+        ))
+
+    # Add intervention markers at the top
+    if "support_category" in pdf.columns:
+        interventions = pdf[pdf["support_category"] == "consensus_intervene"]
+        if len(interventions) > 0:
+            fig.add_trace(go.Scatter(
+                x=interventions["time_min"],
+                y=[1.02] * len(interventions),
+                mode="markers",
+                marker=dict(size=10, color="#F44336", symbol="triangle-down"),
+                name="🚨 Intervene",
+                hovertemplate="<b>INTERVENTION</b><br>Time: %{x:.1f} min<extra></extra>",
+            ))
+
+        probes = pdf[pdf["support_category"] == "probe"]
+        if len(probes) > 0:
+            fig.add_trace(go.Scatter(
+                x=probes["time_min"],
+                y=[1.02] * len(probes),
+                mode="markers",
+                marker=dict(size=8, color="#FF9800", symbol="diamond"),
+                name="🔍 Probe",
+                hovertemplate="<b>PROBE</b><br>Time: %{x:.1f} min<extra></extra>",
+            ))
+
+    fig.update_layout(
+        height=350,
+        template="plotly_white",
+        xaxis_title="Time (minutes)",
+        yaxis_title="Agent Dominance",
+        yaxis=dict(range=[0, 1.08], tickformat=".0%"),
+        margin=dict(l=20, r=20, t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+    )
+    return fig
+
+
+def make_dominance_line_chart(pdf):
+    """
+    Line chart showing each agent's confidence over time.
+    The highest line at any point = the dominant agent.
+    Crossover points = where negotiation shifts.
+    """
+    agents = [
+        ("attention", "Attention", "#2196F3"),
+        ("action", "Action", "#4CAF50"),
+        ("performance", "Performance", "#FF9800"),
+        ("temporal", "Temporal", "#9C27B0"),
+    ]
+
+    fig = go.Figure()
+
+    for agent, label, color in agents:
+        conf_col = f"{agent}_confidence"
+        # Smooth with rolling average for readability
+        smoothed = pdf[conf_col].rolling(window=3, min_periods=1, center=True).mean()
+
+        fig.add_trace(go.Scatter(
+            x=pdf["time_min"],
+            y=smoothed,
+            mode="lines",
+            name=label,
+            line=dict(width=2.5, color=color),
+            hovertemplate=(
+                f"<b>{label}</b><br>"
+                "Confidence: %{y:.0%}<br>"
+                "Time: %{x:.1f} min<br>"
+                "<extra></extra>"
+            ),
+        ))
+
+    # Mark intervention points
+    if "support_category" in pdf.columns:
+        interventions = pdf[pdf["support_category"] == "consensus_intervene"]
+        if len(interventions) > 0:
+            fig.add_trace(go.Scatter(
+                x=interventions["time_min"],
+                y=[0.95] * len(interventions),
+                mode="markers",
+                marker=dict(size=12, color="#F44336", symbol="star",
+                            line=dict(width=1, color="#B71C1C")),
+                name="🚨 Intervene",
+            ))
+
+    fig.update_layout(
+        height=350,
+        template="plotly_white",
+        xaxis_title="Time (minutes)",
+        yaxis_title="Agent Confidence",
+        yaxis=dict(range=[0, 1.05], tickformat=".0%"),
+        margin=dict(l=20, r=20, t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+    )
+    return fig
+
+
 # ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
@@ -327,12 +467,32 @@ def main():
     st.sidebar.markdown(f"**🔍 Probes:** {n_probe}")
 
     # Tabs
-    tab1, tab2, tab3, tab4 = st.tabs([
+    tab0, tab1, tab2, tab3, tab4 = st.tabs([
+        "🏔 Agent Dominance",
         "📊 Agent Confidence",
         "⚡ Negotiation Timeline",
         "🔬 Cluster vs Agents",
         "▶️ Playback",
     ])
+
+    with tab0:
+        st.subheader("Who's Winning the Debate?")
+        st.markdown(
+            "Each line = one agent's confidence over time (smoothed). "
+            "When lines cross, the **dominant interpretation shifts**. "
+            "⭐ = system intervenes."
+        )
+        fig = make_dominance_line_chart(pdf)
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.subheader("Agent Dominance (Normalized)")
+        st.markdown(
+            "Stacked area view: the agent taking up the most space "
+            "is **driving the system's interpretation** at that moment. "
+            "▼ = intervention, ◆ = probe."
+        )
+        fig = make_dominance_chart(pdf)
+        st.plotly_chart(fig, use_container_width=True)
 
     with tab1:
         st.subheader("Agent Confidence Over Time")
