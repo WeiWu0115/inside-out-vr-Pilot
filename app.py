@@ -20,6 +20,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), "outputs", "agent_outputs.csv")
+COMPARISON_PATH = os.path.join(os.path.dirname(__file__), "outputs", "comparison_correct.csv")
 
 # ---------------------------------------------------------------------------
 # Colors
@@ -84,6 +85,158 @@ def load_data():
             df[col] = default
 
     return df
+
+
+@st.cache_data
+def load_comparison():
+    if not os.path.exists(COMPARISON_PATH):
+        return None
+    df = pd.read_csv(COMPARISON_PATH)
+    df["time_min"] = df["window_start"] / 60.0
+
+    # Build categories
+    df["io_cat"] = df.get("support_category", pd.Series(dtype=str)).map({
+        "consensus_intervene": "intervene", "probe": "probe", "watch": "watch"
+    }).fillna("watch")
+
+    def _expert_cat(row):
+        if row.get("expert_action") == "PROMPT":
+            return "intervene"
+        if row.get("expert_state") == "STUCK":
+            return "intervene"
+        return "watch"
+    df["expert_cat"] = df.apply(_expert_cat, axis=1)
+
+    return df
+
+
+def make_comparison_timeline(cdf):
+    """Side-by-side timeline: expert vs IO decisions."""
+    fig = make_subplots(
+        rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.08,
+        row_titles=["Expert System", "Inside Out"],
+    )
+
+    cat_colors = {
+        "intervene": "#F44336",
+        "probe": "#FF9800",
+        "watch": "#4CAF50",
+    }
+
+    # Expert row
+    for cat in ["intervene", "watch"]:
+        mask = cdf["expert_cat"] == cat
+        if mask.sum() == 0:
+            continue
+        fig.add_trace(go.Scatter(
+            x=cdf["time_min"][mask], y=[cat] * mask.sum(),
+            mode="markers",
+            marker=dict(size=6, color=cat_colors.get(cat, "#9E9E9E"), opacity=0.6),
+            name=f"Expert: {cat}", showlegend=True,
+        ), row=1, col=1)
+
+    # IO row
+    for cat in ["intervene", "probe", "watch"]:
+        mask = cdf["io_cat"] == cat
+        if mask.sum() == 0:
+            continue
+        fig.add_trace(go.Scatter(
+            x=cdf["time_min"][mask], y=[cat] * mask.sum(),
+            mode="markers",
+            marker=dict(size=6, color=cat_colors.get(cat, "#9E9E9E"), opacity=0.6),
+            name=f"IO: {cat}", showlegend=True,
+        ), row=2, col=1)
+
+    fig.update_xaxes(title_text="Time (minutes)", row=2, col=1)
+    fig.update_layout(
+        height=350, template="plotly_white",
+        margin=dict(l=20, r=20, t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+    )
+    return fig
+
+
+def make_agreement_heatmap(cdf):
+    """Cross-tabulation heatmap of expert vs IO decisions."""
+    ct = pd.crosstab(cdf["expert_cat"], cdf["io_cat"])
+    # Ensure order
+    order = ["intervene", "probe", "watch"]
+    ct = ct.reindex(index=[o for o in order if o in ct.index],
+                    columns=[o for o in order if o in ct.columns], fill_value=0)
+
+    fig = go.Figure(go.Heatmap(
+        z=ct.values, x=ct.columns, y=ct.index,
+        colorscale="YlOrRd",
+        text=[[str(v) for v in row] for row in ct.values],
+        texttemplate="%{text}",
+        textfont=dict(size=16),
+    ))
+    fig.update_layout(
+        height=300,
+        xaxis_title="Inside Out Decision",
+        yaxis_title="Expert Decision",
+        margin=dict(l=20, r=20, t=20, b=20),
+    )
+    return fig
+
+
+def make_disagreement_scatter(cdf):
+    """Show where the two systems disagree, colored by type of disagreement."""
+    # Categorize disagreements
+    def _disagree_type(row):
+        e, i = row["expert_cat"], row["io_cat"]
+        if e == i:
+            return "agree"
+        if e == "intervene" and i == "watch":
+            return "expert_only"
+        if e == "watch" and i == "intervene":
+            return "io_only"
+        if i == "probe":
+            return "io_probes"
+        return "other"
+
+    cdf = cdf.copy()
+    cdf["disagree_type"] = cdf.apply(_disagree_type, axis=1)
+
+    colors = {
+        "agree": "#E0E0E0",
+        "expert_only": "#2196F3",
+        "io_only": "#F44336",
+        "io_probes": "#FF9800",
+        "other": "#9E9E9E",
+    }
+    labels = {
+        "agree": "Agree (no action / both act)",
+        "expert_only": "Expert intervenes, IO doesn't",
+        "io_only": "IO intervenes, Expert doesn't",
+        "io_probes": "IO probes (expert can't)",
+    }
+
+    fig = go.Figure()
+    for dtype in ["agree", "io_probes", "expert_only", "io_only"]:
+        mask = cdf["disagree_type"] == dtype
+        if mask.sum() == 0:
+            continue
+        fig.add_trace(go.Scatter(
+            x=cdf["time_min"][mask],
+            y=cdf.get("disagreement_intensity", pd.Series(0.5, index=cdf.index))[mask],
+            mode="markers",
+            marker=dict(
+                size=4 if dtype == "agree" else 8,
+                color=colors[dtype],
+                opacity=0.3 if dtype == "agree" else 0.7,
+            ),
+            name=labels.get(dtype, dtype),
+        ))
+
+    fig.update_layout(
+        height=300, template="plotly_white",
+        xaxis_title="Time (minutes)",
+        yaxis_title="IO Disagreement Intensity",
+        margin=dict(l=20, r=20, t=20, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+    )
+    return fig
 
 
 def make_agent_confidence_timeline(pdf):
@@ -483,13 +636,17 @@ def main():
     st.sidebar.markdown(f"**🚨 Interventions:** {n_intervene}")
     st.sidebar.markdown(f"**🔍 Probes:** {n_probe}")
 
+    # Load comparison data
+    comp_df = load_comparison()
+
     # Tabs
-    tab0, tab1, tab2, tab3, tab4 = st.tabs([
+    tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
         "🏔 Agent Dominance",
         "📊 Agent Confidence",
         "⚡ Negotiation Timeline",
         "🔬 Cluster vs Agents",
         "▶️ Playback",
+        "🆚 Expert vs IO",
     ])
 
     with tab0:
@@ -585,6 +742,83 @@ def main():
                     f"**Puzzle:** {current.get('puzzle_id', '—')}")
 
         render_negotiation_panel(current)
+
+    with tab5:
+        st.subheader("🆚 Expert System vs Inside Out")
+        st.markdown(
+            "Compares the human expert's rule-based prompting engine "
+            "(designed from observing 18 players) with Inside Out's multi-agent negotiation. "
+            "The expert system uses only game logs; Inside Out also uses eye tracking."
+        )
+
+        if comp_df is None or len(comp_df) == 0:
+            st.warning("No comparison data found. Run `python3 src/compare_systems.py` first.")
+        else:
+            # Filter to selected player
+            comp_player = comp_df[comp_df["participant_id"] == selected_pid].sort_values("window_start").reset_index(drop=True)
+            if selected_puzzle != "All" and "puzzle_id" in comp_player.columns:
+                comp_player = comp_player[comp_player["puzzle_id"] == selected_puzzle].reset_index(drop=True)
+
+            if len(comp_player) == 0:
+                st.info("No comparison data for this player.")
+            else:
+                # Agreement stats
+                agree = (comp_player["io_cat"] == comp_player["expert_cat"]).sum()
+                st.metric("Agreement Rate", f"{agree/len(comp_player):.0%}", f"{agree}/{len(comp_player)} windows")
+
+                # Side-by-side timeline
+                st.subheader("Decision Timeline")
+                st.markdown(
+                    "Top row = expert system decisions. Bottom row = Inside Out decisions. "
+                    "**Red** = intervene, **Orange** = probe (IO only), **Green** = watch."
+                )
+                fig = make_comparison_timeline(comp_player)
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Disagreement scatter
+                st.subheader("Where Do They Disagree?")
+                st.markdown(
+                    "Each dot = one time window. "
+                    "**Blue** = expert intervenes but IO doesn't. "
+                    "**Red** = IO intervenes but expert doesn't. "
+                    "**Orange** = IO probes (expert can't)."
+                )
+                fig = make_disagreement_scatter(comp_player)
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Cross-tabulation
+                col1, col2 = st.columns(2)
+                with col1:
+                    st.subheader("Decision Cross-Tab")
+                    fig = make_agreement_heatmap(comp_player)
+                    st.plotly_chart(fig, use_container_width=True)
+
+                with col2:
+                    st.subheader("Key Differences")
+                    # Expert intervenes, IO doesn't
+                    n_expert_only = ((comp_player["expert_cat"] == "intervene") & (comp_player["io_cat"] == "watch")).sum()
+                    n_io_only = ((comp_player["io_cat"] == "intervene") & (comp_player["expert_cat"] == "watch")).sum()
+                    n_io_probes = (comp_player["io_cat"] == "probe").sum()
+                    n_both = ((comp_player["io_cat"] == "intervene") & (comp_player["expert_cat"] == "intervene")).sum()
+
+                    st.markdown(f"**Both intervene:** {n_both}")
+                    st.markdown(f"**Expert only:** {n_expert_only} — Expert prompts but IO sees no need")
+                    st.markdown(f"**IO only:** {n_io_only} — IO detects issues expert's rules miss")
+                    st.markdown(f"**IO probes:** {n_io_probes} — IO is uncertain, explores instead of guessing")
+
+                # All-player summary
+                st.subheader("All Players Summary")
+                summary_rows = []
+                for pid in sorted(comp_df["participant_id"].unique()):
+                    pf = comp_df[comp_df["participant_id"] == pid]
+                    summary_rows.append({
+                        "Player": f"P{pid}",
+                        "Expert Prompts": int((pf["expert_cat"] == "intervene").sum()),
+                        "IO Intervene": int((pf["io_cat"] == "intervene").sum()),
+                        "IO Probe": int((pf["io_cat"] == "probe").sum()),
+                        "Agreement": f"{(pf['io_cat'] == pf['expert_cat']).mean():.0%}",
+                    })
+                st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
 
 
 if __name__ == "__main__":
