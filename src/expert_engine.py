@@ -176,6 +176,108 @@ def run_expert_engine(df: pd.DataFrame) -> pd.DataFrame:
     return pd.DataFrame(results)
 
 
+def run_expert_engine_raw(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Run expert engine on data that already has the expert's variables
+    (from expert_from_logs.py). No variable mapping needed.
+    """
+    results = []
+
+    for pid in df["participant_id"].unique():
+        pdf = df[df["participant_id"] == pid].sort_values("window_start").copy()
+
+        state = "EXPLORE"
+        prompt_count = 0
+        no_trigger_entry_time = 0.0
+        last_prompt_time = -999.0
+
+        for idx, row in pdf.iterrows():
+            time_since_last_action = row.get("time_since_action", 0.0)
+            gaze_on_instruction = row.get("gaze_on_instruction", 0.0)
+            puzzle_interaction = bool(row.get("puzzle_interaction", False))
+            object_in_hand = bool(row.get("object_in_hand", False))
+            current_area_type = row.get("current_area_type", "hub")
+            puzzle_state = row.get("puzzle_state", "unsolved")
+            puzzle_id = row.get("puzzle_id", "")
+            window_start = row.get("window_start", 0.0)
+
+            # Track no_trigger_entry_time
+            if current_area_type == "puzzle" and puzzle_interaction:
+                no_trigger_entry_time = 0.0
+            else:
+                no_trigger_entry_time += 5.0
+
+            can_prompt = (window_start - last_prompt_time) >= 30.0
+
+            action = "NONE"
+            prompt_type = None
+            content = ""
+            rule_triggered = "RULE_10_DEFAULT"
+
+            if puzzle_state == "solved":
+                state = "VICTORY"
+                rule_triggered = "RULE_1_VICTORY"
+            elif current_area_type == "hub" and puzzle_state == "unsolvable":
+                state = "EXPLORE"
+                if can_prompt:
+                    action = "PROMPT"
+                    prompt_type = "V"
+                    content = "Try to take a look around"
+                    last_prompt_time = window_start
+                rule_triggered = "RULE_2_HUB_UNSOLVABLE"
+            elif no_trigger_entry_time >= 30:
+                state = "EXPLORE"
+                if can_prompt:
+                    action = "PROMPT"
+                    prompt_type = "V"
+                    content = "Try to explore other puzzles"
+                    last_prompt_time = window_start
+                rule_triggered = "RULE_3_NO_ENTRY"
+            elif state == "STUCK" and (object_in_hand or puzzle_interaction or gaze_on_instruction >= 3):
+                state = "SOLVING"
+                prompt_count = 0
+                rule_triggered = "RULE_6_STUCK_EXIT"
+            elif (not object_in_hand and gaze_on_instruction < 3 and time_since_last_action >= 30):
+                state = "STUCK"
+                rule_triggered = "RULE_4_STUCK"
+                if can_prompt:
+                    if prompt_count == 0:
+                        action, prompt_type = "PROMPT", "R"
+                        content = "Maybe check the instructions again?"
+                    elif prompt_count == 1:
+                        action, prompt_type = "PROMPT", "V"
+                        content = "Something here might be useful"
+                    else:
+                        action, prompt_type = "PROMPT", "E"
+                        content = "Use the available clues to proceed"
+                    prompt_count += 1
+                    last_prompt_time = window_start
+                    rule_triggered = "RULE_5_STUCK_ESCALATION"
+            elif state == "EXPLORE" and (gaze_on_instruction >= 3 or puzzle_interaction):
+                state = "SOLVING"
+                rule_triggered = "RULE_8_EXPLORE_EXIT"
+            elif (time_since_last_action >= 30 and gaze_on_instruction < 3 and not puzzle_interaction):
+                state = "EXPLORE"
+                rule_triggered = "RULE_7_EXPLORE"
+            elif gaze_on_instruction >= 5 and puzzle_interaction:
+                state = "SOLVING"
+                rule_triggered = "RULE_9_SOLVING"
+
+            results.append({
+                "participant_id": pid,
+                "window_start": window_start,
+                "puzzle_id": puzzle_id,
+                "expert_state": state,
+                "expert_action": action,
+                "expert_prompt_type": prompt_type,
+                "expert_content": content,
+                "expert_rule": rule_triggered,
+                "expert_prompt_count": prompt_count,
+            })
+
+    return pd.DataFrame(results)
+
+
 if __name__ == "__main__":
     import os, sys
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
