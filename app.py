@@ -606,11 +606,39 @@ def make_dominance_line_chart(pdf):
 
 
 # ---------------------------------------------------------------------------
+# Auth
+# ---------------------------------------------------------------------------
+
+def check_password():
+    """Simple password gate using st.secrets and session_state."""
+    if st.session_state.get("authenticated"):
+        return True
+
+    st.title("🔒 Inside Out")
+    st.caption("Multi-Agent Negotiation of Cognitive States in VR Escape Room")
+    st.markdown("---")
+
+    password = st.text_input("Enter password to access the app", type="password")
+    if st.button("Login", type="primary"):
+        correct = st.secrets.get("app_password", "insideout2026")
+        if password == correct:
+            st.session_state["authenticated"] = True
+            st.rerun()
+        else:
+            st.error("Incorrect password.")
+    return False
+
+
+# ---------------------------------------------------------------------------
 # App
 # ---------------------------------------------------------------------------
 
 def main():
     st.set_page_config(page_title="Inside Out: Multi-Agent VR", layout="wide")
+
+    if not check_password():
+        return
+
     st.title("🧠 Inside Out")
     st.caption("Multi-Agent Negotiation of Cognitive States in VR Escape Room")
 
