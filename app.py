@@ -21,6 +21,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "src"))
 
 DATA_PATH = os.path.join(os.path.dirname(__file__), "outputs", "agent_outputs.csv")
 COMPARISON_PATH = os.path.join(os.path.dirname(__file__), "outputs", "comparison_correct.csv")
+THREE_WAY_PATH = os.path.join(os.path.dirname(__file__), "outputs", "three_way_comparison.csv")
+TOLERANCE_PATH = os.path.join(os.path.dirname(__file__), "outputs", "tolerance_results.csv")
+PROMPT_DETAIL_PATH = os.path.join(os.path.dirname(__file__), "outputs", "prompt_detection_detail.csv")
 
 # ---------------------------------------------------------------------------
 # Colors
@@ -108,6 +111,151 @@ def load_comparison():
     df["expert_cat"] = df.apply(_expert_cat, axis=1)
 
     return df
+
+
+@st.cache_data
+def load_three_way():
+    if not os.path.exists(THREE_WAY_PATH):
+        return None, None, None
+    tw = pd.read_csv(THREE_WAY_PATH)
+    tw["time_min"] = tw["window_start"] / 60.0
+    tol = pd.read_csv(TOLERANCE_PATH) if os.path.exists(TOLERANCE_PATH) else None
+    detail = pd.read_csv(PROMPT_DETAIL_PATH) if os.path.exists(PROMPT_DETAIL_PATH) else None
+    return tw, tol, detail
+
+
+def make_three_way_timeline(tdf):
+    """Three-row timeline: Facilitator vs Expert vs IO decisions."""
+    fig = make_subplots(
+        rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.06,
+        row_titles=["Facilitator (Ground Truth)", "Expert System", "Inside Out"],
+    )
+    cat_colors = {"intervene": "#F44336", "probe": "#FF9800", "watch": "#4CAF50"}
+
+    # Facilitator
+    for cat in ["intervene", "probe", "watch"]:
+        mask = tdf["facilitator_cat"] == cat
+        if mask.sum() == 0:
+            continue
+        fig.add_trace(go.Scatter(
+            x=tdf["time_min"][mask], y=[cat] * mask.sum(),
+            mode="markers", marker=dict(size=5, color=cat_colors[cat], opacity=0.6),
+            name=f"Fac: {cat}", legendgroup=cat, showlegend=True,
+        ), row=1, col=1)
+
+    # Expert
+    for cat in ["intervene", "watch"]:
+        mask = tdf["expert_cat"] == cat
+        if mask.sum() == 0:
+            continue
+        fig.add_trace(go.Scatter(
+            x=tdf["time_min"][mask], y=[cat] * mask.sum(),
+            mode="markers", marker=dict(size=5, color=cat_colors[cat], opacity=0.6),
+            name=f"Exp: {cat}", legendgroup=cat, showlegend=False,
+        ), row=2, col=1)
+
+    # IO
+    for cat in ["intervene", "probe", "watch"]:
+        mask = tdf["io_cat"] == cat
+        if mask.sum() == 0:
+            continue
+        fig.add_trace(go.Scatter(
+            x=tdf["time_min"][mask], y=[cat] * mask.sum(),
+            mode="markers", marker=dict(size=5, color=cat_colors[cat], opacity=0.6),
+            name=f"IO: {cat}", legendgroup=cat, showlegend=False,
+        ), row=3, col=1)
+
+    fig.update_xaxes(title_text="Time (minutes)", row=3, col=1)
+    fig.update_layout(
+        height=450, template="plotly_white",
+        margin=dict(l=20, r=20, t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+    )
+    return fig
+
+
+def make_tolerance_chart(tol_df):
+    """Line chart: F1 scores at different temporal tolerances."""
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(
+        x=tol_df["tolerance_sec"], y=tol_df["io_f1"],
+        mode="lines+markers", name="Inside Out",
+        line=dict(color="#FF9800", width=3), marker=dict(size=8),
+    ))
+    fig.add_trace(go.Scatter(
+        x=tol_df["tolerance_sec"], y=tol_df["ex_f1"],
+        mode="lines+markers", name="Expert System",
+        line=dict(color="#2196F3", width=3), marker=dict(size=8),
+    ))
+    # Add recall as dashed lines
+    fig.add_trace(go.Scatter(
+        x=tol_df["tolerance_sec"], y=tol_df["io_recall"],
+        mode="lines", name="IO Recall",
+        line=dict(color="#FF9800", width=1.5, dash="dash"),
+    ))
+    fig.add_trace(go.Scatter(
+        x=tol_df["tolerance_sec"], y=tol_df["ex_recall"],
+        mode="lines", name="Expert Recall",
+        line=dict(color="#2196F3", width=1.5, dash="dash"),
+    ))
+    fig.update_layout(
+        height=350, template="plotly_white",
+        xaxis_title="Temporal Tolerance (seconds)",
+        yaxis_title="Score",
+        yaxis=dict(range=[0, 1], tickformat=".0%"),
+        margin=dict(l=20, r=20, t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+    )
+    return fig
+
+
+def make_three_way_heatmap(tdf):
+    """3x3 heatmap: Facilitator vs IO decisions."""
+    ct = pd.crosstab(tdf["facilitator_cat"], tdf["io_cat"])
+    order = ["intervene", "probe", "watch"]
+    ct = ct.reindex(index=[o for o in order if o in ct.index],
+                    columns=[o for o in order if o in ct.columns], fill_value=0)
+    fig = go.Figure(go.Heatmap(
+        z=ct.values, x=ct.columns, y=ct.index,
+        colorscale="YlOrRd",
+        text=[[str(v) for v in row] for row in ct.values],
+        texttemplate="%{text}", textfont=dict(size=16),
+    ))
+    fig.update_layout(
+        height=300,
+        xaxis_title="Inside Out Decision",
+        yaxis_title="Facilitator Decision",
+        margin=dict(l=20, r=20, t=20, b=20),
+    )
+    return fig
+
+
+def make_puzzle_detection_chart(detail_df):
+    """Grouped bar chart: IO vs Expert detection rate per puzzle."""
+    puzzles = sorted(detail_df["puzzle"].dropna().unique())
+    io_rates = []
+    ex_rates = []
+    for p in puzzles:
+        sub = detail_df[detail_df["puzzle"] == p]
+        io_rates.append(sub["io_hit"].mean() * 100)
+        ex_rates.append(sub["expert_hit"].mean() * 100)
+
+    # Shorten puzzle names
+    short = [p.replace("Spoke Puzzle: ", "").replace("Hub Puzzle: ", "") for p in puzzles]
+
+    fig = go.Figure()
+    fig.add_trace(go.Bar(name="Inside Out", x=short, y=io_rates,
+                         marker_color="#FF9800"))
+    fig.add_trace(go.Bar(name="Expert System", x=short, y=ex_rates,
+                         marker_color="#2196F3"))
+    fig.update_layout(
+        barmode="group", height=350, template="plotly_white",
+        yaxis_title="Detection Rate (%)",
+        yaxis=dict(range=[0, 105]),
+        margin=dict(l=20, r=20, t=30, b=20),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0.5, xanchor="center"),
+    )
+    return fig
 
 
 def make_comparison_timeline(cdf):
@@ -666,15 +814,17 @@ def main():
 
     # Load comparison data
     comp_df = load_comparison()
+    tw_df, tol_df, detail_df = load_three_way()
 
     # Tabs
-    tab0, tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "🏔 Agent Dominance",
         "📊 Agent Confidence",
         "⚡ Negotiation Timeline",
         "🔬 Cluster vs Agents",
         "▶️ Playback",
         "🆚 Expert vs IO",
+        "🎯 Facilitator Benchmark",
     ])
 
     with tab0:
@@ -847,6 +997,121 @@ def main():
                         "Agreement": f"{(pf['io_cat'] == pf['expert_cat']).mean():.0%}",
                     })
                 st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
+
+    with tab6:
+        st.subheader("🎯 Facilitator Benchmark")
+        st.markdown(
+            "Compares IO and Expert system decisions against **real facilitator prompts** — "
+            "the actual moments a human facilitator decided to intervene during gameplay. "
+            "Reflective prompts map to **probe**, explicit prompts map to **intervene**."
+        )
+
+        if tw_df is None or len(tw_df) == 0:
+            st.warning("No benchmark data found. Run `python3 src/facilitator_benchmark.py` first.")
+        else:
+            # --- Per-player three-way timeline ---
+            tw_player = tw_df[tw_df["participant_id"] == selected_pid].sort_values("window_start").reset_index(drop=True)
+            if selected_puzzle != "All" and "puzzle_id" in tw_player.columns:
+                tw_player = tw_player[tw_player["puzzle_id"] == selected_puzzle].reset_index(drop=True)
+
+            if len(tw_player) > 0:
+                st.subheader("Three-Way Decision Timeline")
+                st.markdown(
+                    "Top = facilitator (ground truth), Middle = expert, Bottom = IO. "
+                    "**Red** = intervene, **Orange** = probe, **Green** = watch."
+                )
+                fig = make_three_way_timeline(tw_player)
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Quick stats for this player
+                col1, col2, col3 = st.columns(3)
+                fac_active = (tw_player["facilitator_cat"] != "watch").sum()
+                io_active = (tw_player["io_cat"] != "watch").sum()
+                ex_active = (tw_player["expert_cat"] != "watch").sum()
+                col1.metric("Facilitator Active", f"{fac_active}/{len(tw_player)}", f"{fac_active/len(tw_player):.0%}")
+                col2.metric("IO Active", f"{io_active}/{len(tw_player)}", f"{io_active/len(tw_player):.0%}")
+                col3.metric("Expert Active", f"{ex_active}/{len(tw_player)}", f"{ex_active/len(tw_player):.0%}")
+
+            # --- Global results ---
+            st.markdown("---")
+            st.subheader("Temporal Tolerance Analysis (All 11 Players)")
+            st.markdown(
+                "Exact 5-second window matching underestimates performance because facilitator prompts "
+                "span multiple windows. This analysis checks whether each system acted within ±N seconds "
+                "of a real prompt. **Solid lines** = F1 score, **dashed** = recall."
+            )
+
+            if tol_df is not None and len(tol_df) > 0:
+                fig = make_tolerance_chart(tol_df)
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Key numbers at ±15s
+                tol15 = tol_df[tol_df["tolerance_sec"] == 15]
+                if len(tol15) > 0:
+                    r = tol15.iloc[0]
+                    col1, col2 = st.columns(2)
+                    col1.metric("IO Detection (±15s)", f"F1={r['io_f1']:.3f}",
+                                f"Recall={r['io_recall']:.0%}, Precision={r['io_precision']:.0%}")
+                    col2.metric("Expert Detection (±15s)", f"F1={r['ex_f1']:.3f}",
+                                f"Recall={r['ex_recall']:.0%}, Precision={r['ex_precision']:.0%}")
+
+            # --- Per-puzzle detection ---
+            if detail_df is not None and len(detail_df) > 0:
+                st.subheader("Detection Rate by Puzzle (±15s)")
+                st.markdown("How often each system detected a facilitator prompt, broken down by puzzle.")
+                fig = make_puzzle_detection_chart(detail_df)
+                st.plotly_chart(fig, use_container_width=True)
+
+                # Reflective vs Explicit
+                st.subheader("Detection by Prompt Type")
+                col1, col2 = st.columns(2)
+                for pt, col in [("reflective", col1), ("explicit", col2)]:
+                    sub = detail_df[detail_df["prompt_type"] == pt]
+                    if len(sub) == 0:
+                        continue
+                    io_r = sub["io_hit"].mean()
+                    ex_r = sub["expert_hit"].mean()
+                    col.markdown(f"**{pt.capitalize()} Prompts** ({len(sub)} total)")
+                    col.markdown(f"- IO: **{io_r:.0%}** detected")
+                    col.markdown(f"- Expert: **{ex_r:.0%}** detected")
+
+            # --- Cross-tab ---
+            st.subheader("Facilitator vs IO Decision Matrix")
+            fig = make_three_way_heatmap(tw_df)
+            st.plotly_chart(fig, use_container_width=True)
+
+            # --- Distribution comparison ---
+            st.subheader("Decision Distribution Comparison")
+            dist_data = []
+            for cat in ["watch", "probe", "intervene"]:
+                dist_data.append({
+                    "Category": cat,
+                    "IO": f"{(tw_df['io_cat']==cat).sum()} ({(tw_df['io_cat']==cat).mean():.1%})",
+                    "Expert": f"{(tw_df['expert_cat']==cat).sum()} ({(tw_df['expert_cat']==cat).mean():.1%})",
+                    "Facilitator": f"{(tw_df['facilitator_cat']==cat).sum()} ({(tw_df['facilitator_cat']==cat).mean():.1%})",
+                })
+            st.dataframe(pd.DataFrame(dist_data), use_container_width=True, hide_index=True)
+
+            # --- Per-player summary ---
+            st.subheader("Per-Player Benchmark Summary")
+            player_rows = []
+            for pid in sorted(tw_df["participant_id"].unique()):
+                pf = tw_df[tw_df["participant_id"] == pid]
+                fac_n = (pf["facilitator_cat"] != "watch").sum()
+                io_n = (pf["io_cat"] != "watch").sum()
+                ex_n = (pf["expert_cat"] != "watch").sum()
+                # Agreement with facilitator
+                io_agree = (pf["io_cat"] == pf["facilitator_cat"]).mean()
+                ex_agree = (pf["expert_cat"] == pf["facilitator_cat"]).mean()
+                player_rows.append({
+                    "Player": f"P{pid}",
+                    "Fac Active": fac_n,
+                    "IO Active": io_n,
+                    "Expert Active": ex_n,
+                    "IO-Fac Agree": f"{io_agree:.0%}",
+                    "Exp-Fac Agree": f"{ex_agree:.0%}",
+                })
+            st.dataframe(pd.DataFrame(player_rows), use_container_width=True, hide_index=True)
 
 
 if __name__ == "__main__":
