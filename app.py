@@ -1040,6 +1040,12 @@ def main():
                 "span multiple windows. This analysis checks whether each system acted within ±N seconds "
                 "of a real prompt. **Solid lines** = F1 score, **dashed** = recall."
             )
+            st.info(
+                "**Baselines:** Facilitator intervenes in 20.8% of windows. "
+                "A **random classifier** at this rate achieves F1 = 0.208. "
+                "An **always-intervene** system achieves F1 = 0.344. "
+                "IO's F1 = 0.529 is **2.5× random** and **1.5× always-intervene**."
+            )
 
             if tol_df is not None and len(tol_df) > 0:
                 fig = make_tolerance_chart(tol_df)
@@ -1049,11 +1055,13 @@ def main():
                 tol15 = tol_df[tol_df["tolerance_sec"] == 15]
                 if len(tol15) > 0:
                     r = tol15.iloc[0]
-                    col1, col2 = st.columns(2)
+                    col1, col2, col3 = st.columns(3)
                     col1.metric("IO Detection (±15s)", f"F1={r['io_f1']:.3f}",
                                 f"Recall={r['io_recall']:.0%}, Precision={r['io_precision']:.0%}")
                     col2.metric("Rule-Based Detection (±15s)", f"F1={r['ex_f1']:.3f}",
                                 f"Recall={r['ex_recall']:.0%}, Precision={r['ex_precision']:.0%}")
+                    col3.metric("Random Baseline", "F1=0.208",
+                                "Recall=20.8%, Precision=20.8%")
 
             # --- Per-puzzle detection ---
             if detail_df is not None and len(detail_df) > 0:
