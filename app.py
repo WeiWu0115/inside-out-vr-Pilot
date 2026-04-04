@@ -1094,22 +1094,31 @@ def main():
 
             # --- Per-player summary ---
             st.subheader("Per-Player Benchmark Summary")
+            st.markdown(
+                "**Detection Rate** = when the facilitator gave a prompt, "
+                "what percentage did each system detect? Higher = better."
+            )
             player_rows = []
             for pid in sorted(tw_df["participant_id"].unique()):
                 pf = tw_df[tw_df["participant_id"] == pid]
                 fac_n = (pf["facilitator_cat"] != "watch").sum()
                 io_n = (pf["io_cat"] != "watch").sum()
                 ex_n = (pf["expert_cat"] != "watch").sum()
-                # Agreement with facilitator
-                io_agree = (pf["io_cat"] == pf["facilitator_cat"]).mean()
-                ex_agree = (pf["expert_cat"] == pf["facilitator_cat"]).mean()
+                # Detection rate: when facilitator prompted, did system detect?
+                fac_active = pf[pf["facilitator_cat"] != "watch"]
+                if len(fac_active) > 0:
+                    io_detect = (fac_active["io_cat"] != "watch").mean()
+                    ex_detect = (fac_active["expert_cat"] != "watch").mean()
+                else:
+                    io_detect = 0
+                    ex_detect = 0
                 player_rows.append({
                     "Player": f"P{pid}",
-                    "Fac Active": fac_n,
+                    "Fac Prompts": fac_n,
                     "IO Active": io_n,
-                    "Rule-Based Active": ex_n,
-                    "IO-Fac Agree": f"{io_agree:.0%}",
-                    "RB-Fac Agree": f"{ex_agree:.0%}",
+                    "RB Active": ex_n,
+                    "IO Detection": f"{io_detect:.0%}",
+                    "RB Detection": f"{ex_detect:.0%}",
                 })
             st.dataframe(pd.DataFrame(player_rows), use_container_width=True, hide_index=True)
 
