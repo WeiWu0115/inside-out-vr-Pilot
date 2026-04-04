@@ -128,7 +128,7 @@ def make_three_way_timeline(tdf):
     """Three-row timeline: Facilitator vs Expert vs IO decisions."""
     fig = make_subplots(
         rows=3, cols=1, shared_xaxes=True, vertical_spacing=0.06,
-        row_titles=["Facilitator (Ground Truth)", "Expert System", "Inside Out"],
+        row_titles=["Facilitator (Ground Truth)", "Rule-Based System", "Inside Out"],
     )
     cat_colors = {"intervene": "#F44336", "probe": "#FF9800", "watch": "#4CAF50"}
 
@@ -184,7 +184,7 @@ def make_tolerance_chart(tol_df):
     ))
     fig.add_trace(go.Scatter(
         x=tol_df["tolerance_sec"], y=tol_df["ex_f1"],
-        mode="lines+markers", name="Expert System",
+        mode="lines+markers", name="Rule-Based",
         line=dict(color="#2196F3", width=3), marker=dict(size=8),
     ))
     # Add recall as dashed lines
@@ -195,7 +195,7 @@ def make_tolerance_chart(tol_df):
     ))
     fig.add_trace(go.Scatter(
         x=tol_df["tolerance_sec"], y=tol_df["ex_recall"],
-        mode="lines", name="Expert Recall",
+        mode="lines", name="Rule-Based Recall",
         line=dict(color="#2196F3", width=1.5, dash="dash"),
     ))
     fig.update_layout(
@@ -246,7 +246,7 @@ def make_puzzle_detection_chart(detail_df):
     fig = go.Figure()
     fig.add_trace(go.Bar(name="Inside Out", x=short, y=io_rates,
                          marker_color="#FF9800"))
-    fig.add_trace(go.Bar(name="Expert System", x=short, y=ex_rates,
+    fig.add_trace(go.Bar(name="Rule-Based", x=short, y=ex_rates,
                          marker_color="#2196F3"))
     fig.update_layout(
         barmode="group", height=350, template="plotly_white",
@@ -262,7 +262,7 @@ def make_comparison_timeline(cdf):
     """Side-by-side timeline: expert vs IO decisions."""
     fig = make_subplots(
         rows=2, cols=1, shared_xaxes=True, vertical_spacing=0.08,
-        row_titles=["Expert System", "Inside Out"],
+        row_titles=["Rule-Based System", "Inside Out"],
     )
 
     cat_colors = {
@@ -280,7 +280,7 @@ def make_comparison_timeline(cdf):
             x=cdf["time_min"][mask], y=[cat] * mask.sum(),
             mode="markers",
             marker=dict(size=6, color=cat_colors.get(cat, "#9E9E9E"), opacity=0.6),
-            name=f"Expert: {cat}", showlegend=True,
+            name=f"Rule: {cat}", showlegend=True,
         ), row=1, col=1)
 
     # IO row
@@ -322,7 +322,7 @@ def make_agreement_heatmap(cdf):
     fig.update_layout(
         height=300,
         xaxis_title="Inside Out Decision",
-        yaxis_title="Expert Decision",
+        yaxis_title="Rule-Based Decision",
         margin=dict(l=20, r=20, t=20, b=20),
     )
     return fig
@@ -355,9 +355,9 @@ def make_disagreement_scatter(cdf):
     }
     labels = {
         "agree": "Agree (no action / both act)",
-        "expert_only": "Expert intervenes, IO doesn't",
-        "io_only": "IO intervenes, Expert doesn't",
-        "io_probes": "IO probes (expert can't)",
+        "expert_only": "Rule-based intervenes, IO doesn't",
+        "io_only": "IO intervenes, rule-based doesn't",
+        "io_probes": "IO probes (rule-based can't)",
     }
 
     fig = go.Figure()
@@ -823,7 +823,7 @@ def main():
         "⚡ Negotiation Timeline",
         "🔬 Cluster vs Agents",
         "▶️ Playback",
-        "🆚 Expert vs IO",
+        "🆚 Rule-Based vs IO",
         "🎯 Facilitator Benchmark",
     ])
 
@@ -922,11 +922,11 @@ def main():
         render_negotiation_panel(current)
 
     with tab5:
-        st.subheader("🆚 Expert System vs Inside Out")
+        st.subheader("🆚 Rule-Based System vs Inside Out")
         st.markdown(
-            "Compares the human expert's rule-based prompting engine "
+            "Compares the rule-based prompting engine "
             "(designed from observing 18 players) with Inside Out's multi-agent negotiation. "
-            "The expert system uses only game logs; Inside Out also uses eye tracking."
+            "The rule-based system uses only game logs; Inside Out also uses eye tracking."
         )
 
         if comp_df is None or len(comp_df) == 0:
@@ -947,7 +947,7 @@ def main():
                 # Side-by-side timeline
                 st.subheader("Decision Timeline")
                 st.markdown(
-                    "Top row = expert system decisions. Bottom row = Inside Out decisions. "
+                    "Top row = rule-based decisions. Bottom row = Inside Out decisions. "
                     "**Red** = intervene, **Orange** = probe (IO only), **Green** = watch."
                 )
                 fig = make_comparison_timeline(comp_player)
@@ -957,9 +957,9 @@ def main():
                 st.subheader("Where Do They Disagree?")
                 st.markdown(
                     "Each dot = one time window. "
-                    "**Blue** = expert intervenes but IO doesn't. "
-                    "**Red** = IO intervenes but expert doesn't. "
-                    "**Orange** = IO probes (expert can't)."
+                    "**Blue** = rule-based intervenes but IO doesn't. "
+                    "**Red** = IO intervenes but rule-based doesn't. "
+                    "**Orange** = IO probes (rule-based can't)."
                 )
                 fig = make_disagreement_scatter(comp_player)
                 st.plotly_chart(fig, use_container_width=True)
@@ -980,8 +980,8 @@ def main():
                     n_both = ((comp_player["io_cat"] == "intervene") & (comp_player["expert_cat"] == "intervene")).sum()
 
                     st.markdown(f"**Both intervene:** {n_both}")
-                    st.markdown(f"**Expert only:** {n_expert_only} — Expert prompts but IO sees no need")
-                    st.markdown(f"**IO only:** {n_io_only} — IO detects issues expert's rules miss")
+                    st.markdown(f"**Rule-based only:** {n_expert_only} — Rule-based prompts but IO sees no need")
+                    st.markdown(f"**IO only:** {n_io_only} — IO detects issues rule-based system misses")
                     st.markdown(f"**IO probes:** {n_io_probes} — IO is uncertain, explores instead of guessing")
 
                 # All-player summary
@@ -991,7 +991,7 @@ def main():
                     pf = comp_df[comp_df["participant_id"] == pid]
                     summary_rows.append({
                         "Player": f"P{pid}",
-                        "Expert Prompts": int((pf["expert_cat"] == "intervene").sum()),
+                        "Rule-Based Prompts": int((pf["expert_cat"] == "intervene").sum()),
                         "IO Intervene": int((pf["io_cat"] == "intervene").sum()),
                         "IO Probe": int((pf["io_cat"] == "probe").sum()),
                         "Agreement": f"{(pf['io_cat'] == pf['expert_cat']).mean():.0%}",
@@ -1001,7 +1001,7 @@ def main():
     with tab6:
         st.subheader("🎯 Facilitator Benchmark")
         st.markdown(
-            "Compares IO and Expert system decisions against **real facilitator prompts** — "
+            "Compares IO and Rule-Based system decisions against **real facilitator prompts** — "
             "the actual moments a human facilitator decided to intervene during gameplay. "
             "Reflective prompts map to **probe**, explicit prompts map to **intervene**."
         )
@@ -1017,7 +1017,7 @@ def main():
             if len(tw_player) > 0:
                 st.subheader("Three-Way Decision Timeline")
                 st.markdown(
-                    "Top = facilitator (ground truth), Middle = expert, Bottom = IO. "
+                    "Top = facilitator (ground truth), Middle = rule-based, Bottom = IO. "
                     "**Red** = intervene, **Orange** = probe, **Green** = watch."
                 )
                 fig = make_three_way_timeline(tw_player)
@@ -1030,7 +1030,7 @@ def main():
                 ex_active = (tw_player["expert_cat"] != "watch").sum()
                 col1.metric("Facilitator Active", f"{fac_active}/{len(tw_player)}", f"{fac_active/len(tw_player):.0%}")
                 col2.metric("IO Active", f"{io_active}/{len(tw_player)}", f"{io_active/len(tw_player):.0%}")
-                col3.metric("Expert Active", f"{ex_active}/{len(tw_player)}", f"{ex_active/len(tw_player):.0%}")
+                col3.metric("Rule-Based Active", f"{ex_active}/{len(tw_player)}", f"{ex_active/len(tw_player):.0%}")
 
             # --- Global results ---
             st.markdown("---")
@@ -1052,7 +1052,7 @@ def main():
                     col1, col2 = st.columns(2)
                     col1.metric("IO Detection (±15s)", f"F1={r['io_f1']:.3f}",
                                 f"Recall={r['io_recall']:.0%}, Precision={r['io_precision']:.0%}")
-                    col2.metric("Expert Detection (±15s)", f"F1={r['ex_f1']:.3f}",
+                    col2.metric("Rule-Based Detection (±15s)", f"F1={r['ex_f1']:.3f}",
                                 f"Recall={r['ex_recall']:.0%}, Precision={r['ex_precision']:.0%}")
 
             # --- Per-puzzle detection ---
@@ -1073,7 +1073,7 @@ def main():
                     ex_r = sub["expert_hit"].mean()
                     col.markdown(f"**{pt.capitalize()} Prompts** ({len(sub)} total)")
                     col.markdown(f"- IO: **{io_r:.0%}** detected")
-                    col.markdown(f"- Expert: **{ex_r:.0%}** detected")
+                    col.markdown(f"- Rule-Based: **{ex_r:.0%}** detected")
 
             # --- Cross-tab ---
             st.subheader("Facilitator vs IO Decision Matrix")
@@ -1087,7 +1087,7 @@ def main():
                 dist_data.append({
                     "Category": cat,
                     "IO": f"{(tw_df['io_cat']==cat).sum()} ({(tw_df['io_cat']==cat).mean():.1%})",
-                    "Expert": f"{(tw_df['expert_cat']==cat).sum()} ({(tw_df['expert_cat']==cat).mean():.1%})",
+                    "Rule-Based": f"{(tw_df['expert_cat']==cat).sum()} ({(tw_df['expert_cat']==cat).mean():.1%})",
                     "Facilitator": f"{(tw_df['facilitator_cat']==cat).sum()} ({(tw_df['facilitator_cat']==cat).mean():.1%})",
                 })
             st.dataframe(pd.DataFrame(dist_data), use_container_width=True, hide_index=True)
@@ -1107,9 +1107,9 @@ def main():
                     "Player": f"P{pid}",
                     "Fac Active": fac_n,
                     "IO Active": io_n,
-                    "Expert Active": ex_n,
+                    "Rule-Based Active": ex_n,
                     "IO-Fac Agree": f"{io_agree:.0%}",
-                    "Exp-Fac Agree": f"{ex_agree:.0%}",
+                    "RB-Fac Agree": f"{ex_agree:.0%}",
                 })
             st.dataframe(pd.DataFrame(player_rows), use_container_width=True, hide_index=True)
 
