@@ -82,13 +82,108 @@ def compute_puzzle_elapsed(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
+def compute_progress_momentum(df: pd.DataFrame, window_size: int = 4) -> pd.DataFrame:
+    """
+    Compute progress_momentum for each window: a smoothed trend [-1, 1] over
+    the last `window_size` windows indicating whether the player is making
+    real progress (+1) or degrading (-1).
+
+    Positive signals (per window):
+      - action_count > 0 (doing something)
+      - time_since_action decreased from previous window (new meaningful action)
+      - error_count == 0 (no errors)
+
+    Negative signals:
+      - time_since_action increased (no new action, drifting)
+      - error_count > 0 (making mistakes)
+      - action_count == 0 AND idle_time > 4.5 (completely idle)
+      - puzzle_elapsed_ratio > 2.0 (over time → drags momentum down)
+
+    The raw signal is computed per window, then smoothed with an exponentially
+    weighted moving average over `window_size` windows.
+    """
+    import numpy as np
+
+    df["_raw_momentum"] = 0.0
+    df["progress_momentum"] = 0.0
+
+    for pid in df["participant_id"].unique():
+        mask = df["participant_id"] == pid
+        p_df = df.loc[mask].sort_values("window_start")
+        indices = p_df.index.tolist()
+
+        raw_signals = []
+        prev_time_since = None
+
+        for i, idx in enumerate(indices):
+            row = p_df.loc[idx]
+            signal = 0.0
+
+            action_count = row.get("action_count", 0) or 0
+            time_since = row.get("time_since_action", 0) or 0
+            error_count = row.get("error_count", 0) or 0
+            idle_time = row.get("idle_time", 0) or 0
+            elapsed_ratio = row.get("puzzle_elapsed_ratio", 0) or 0
+
+            # Positive signals
+            if action_count > 0:
+                signal += 0.2
+            if action_count >= 3:
+                signal += 0.1
+            if prev_time_since is not None and time_since < prev_time_since:
+                # time_since decreased → a meaningful action reset it
+                signal += 0.3
+            if error_count == 0 and action_count > 0:
+                signal += 0.1
+
+            # Negative signals
+            if prev_time_since is not None and time_since > prev_time_since + 4:
+                signal -= 0.2  # drifting further from last action
+            if error_count > 0:
+                signal -= 0.25 * min(error_count, 3)
+            if action_count == 0 and idle_time > 4.5:
+                signal -= 0.3
+            if elapsed_ratio > 2.0:
+                signal -= min((elapsed_ratio - 2.0) * 0.1, 0.3)
+
+            signal = max(-1.0, min(1.0, signal))
+            raw_signals.append(signal)
+            prev_time_since = time_since
+
+            # Reset prev_time_since on puzzle change
+            if i + 1 < len(indices):
+                next_puzzle = p_df.loc[indices[i + 1]].get("puzzle_id", "")
+                if next_puzzle != row.get("puzzle_id", ""):
+                    prev_time_since = None
+
+        # Exponentially weighted moving average
+        alpha = 2.0 / (window_size + 1)
+        smoothed = []
+        ema = 0.0
+        for j, s in enumerate(raw_signals):
+            if j == 0:
+                ema = s
+            else:
+                ema = alpha * s + (1 - alpha) * ema
+            smoothed.append(round(max(-1.0, min(1.0, ema)), 4))
+
+        # Write back
+        for j, idx in enumerate(indices):
+            df.at[idx, "_raw_momentum"] = raw_signals[j]
+            df.at[idx, "progress_momentum"] = smoothed[j]
+
+    return df
+
+
 def run_pipeline(input_path: str, output_dir: str):
     # ---- Step 1: Load data ----
     df = load_csv(input_path)
 
-    # ---- Step 1.5: Compute puzzle elapsed time ----
+    # ---- Step 1.5: Compute puzzle elapsed time + progress momentum ----
     print("[INFO] Computing puzzle elapsed time...")
     df = compute_puzzle_elapsed(df)
+    print("[INFO] Computing progress momentum...")
+    df = compute_progress_momentum(df)
 
     # ---- Step 2: Run single-row agents ----
     print("[INFO] Running AttentionAgent...")
