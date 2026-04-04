@@ -862,7 +862,7 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 3,1885.0112945,watch,focused_progress,0.382,focused_progress,Hub Puzzle: Cooking Pot,1885.0,1885.0,VICTORY,NONE,watch,1885.0,none,watch
 3,1890.0084484,watch,pop_confirms_progress,0.344,pop_confirms_progress,Hub Puzzle: Cooking Pot,1890.0,1890.0,VICTORY,NONE,watch,1890.0,none,watch
 3,1895.0118736,watch,scattered_but_progressing,0.901,scattered_but_progressing,Hub Puzzle: Cooking Pot,1895.0,1895.0,VICTORY,NONE,watch,1895.0,none,watch
-3,1900.0094966,watch,pop_says_solving_but_stalled,0.526,pop_says_solving_but_stalled,Transition,1900.0,1900.0,VICTORY,NONE,watch,1900.0,none,watch
+3,1900.0094966,probe,pop_says_solving_but_stalled,0.526,pop_says_solving_but_stalled,Transition,1900.0,1900.0,VICTORY,NONE,watch,1900.0,none,watch
 5,0.163886,watch,scattered_but_progressing,0.848,scattered_but_progressing,Transition,0.0,0.0,EXPLORE,PROMPT,intervene,0.0,none,watch
 5,5.0113306,watch,scattered_but_progressing,0.859,scattered_but_progressing,Transition,5.0,5.0,EXPLORE,NONE,watch,5.0,none,watch
 5,10.0072749,watch,scattered_but_progressing,0.662,scattered_but_progressing,Transition,10.0,10.0,EXPLORE,NONE,watch,10.0,none,watch
@@ -1233,8 +1233,8 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 5,1835.0013125,probe,scattered_but_progressing,0.558,scattered_but_progressing,Hub Puzzle: Cooking Pot,1835.0,1835.0,VICTORY,NONE,watch,1835.0,none,watch
 5,1840.0000324,watch,pop_confirms_progress,0.367,pop_confirms_progress,Hub Puzzle: Cooking Pot,1840.0,1840.0,VICTORY,NONE,watch,1840.0,none,watch
 5,1845.0080507,watch,scattered_but_progressing,0.708,scattered_but_progressing,Hub Puzzle: Cooking Pot,1845.0,1845.0,VICTORY,NONE,watch,1845.0,none,watch
-5,1850.0088188,watch,scattered_but_progressing,0.67,scattered_but_progressing,Transition,1850.0,1850.0,VICTORY,NONE,watch,1850.0,none,watch
-5,1855.0069465,watch,scattered_but_progressing,0.471,scattered_but_progressing,Transition,1855.0,1855.0,VICTORY,NONE,watch,1855.0,none,watch
+5,1850.0088188,probe,scattered_but_progressing,0.67,scattered_but_progressing,Transition,1850.0,1850.0,VICTORY,NONE,watch,1850.0,none,watch
+5,1855.0069465,probe,scattered_but_progressing,0.471,scattered_but_progressing,Transition,1855.0,1855.0,VICTORY,NONE,watch,1855.0,none,watch
 6,0.1176788,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,0.0,0.0,EXPLORE,PROMPT,intervene,0.0,none,watch
 6,5.0032076,watch,scattered_but_progressing,0.859,scattered_but_progressing,Transition,5.0,5.0,EXPLORE,NONE,watch,5.0,none,watch
 6,10.0139479,watch,scattered_but_progressing,0.734,scattered_but_progressing,Transition,10.0,10.0,EXPLORE,NONE,watch,10.0,none,watch
@@ -1638,221 +1638,221 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 6,2000.0090812,probe,scanning_but_passive,0.443,scanning_but_passive,Hub Puzzle: Cooking Pot,2000.0,2000.0,VICTORY,NONE,watch,2000.0,explicit,intervene
 6,2005.0093641,probe,focused_but_idle,0.454,focused_but_idle,Hub Puzzle: Cooking Pot,2005.0,2005.0,VICTORY,NONE,watch,2005.0,none,watch
 6,2010.0045636,watch,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2010.0,2010.0,VICTORY,NONE,watch,2010.0,none,watch
-6,2015.0116135,watch,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2015.0,2015.0,VICTORY,NONE,watch,2015.0,none,watch
+6,2015.0116135,probe,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2015.0,2015.0,VICTORY,NONE,watch,2015.0,none,watch
 6,2020.0102526,probe,focused_but_idle,0.434,focused_but_idle,Hub Puzzle: Cooking Pot,2020.0,2020.0,VICTORY,NONE,watch,2020.0,none,watch
-6,2025.011427,watch,focused_progress,0.601,focused_progress,Hub Puzzle: Cooking Pot,2025.0,2025.0,VICTORY,NONE,watch,2025.0,reflective,probe
-6,2030.0083735,watch,focused_progress,0.452,focused_progress,Hub Puzzle: Cooking Pot,2030.0,2030.0,VICTORY,NONE,watch,2030.0,reflective,probe
-6,2035.0054146,watch,focused_progress,0.286,focused_progress,Hub Puzzle: Cooking Pot,2035.0,2035.0,VICTORY,NONE,watch,2035.0,reflective,probe
-6,2040.0058263,watch,pop_confirms_progress,0.377,pop_confirms_progress,Hub Puzzle: Cooking Pot,2040.0,2040.0,VICTORY,NONE,watch,2040.0,reflective,probe
+6,2025.011427,probe,focused_progress,0.601,focused_progress,Hub Puzzle: Cooking Pot,2025.0,2025.0,VICTORY,NONE,watch,2025.0,reflective,probe
+6,2030.0083735,probe,focused_progress,0.452,focused_progress,Hub Puzzle: Cooking Pot,2030.0,2030.0,VICTORY,NONE,watch,2030.0,reflective,probe
+6,2035.0054146,probe,focused_progress,0.286,focused_progress,Hub Puzzle: Cooking Pot,2035.0,2035.0,VICTORY,NONE,watch,2035.0,reflective,probe
+6,2040.0058263,probe,pop_confirms_progress,0.377,pop_confirms_progress,Hub Puzzle: Cooking Pot,2040.0,2040.0,VICTORY,NONE,watch,2040.0,reflective,probe
 6,2045.0029691,probe,focused_but_idle,0.491,focused_but_idle,Hub Puzzle: Cooking Pot,2045.0,2045.0,VICTORY,NONE,watch,2045.0,reflective,probe
 6,2050.0112682,probe,focused_but_idle,0.484,focused_but_idle,Hub Puzzle: Cooking Pot,2050.0,2050.0,VICTORY,NONE,watch,2050.0,reflective,probe
 6,2055.0104934,intervene,focused_but_failing,0.52,focused_but_failing,Hub Puzzle: Cooking Pot,2055.0,2055.0,VICTORY,NONE,watch,2055.0,reflective,probe
-6,2060.0071964,watch,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2060.0,2060.0,VICTORY,NONE,watch,2060.0,reflective,probe
+6,2060.0071964,probe,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2060.0,2060.0,VICTORY,NONE,watch,2060.0,reflective,probe
 6,2065.0141172,probe,scanning_but_passive,0.435,scanning_but_passive,Hub Puzzle: Cooking Pot,2065.0,2065.0,VICTORY,NONE,watch,2065.0,reflective,probe
-6,2070.0091251,watch,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2070.0,2070.0,VICTORY,NONE,watch,2070.0,reflective,probe
-6,2075.0109163,watch,scattered_but_progressing,0.402,scattered_but_progressing,Hub Puzzle: Cooking Pot,2075.0,2075.0,VICTORY,NONE,watch,2075.0,reflective,probe
-6,2080.0050287,watch,scattered_but_progressing,0.925,scattered_but_progressing,Hub Puzzle: Cooking Pot,2080.0,2080.0,VICTORY,NONE,watch,2080.0,reflective,probe
+6,2070.0091251,probe,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2070.0,2070.0,VICTORY,NONE,watch,2070.0,reflective,probe
+6,2075.0109163,probe,scattered_but_progressing,0.402,scattered_but_progressing,Hub Puzzle: Cooking Pot,2075.0,2075.0,VICTORY,NONE,watch,2075.0,reflective,probe
+6,2080.0050287,probe,scattered_but_progressing,0.925,scattered_but_progressing,Hub Puzzle: Cooking Pot,2080.0,2080.0,VICTORY,NONE,watch,2080.0,reflective,probe
 6,2085.0024382,probe,scattered_but_progressing,0.469,scattered_but_progressing,Hub Puzzle: Cooking Pot,2085.0,2085.0,VICTORY,NONE,watch,2085.0,reflective,probe
-6,2090.0003998,watch,focused_progress,0.457,focused_progress,Hub Puzzle: Cooking Pot,2090.0,2090.0,VICTORY,NONE,watch,2090.0,reflective,probe
-6,2095.0103208,watch,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2095.0,2095.0,VICTORY,NONE,watch,2095.0,reflective,probe
-6,2100.0052519,watch,pop_confirms_progress,0.523,pop_confirms_progress,Hub Puzzle: Cooking Pot,2100.0,2100.0,VICTORY,NONE,watch,2100.0,explicit,intervene
+6,2090.0003998,probe,focused_progress,0.457,focused_progress,Hub Puzzle: Cooking Pot,2090.0,2090.0,VICTORY,NONE,watch,2090.0,reflective,probe
+6,2095.0103208,probe,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2095.0,2095.0,VICTORY,NONE,watch,2095.0,reflective,probe
+6,2100.0052519,probe,pop_confirms_progress,0.523,pop_confirms_progress,Hub Puzzle: Cooking Pot,2100.0,2100.0,VICTORY,NONE,watch,2100.0,explicit,intervene
 6,2105.0056211,probe,focused_but_idle,0.435,focused_but_idle,Hub Puzzle: Cooking Pot,2105.0,2105.0,VICTORY,NONE,watch,2105.0,none,watch
-6,2110.0055607,watch,focused_progress,0.596,focused_progress,Hub Puzzle: Cooking Pot,2110.0,2110.0,VICTORY,NONE,watch,2110.0,none,watch
+6,2110.0055607,probe,focused_progress,0.596,focused_progress,Hub Puzzle: Cooking Pot,2110.0,2110.0,VICTORY,NONE,watch,2110.0,none,watch
 6,2115.0046699,probe,scanning_but_passive,0.471,scanning_but_passive,Hub Puzzle: Cooking Pot,2115.0,2115.0,VICTORY,NONE,watch,2115.0,none,watch
 6,2120.0022785,probe,scanning_but_passive,0.463,scanning_but_passive,Hub Puzzle: Cooking Pot,2120.0,2120.0,VICTORY,NONE,watch,2120.0,none,watch
 6,2125.0087089,probe,scanning_but_passive,0.442,scanning_but_passive,Hub Puzzle: Cooking Pot,2125.0,2125.0,VICTORY,NONE,watch,2125.0,none,watch
-6,2130.0087114,watch,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2130.0,2130.0,VICTORY,NONE,watch,2130.0,none,watch
-6,2135.0048924,watch,focused_progress,0.533,focused_progress,Hub Puzzle: Cooking Pot,2135.0,2135.0,VICTORY,NONE,watch,2135.0,none,watch
-6,2140.0018662,watch,pop_confirms_progress,0.453,pop_confirms_progress,Hub Puzzle: Cooking Pot,2140.0,2140.0,VICTORY,NONE,watch,2140.0,none,watch
+6,2130.0087114,probe,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2130.0,2130.0,VICTORY,NONE,watch,2130.0,none,watch
+6,2135.0048924,probe,focused_progress,0.533,focused_progress,Hub Puzzle: Cooking Pot,2135.0,2135.0,VICTORY,NONE,watch,2135.0,none,watch
+6,2140.0018662,probe,pop_confirms_progress,0.453,pop_confirms_progress,Hub Puzzle: Cooking Pot,2140.0,2140.0,VICTORY,NONE,watch,2140.0,none,watch
 6,2145.0085637,intervene,focused_but_failing,0.65,focused_but_failing,Hub Puzzle: Cooking Pot,2145.0,2145.0,VICTORY,NONE,watch,2145.0,none,watch
 6,2150.0242969,probe,focused_but_idle,0.428,focused_but_idle,Hub Puzzle: Cooking Pot,2150.0,2150.0,VICTORY,NONE,watch,2150.0,explicit,intervene
 6,2155.0027118,probe,focused_but_idle,0.438,focused_but_idle,Hub Puzzle: Cooking Pot,2155.0,2155.0,VICTORY,NONE,watch,2155.0,none,watch
 6,2160.0106528,probe,focused_but_idle,0.601,focused_but_idle,Hub Puzzle: Cooking Pot,2160.0,2160.0,VICTORY,NONE,watch,2160.0,none,watch
-6,2165.0116108,watch,focused_progress,0.367,focused_progress,Hub Puzzle: Cooking Pot,2165.0,2165.0,VICTORY,NONE,watch,2165.0,none,watch
+6,2165.0116108,probe,focused_progress,0.367,focused_progress,Hub Puzzle: Cooking Pot,2165.0,2165.0,VICTORY,NONE,watch,2165.0,none,watch
 6,2170.0017895,probe,focused_but_idle,0.615,focused_but_idle,Hub Puzzle: Cooking Pot,2170.0,2170.0,VICTORY,NONE,watch,2170.0,none,watch
 6,2175.0075617,probe,focused_but_idle,0.586,focused_but_idle,Hub Puzzle: Cooking Pot,2175.0,2175.0,VICTORY,NONE,watch,2175.0,none,watch
 6,2180.0084024,probe,focused_but_idle,0.574,focused_but_idle,Hub Puzzle: Cooking Pot,2180.0,2180.0,VICTORY,NONE,watch,2180.0,none,watch
 6,2185.0059439,probe,scanning_but_passive,0.47,scanning_but_passive,Hub Puzzle: Cooking Pot,2185.0,2185.0,VICTORY,NONE,watch,2185.0,none,watch
-6,2190.0169618,watch,focused_progress,0.463,focused_progress,Hub Puzzle: Cooking Pot,2190.0,2190.0,VICTORY,NONE,watch,2190.0,none,watch
+6,2190.0169618,probe,focused_progress,0.463,focused_progress,Hub Puzzle: Cooking Pot,2190.0,2190.0,VICTORY,NONE,watch,2190.0,none,watch
 6,2195.0029784,probe,focused_but_idle,0.614,focused_but_idle,Hub Puzzle: Cooking Pot,2195.0,2195.0,VICTORY,NONE,watch,2195.0,none,watch
-6,2200.0109351,watch,scattered_but_progressing,0.431,scattered_but_progressing,Hub Puzzle: Cooking Pot,2200.0,2200.0,VICTORY,NONE,watch,2200.0,none,watch
+6,2200.0109351,probe,scattered_but_progressing,0.431,scattered_but_progressing,Hub Puzzle: Cooking Pot,2200.0,2200.0,VICTORY,NONE,watch,2200.0,none,watch
 6,2205.014278,probe,focused_but_idle,0.51,focused_but_idle,Hub Puzzle: Cooking Pot,2205.0,2205.0,VICTORY,NONE,watch,2205.0,explicit,intervene
 6,2210.0120383,probe,scanning_but_passive,0.44,scanning_but_passive,Hub Puzzle: Cooking Pot,2210.0,2210.0,VICTORY,NONE,watch,2210.0,none,watch
 6,2215.0142876,probe,focused_but_idle,0.423,focused_but_idle,Hub Puzzle: Cooking Pot,2215.0,2215.0,VICTORY,NONE,watch,2215.0,none,watch
-6,2220.0106848,watch,focused_progress,0.59,focused_progress,Hub Puzzle: Cooking Pot,2220.0,2220.0,VICTORY,NONE,watch,2220.0,none,watch
+6,2220.0106848,probe,focused_progress,0.59,focused_progress,Hub Puzzle: Cooking Pot,2220.0,2220.0,VICTORY,NONE,watch,2220.0,none,watch
 6,2225.0081834,probe,scanning_but_passive,0.464,scanning_but_passive,Hub Puzzle: Cooking Pot,2225.0,2225.0,VICTORY,NONE,watch,2225.0,none,watch
-6,2230.0081117,watch,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2230.0,2230.0,VICTORY,NONE,watch,2230.0,none,watch
-6,2235.0084312,watch,focused_progress,0.494,focused_progress,Hub Puzzle: Cooking Pot,2235.0,2235.0,VICTORY,NONE,watch,2235.0,none,watch
-6,2240.0026671,watch,focused_progress,0.589,focused_progress,Hub Puzzle: Cooking Pot,2240.0,2240.0,VICTORY,NONE,watch,2240.0,none,watch
-6,2245.006259,watch,scattered_but_progressing,0.631,scattered_but_progressing,Hub Puzzle: Cooking Pot,2245.0,2245.0,VICTORY,NONE,watch,2245.0,none,watch
-6,2250.0062726,watch,pop_confirms_progress,0.349,pop_confirms_progress,Hub Puzzle: Cooking Pot,2250.0,2250.0,VICTORY,NONE,watch,2250.0,none,watch
-6,2255.008601,watch,focused_progress,0.482,focused_progress,Hub Puzzle: Cooking Pot,2255.0,2255.0,VICTORY,NONE,watch,2255.0,none,watch
-6,2260.0000896,watch,scattered_but_progressing,0.542,scattered_but_progressing,Hub Puzzle: Cooking Pot,2260.0,2260.0,VICTORY,NONE,watch,2260.0,none,watch
-6,2265.0081817,watch,scattered_but_progressing,0.859,scattered_but_progressing,Hub Puzzle: Cooking Pot,2265.0,2265.0,VICTORY,NONE,watch,2265.0,none,watch
+6,2230.0081117,probe,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2230.0,2230.0,VICTORY,NONE,watch,2230.0,none,watch
+6,2235.0084312,probe,focused_progress,0.494,focused_progress,Hub Puzzle: Cooking Pot,2235.0,2235.0,VICTORY,NONE,watch,2235.0,none,watch
+6,2240.0026671,probe,focused_progress,0.589,focused_progress,Hub Puzzle: Cooking Pot,2240.0,2240.0,VICTORY,NONE,watch,2240.0,none,watch
+6,2245.006259,probe,scattered_but_progressing,0.631,scattered_but_progressing,Hub Puzzle: Cooking Pot,2245.0,2245.0,VICTORY,NONE,watch,2245.0,none,watch
+6,2250.0062726,probe,pop_confirms_progress,0.349,pop_confirms_progress,Hub Puzzle: Cooking Pot,2250.0,2250.0,VICTORY,NONE,watch,2250.0,none,watch
+6,2255.008601,probe,focused_progress,0.482,focused_progress,Hub Puzzle: Cooking Pot,2255.0,2255.0,VICTORY,NONE,watch,2255.0,none,watch
+6,2260.0000896,probe,scattered_but_progressing,0.542,scattered_but_progressing,Hub Puzzle: Cooking Pot,2260.0,2260.0,VICTORY,NONE,watch,2260.0,none,watch
+6,2265.0081817,probe,scattered_but_progressing,0.859,scattered_but_progressing,Hub Puzzle: Cooking Pot,2265.0,2265.0,VICTORY,NONE,watch,2265.0,none,watch
 6,2270.0267372,probe,scattered_but_progressing,0.75,scattered_but_progressing,Hub Puzzle: Cooking Pot,2270.0,2270.0,VICTORY,NONE,watch,2270.0,none,watch
 6,2275.0104743,probe,scattered_but_progressing,0.558,scattered_but_progressing,Hub Puzzle: Cooking Pot,2275.0,2275.0,VICTORY,NONE,watch,2275.0,none,watch
 6,2280.0135624,probe,scattered_but_progressing,0.547,scattered_but_progressing,Hub Puzzle: Cooking Pot,2280.0,2280.0,VICTORY,NONE,watch,2280.0,none,watch
 6,2285.0088228,intervene,passive_and_stuck,0.256,passive_and_stuck,Hub Puzzle: Cooking Pot,2285.0,2285.0,VICTORY,NONE,watch,2285.0,none,watch
-6,2290.0002681,watch,focused_progress,0.392,focused_progress,Hub Puzzle: Cooking Pot,2290.0,2290.0,VICTORY,NONE,watch,2290.0,none,watch
+6,2290.0002681,probe,focused_progress,0.392,focused_progress,Hub Puzzle: Cooking Pot,2290.0,2290.0,VICTORY,NONE,watch,2290.0,none,watch
 6,2295.0076236,probe,focused_but_idle,0.603,focused_but_idle,Hub Puzzle: Cooking Pot,2295.0,2295.0,VICTORY,NONE,watch,2295.0,none,watch
-6,2300.0042015,watch,scattered_but_progressing,0.708,scattered_but_progressing,Hub Puzzle: Cooking Pot,2300.0,2300.0,VICTORY,NONE,watch,2300.0,none,watch
-6,2305.0097696,watch,scattered_but_progressing,0.409,scattered_but_progressing,Hub Puzzle: Cooking Pot,2305.0,2305.0,VICTORY,NONE,watch,2305.0,none,watch
-6,2310.0049546,watch,focused_progress,0.503,focused_progress,Hub Puzzle: Cooking Pot,2310.0,2310.0,VICTORY,NONE,watch,2310.0,none,watch
-6,2315.0052022,watch,focused_progress,0.35,focused_progress,Hub Puzzle: Cooking Pot,2315.0,2315.0,VICTORY,NONE,watch,2315.0,none,watch
+6,2300.0042015,probe,scattered_but_progressing,0.708,scattered_but_progressing,Hub Puzzle: Cooking Pot,2300.0,2300.0,VICTORY,NONE,watch,2300.0,none,watch
+6,2305.0097696,probe,scattered_but_progressing,0.409,scattered_but_progressing,Hub Puzzle: Cooking Pot,2305.0,2305.0,VICTORY,NONE,watch,2305.0,none,watch
+6,2310.0049546,probe,focused_progress,0.503,focused_progress,Hub Puzzle: Cooking Pot,2310.0,2310.0,VICTORY,NONE,watch,2310.0,none,watch
+6,2315.0052022,probe,focused_progress,0.35,focused_progress,Hub Puzzle: Cooking Pot,2315.0,2315.0,VICTORY,NONE,watch,2315.0,none,watch
 6,2320.0084483,probe,scanning_but_passive,0.632,scanning_but_passive,Hub Puzzle: Cooking Pot,2320.0,2320.0,VICTORY,NONE,watch,2320.0,none,watch
 6,2325.007239,probe,scanning_but_passive,0.559,scanning_but_passive,Hub Puzzle: Cooking Pot,2325.0,2325.0,VICTORY,NONE,watch,2325.0,none,watch
-6,2330.0080145,watch,scattered_but_progressing,0.515,scattered_but_progressing,Hub Puzzle: Cooking Pot,2330.0,2330.0,VICTORY,NONE,watch,2330.0,none,watch
-6,2335.0025075,watch,focused_progress,0.557,focused_progress,Hub Puzzle: Cooking Pot,2335.0,2335.0,VICTORY,NONE,watch,2335.0,none,watch
-6,2340.0022814,watch,focused_progress,0.43,focused_progress,Hub Puzzle: Cooking Pot,2340.0,2340.0,VICTORY,NONE,watch,2340.0,none,watch
-6,2345.0013997,watch,focused_progress,0.514,focused_progress,Hub Puzzle: Cooking Pot,2345.0,2345.0,VICTORY,NONE,watch,2345.0,none,watch
-6,2350.0088336,watch,focused_progress,0.629,focused_progress,Hub Puzzle: Cooking Pot,2350.0,2350.0,VICTORY,NONE,watch,2350.0,none,watch
+6,2330.0080145,probe,scattered_but_progressing,0.515,scattered_but_progressing,Hub Puzzle: Cooking Pot,2330.0,2330.0,VICTORY,NONE,watch,2330.0,none,watch
+6,2335.0025075,probe,focused_progress,0.557,focused_progress,Hub Puzzle: Cooking Pot,2335.0,2335.0,VICTORY,NONE,watch,2335.0,none,watch
+6,2340.0022814,probe,focused_progress,0.43,focused_progress,Hub Puzzle: Cooking Pot,2340.0,2340.0,VICTORY,NONE,watch,2340.0,none,watch
+6,2345.0013997,probe,focused_progress,0.514,focused_progress,Hub Puzzle: Cooking Pot,2345.0,2345.0,VICTORY,NONE,watch,2345.0,none,watch
+6,2350.0088336,probe,focused_progress,0.629,focused_progress,Hub Puzzle: Cooking Pot,2350.0,2350.0,VICTORY,NONE,watch,2350.0,none,watch
 6,2355.0095348,probe,scattered_but_progressing,0.827,scattered_but_progressing,Hub Puzzle: Cooking Pot,2355.0,2355.0,VICTORY,NONE,watch,2355.0,none,watch
 6,2360.0095408,probe,focused_but_idle,0.784,focused_but_idle,Hub Puzzle: Cooking Pot,2360.0,2360.0,VICTORY,NONE,watch,2360.0,none,watch
-6,2365.0051825,watch,focused_progress,0.437,focused_progress,Hub Puzzle: Cooking Pot,2365.0,2365.0,VICTORY,NONE,watch,2365.0,none,watch
+6,2365.0051825,probe,focused_progress,0.437,focused_progress,Hub Puzzle: Cooking Pot,2365.0,2365.0,VICTORY,NONE,watch,2365.0,none,watch
 6,2370.002143,probe,scattered_but_progressing,0.484,scattered_but_progressing,Hub Puzzle: Cooking Pot,2370.0,2370.0,VICTORY,NONE,watch,2370.0,none,watch
-6,2375.0005973,watch,focused_progress,0.584,focused_progress,Hub Puzzle: Cooking Pot,2375.0,2375.0,VICTORY,NONE,watch,2375.0,none,watch
-6,2380.0076691,watch,focused_progress,0.351,focused_progress,Hub Puzzle: Cooking Pot,2380.0,2380.0,VICTORY,NONE,watch,2380.0,none,watch
+6,2375.0005973,probe,focused_progress,0.584,focused_progress,Hub Puzzle: Cooking Pot,2375.0,2375.0,VICTORY,NONE,watch,2375.0,none,watch
+6,2380.0076691,probe,focused_progress,0.351,focused_progress,Hub Puzzle: Cooking Pot,2380.0,2380.0,VICTORY,NONE,watch,2380.0,none,watch
 6,2385.0047052,probe,focused_but_idle,0.786,focused_but_idle,Hub Puzzle: Cooking Pot,2385.0,2385.0,VICTORY,NONE,watch,2385.0,none,watch
-6,2390.0250781,watch,none,1.0,none,Hub Puzzle: Cooking Pot,2390.0,2390.0,VICTORY,NONE,watch,2390.0,none,watch
+6,2390.0250781,probe,none,1.0,none,Hub Puzzle: Cooking Pot,2390.0,2390.0,VICTORY,NONE,watch,2390.0,none,watch
 6,2395.0055605,probe,focused_but_idle,0.816,focused_but_idle,Hub Puzzle: Cooking Pot,2395.0,2395.0,VICTORY,NONE,watch,2395.0,none,watch
 6,2400.0049664,probe,focused_but_idle,0.817,focused_but_idle,Hub Puzzle: Cooking Pot,2400.0,2400.0,VICTORY,NONE,watch,2400.0,reflective,probe
-6,2405.0225707,watch,none,1.0,none,Hub Puzzle: Cooking Pot,2405.0,2405.0,VICTORY,NONE,watch,2405.0,reflective,probe
-6,2410.0088588,watch,none,1.0,none,Hub Puzzle: Cooking Pot,2410.0,2410.0,VICTORY,NONE,watch,2410.0,reflective,probe
-6,2415.0055807,watch,none,1.0,none,Hub Puzzle: Cooking Pot,2415.0,2415.0,VICTORY,NONE,watch,2415.0,reflective,probe
+6,2405.0225707,probe,none,1.0,none,Hub Puzzle: Cooking Pot,2405.0,2405.0,VICTORY,NONE,watch,2405.0,reflective,probe
+6,2410.0088588,probe,none,1.0,none,Hub Puzzle: Cooking Pot,2410.0,2410.0,VICTORY,NONE,watch,2410.0,reflective,probe
+6,2415.0055807,probe,none,1.0,none,Hub Puzzle: Cooking Pot,2415.0,2415.0,VICTORY,NONE,watch,2415.0,reflective,probe
 6,2420.0016304,probe,focused_but_idle,0.712,focused_but_idle,Hub Puzzle: Cooking Pot,2420.0,2420.0,VICTORY,NONE,watch,2420.0,reflective,probe
 6,2425.0092172,probe,focused_but_idle,0.829,focused_but_idle,Hub Puzzle: Cooking Pot,2425.0,2425.0,VICTORY,NONE,watch,2425.0,reflective,probe
 6,2430.0015811,probe,focused_but_idle,0.796,focused_but_idle,Hub Puzzle: Cooking Pot,2430.0,2430.0,VICTORY,NONE,watch,2430.0,reflective,probe
 6,2435.0018433,probe,focused_but_idle,0.67,focused_but_idle,Hub Puzzle: Cooking Pot,2435.0,2435.0,VICTORY,NONE,watch,2435.0,none,watch
 6,2440.0030137,probe,scanning_but_passive,0.775,scanning_but_passive,Hub Puzzle: Cooking Pot,2440.0,2440.0,VICTORY,NONE,watch,2440.0,none,watch
 6,2445.0039388,probe,scanning_but_passive,0.694,scanning_but_passive,Hub Puzzle: Cooking Pot,2445.0,2445.0,EXPLORE,PROMPT,intervene,2445.0,none,watch
-6,2450.0049568,watch,focused_progress,0.448,focused_progress,Hub Puzzle: Cooking Pot,2450.0,2450.0,EXPLORE,NONE,watch,2450.0,explicit,intervene
-6,2455.0029901,watch,scattered_but_progressing,0.606,scattered_but_progressing,Hub Puzzle: Cooking Pot,2455.0,2455.0,EXPLORE,NONE,watch,2455.0,explicit,intervene
+6,2450.0049568,probe,focused_progress,0.448,focused_progress,Hub Puzzle: Cooking Pot,2450.0,2450.0,EXPLORE,NONE,watch,2450.0,explicit,intervene
+6,2455.0029901,probe,scattered_but_progressing,0.606,scattered_but_progressing,Hub Puzzle: Cooking Pot,2455.0,2455.0,EXPLORE,NONE,watch,2455.0,explicit,intervene
 6,2460.0028311,probe,focused_but_idle,0.652,focused_but_idle,Hub Puzzle: Cooking Pot,2460.0,2460.0,EXPLORE,NONE,watch,2460.0,explicit,intervene
 6,2465.0076762,probe,scanning_but_passive,0.481,scanning_but_passive,Hub Puzzle: Cooking Pot,2465.0,2465.0,EXPLORE,NONE,watch,2465.0,explicit,intervene
 6,2470.0005027,probe,focused_but_idle,0.565,focused_but_idle,Hub Puzzle: Cooking Pot,2470.0,2470.0,EXPLORE,NONE,watch,2470.0,none,watch
 6,2475.0127988,probe,scanning_but_passive,0.662,scanning_but_passive,Hub Puzzle: Cooking Pot,2475.0,2475.0,EXPLORE,PROMPT,intervene,2475.0,none,watch
-6,2480.0105586,watch,scattered_but_progressing,0.471,scattered_but_progressing,Hub Puzzle: Cooking Pot,2480.0,2480.0,EXPLORE,NONE,watch,2480.0,none,watch
-6,2485.0097259,watch,focused_progress,0.426,focused_progress,Hub Puzzle: Cooking Pot,2485.0,2485.0,EXPLORE,NONE,watch,2485.0,explicit,intervene
-6,2490.0213753,watch,scattered_but_progressing,0.465,scattered_but_progressing,Hub Puzzle: Cooking Pot,2490.0,2490.0,EXPLORE,NONE,watch,2490.0,none,watch
+6,2480.0105586,probe,scattered_but_progressing,0.471,scattered_but_progressing,Hub Puzzle: Cooking Pot,2480.0,2480.0,EXPLORE,NONE,watch,2480.0,none,watch
+6,2485.0097259,probe,focused_progress,0.426,focused_progress,Hub Puzzle: Cooking Pot,2485.0,2485.0,EXPLORE,NONE,watch,2485.0,explicit,intervene
+6,2490.0213753,probe,scattered_but_progressing,0.465,scattered_but_progressing,Hub Puzzle: Cooking Pot,2490.0,2490.0,EXPLORE,NONE,watch,2490.0,none,watch
 6,2495.0038036,probe,scanning_but_passive,0.627,scanning_but_passive,Hub Puzzle: Cooking Pot,2495.0,2495.0,EXPLORE,NONE,watch,2495.0,none,watch
-6,2500.0174006,watch,scattered_but_progressing,0.401,scattered_but_progressing,Hub Puzzle: Cooking Pot,2500.0,2500.0,EXPLORE,NONE,watch,2500.0,none,watch
+6,2500.0174006,probe,scattered_but_progressing,0.401,scattered_but_progressing,Hub Puzzle: Cooking Pot,2500.0,2500.0,EXPLORE,NONE,watch,2500.0,none,watch
 6,2505.0001708,probe,focused_but_idle,0.534,focused_but_idle,Hub Puzzle: Cooking Pot,2505.0,2505.0,EXPLORE,PROMPT,intervene,2505.0,none,watch
-6,2510.0086387,watch,scattered_but_progressing,0.593,scattered_but_progressing,Hub Puzzle: Cooking Pot,2510.0,2510.0,EXPLORE,NONE,watch,2510.0,none,watch
+6,2510.0086387,probe,scattered_but_progressing,0.593,scattered_but_progressing,Hub Puzzle: Cooking Pot,2510.0,2510.0,EXPLORE,NONE,watch,2510.0,none,watch
 6,2515.0028014,probe,focused_but_idle,0.558,focused_but_idle,Hub Puzzle: Cooking Pot,2515.0,2515.0,EXPLORE,NONE,watch,2515.0,none,watch
-6,2520.0119527,watch,scattered_but_progressing,0.583,scattered_but_progressing,Hub Puzzle: Cooking Pot,2520.0,2520.0,EXPLORE,NONE,watch,2520.0,none,watch
+6,2520.0119527,probe,scattered_but_progressing,0.583,scattered_but_progressing,Hub Puzzle: Cooking Pot,2520.0,2520.0,EXPLORE,NONE,watch,2520.0,none,watch
 6,2525.0056591,probe,focused_but_idle,0.676,focused_but_idle,Hub Puzzle: Cooking Pot,2525.0,2525.0,EXPLORE,NONE,watch,2525.0,none,watch
-6,2530.0043175,watch,pop_confirms_exploration,0.48,pop_confirms_exploration,Hub Puzzle: Cooking Pot,2530.0,2530.0,EXPLORE,NONE,watch,2530.0,explicit,intervene
-6,2535.0046392,watch,focused_progress,0.432,focused_progress,Hub Puzzle: Cooking Pot,2535.0,2535.0,EXPLORE,PROMPT,intervene,2535.0,none,watch
+6,2530.0043175,probe,pop_confirms_exploration,0.48,pop_confirms_exploration,Hub Puzzle: Cooking Pot,2530.0,2530.0,EXPLORE,NONE,watch,2530.0,explicit,intervene
+6,2535.0046392,probe,focused_progress,0.432,focused_progress,Hub Puzzle: Cooking Pot,2535.0,2535.0,EXPLORE,PROMPT,intervene,2535.0,none,watch
 6,2540.0182473,probe,focused_but_idle,0.465,focused_but_idle,Hub Puzzle: Cooking Pot,2540.0,2540.0,EXPLORE,NONE,watch,2540.0,none,watch
-6,2545.0079499,watch,focused_progress,0.339,focused_progress,Hub Puzzle: Cooking Pot,2545.0,2545.0,EXPLORE,NONE,watch,2545.0,explicit,intervene
-6,2550.0087447,watch,focused_progress,0.596,focused_progress,Hub Puzzle: Cooking Pot,2550.0,2550.0,EXPLORE,NONE,watch,2550.0,none,watch
+6,2545.0079499,probe,focused_progress,0.339,focused_progress,Hub Puzzle: Cooking Pot,2545.0,2545.0,EXPLORE,NONE,watch,2545.0,explicit,intervene
+6,2550.0087447,probe,focused_progress,0.596,focused_progress,Hub Puzzle: Cooking Pot,2550.0,2550.0,EXPLORE,NONE,watch,2550.0,none,watch
 6,2555.0016805,probe,focused_but_idle,0.539,focused_but_idle,Hub Puzzle: Cooking Pot,2555.0,2555.0,EXPLORE,NONE,watch,2555.0,none,watch
-6,2560.0010795,watch,focused_progress,0.51,focused_progress,Hub Puzzle: Cooking Pot,2560.0,2560.0,EXPLORE,NONE,watch,2560.0,none,watch
+6,2560.0010795,probe,focused_progress,0.51,focused_progress,Hub Puzzle: Cooking Pot,2560.0,2560.0,EXPLORE,NONE,watch,2560.0,none,watch
 6,2565.0057606,probe,focused_but_idle,0.537,focused_but_idle,Hub Puzzle: Cooking Pot,2565.0,2565.0,EXPLORE,PROMPT,intervene,2565.0,none,watch
-6,2570.0166634,watch,focused_progress,0.3,focused_progress,Hub Puzzle: Cooking Pot,2570.0,2570.0,EXPLORE,NONE,watch,2570.0,none,watch
+6,2570.0166634,probe,focused_progress,0.3,focused_progress,Hub Puzzle: Cooking Pot,2570.0,2570.0,EXPLORE,NONE,watch,2570.0,none,watch
 6,2575.0003444,probe,focused_but_idle,0.559,focused_but_idle,Hub Puzzle: Cooking Pot,2575.0,2575.0,EXPLORE,NONE,watch,2575.0,none,watch
-6,2580.0239274,watch,scattered_but_progressing,0.47,scattered_but_progressing,Hub Puzzle: Cooking Pot,2580.0,2580.0,EXPLORE,NONE,watch,2580.0,none,watch
-6,2585.0016117,watch,scattered_but_progressing,0.699,scattered_but_progressing,Hub Puzzle: Cooking Pot,2585.0,2585.0,EXPLORE,NONE,watch,2585.0,none,watch
+6,2580.0239274,probe,scattered_but_progressing,0.47,scattered_but_progressing,Hub Puzzle: Cooking Pot,2580.0,2580.0,EXPLORE,NONE,watch,2580.0,none,watch
+6,2585.0016117,probe,scattered_but_progressing,0.699,scattered_but_progressing,Hub Puzzle: Cooking Pot,2585.0,2585.0,EXPLORE,NONE,watch,2585.0,none,watch
 6,2590.003938,probe,scattered_but_progressing,0.565,scattered_but_progressing,Hub Puzzle: Cooking Pot,2590.0,2590.0,EXPLORE,NONE,watch,2590.0,none,watch
 6,2595.0060047,probe,focused_but_idle,0.677,focused_but_idle,Hub Puzzle: Cooking Pot,2595.0,2595.0,EXPLORE,PROMPT,intervene,2595.0,none,watch
-6,2600.0011816,watch,focused_progress,0.386,focused_progress,Hub Puzzle: Cooking Pot,2600.0,2600.0,EXPLORE,NONE,watch,2600.0,none,watch
-6,2605.0111549,watch,scattered_but_progressing,0.762,scattered_but_progressing,Hub Puzzle: Cooking Pot,2605.0,2605.0,EXPLORE,NONE,watch,2605.0,explicit,intervene
-6,2610.0042025,watch,scattered_but_progressing,0.799,scattered_but_progressing,Hub Puzzle: Cooking Pot,2610.0,2610.0,EXPLORE,NONE,watch,2610.0,none,watch
+6,2600.0011816,probe,focused_progress,0.386,focused_progress,Hub Puzzle: Cooking Pot,2600.0,2600.0,EXPLORE,NONE,watch,2600.0,none,watch
+6,2605.0111549,probe,scattered_but_progressing,0.762,scattered_but_progressing,Hub Puzzle: Cooking Pot,2605.0,2605.0,EXPLORE,NONE,watch,2605.0,explicit,intervene
+6,2610.0042025,probe,scattered_but_progressing,0.799,scattered_but_progressing,Hub Puzzle: Cooking Pot,2610.0,2610.0,EXPLORE,NONE,watch,2610.0,none,watch
 6,2615.00275,probe,scattered_but_progressing,0.425,scattered_but_progressing,Hub Puzzle: Cooking Pot,2615.0,2615.0,VICTORY,NONE,watch,2615.0,none,watch
-6,2620.0117922,watch,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2620.0,2620.0,VICTORY,NONE,watch,2620.0,none,watch
-6,2625.0043419,watch,focused_progress,0.335,focused_progress,Hub Puzzle: Cooking Pot,2625.0,2625.0,VICTORY,NONE,watch,2625.0,none,watch
-6,2630.0092792,watch,focused_progress,0.346,focused_progress,Hub Puzzle: Cooking Pot,2630.0,2630.0,VICTORY,NONE,watch,2630.0,reflective,probe
-6,2635.0015983,probe,focused_but_idle,0.655,focused_but_idle,Hub Puzzle: Cooking Pot,2635.0,2635.0,VICTORY,NONE,watch,2635.0,reflective,probe
-6,2640.001946,watch,focused_progress,0.375,focused_progress,Hub Puzzle: Cooking Pot,2640.0,2640.0,VICTORY,NONE,watch,2640.0,reflective,probe
-6,2645.0014183,watch,focused_progress,0.367,focused_progress,Hub Puzzle: Cooking Pot,2645.0,2645.0,VICTORY,NONE,watch,2645.0,reflective,probe
-6,2650.0150788,watch,focused_progress,0.189,focused_progress,Hub Puzzle: Cooking Pot,2650.0,2650.0,VICTORY,NONE,watch,2650.0,reflective,probe
+6,2620.0117922,probe,pop_says_solving_but_stalled,0.762,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2620.0,2620.0,VICTORY,NONE,watch,2620.0,none,watch
+6,2625.0043419,probe,focused_progress,0.335,focused_progress,Hub Puzzle: Cooking Pot,2625.0,2625.0,VICTORY,NONE,watch,2625.0,none,watch
+6,2630.0092792,probe,focused_progress,0.346,focused_progress,Hub Puzzle: Cooking Pot,2630.0,2630.0,VICTORY,NONE,watch,2630.0,reflective,probe
+6,2635.0015983,intervene,focused_but_idle,0.655,focused_but_idle,Hub Puzzle: Cooking Pot,2635.0,2635.0,VICTORY,NONE,watch,2635.0,reflective,probe
+6,2640.001946,probe,focused_progress,0.375,focused_progress,Hub Puzzle: Cooking Pot,2640.0,2640.0,VICTORY,NONE,watch,2640.0,reflective,probe
+6,2645.0014183,probe,focused_progress,0.367,focused_progress,Hub Puzzle: Cooking Pot,2645.0,2645.0,VICTORY,NONE,watch,2645.0,reflective,probe
+6,2650.0150788,probe,focused_progress,0.189,focused_progress,Hub Puzzle: Cooking Pot,2650.0,2650.0,VICTORY,NONE,watch,2650.0,reflective,probe
 6,2655.0160502,intervene,passive_and_stuck,0.266,passive_and_stuck,Hub Puzzle: Cooking Pot,2655.0,2655.0,VICTORY,NONE,watch,2655.0,reflective,probe
-6,2660.0207725,watch,focused_progress,0.248,focused_progress,Hub Puzzle: Cooking Pot,2660.0,2660.0,VICTORY,NONE,watch,2660.0,reflective,probe
-6,2665.0048483,watch,focused_progress,0.248,focused_progress,Hub Puzzle: Cooking Pot,2665.0,2665.0,VICTORY,NONE,watch,2665.0,reflective,probe
-6,2670.0003546,watch,focused_progress,0.377,focused_progress,Hub Puzzle: Cooking Pot,2670.0,2670.0,VICTORY,NONE,watch,2670.0,reflective,probe
-6,2675.0092871,watch,scattered_but_progressing,0.544,scattered_but_progressing,Hub Puzzle: Cooking Pot,2675.0,2675.0,VICTORY,NONE,watch,2675.0,reflective,probe
-6,2680.0224814,watch,pop_says_solving_but_stalled,0.854,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2680.0,2680.0,VICTORY,NONE,watch,2680.0,reflective,probe
-6,2685.005826,probe,scanning_but_passive,0.454,scanning_but_passive,Hub Puzzle: Cooking Pot,2685.0,2685.0,VICTORY,NONE,watch,2685.0,reflective,probe
-6,2690.0101581,watch,focused_progress,0.424,focused_progress,Hub Puzzle: Cooking Pot,2690.0,2690.0,VICTORY,NONE,watch,2690.0,reflective,probe
-6,2695.0115023,watch,focused_progress,0.507,focused_progress,Hub Puzzle: Cooking Pot,2695.0,2695.0,VICTORY,NONE,watch,2695.0,reflective,probe
-6,2700.0092708,watch,scattered_but_progressing,0.8,scattered_but_progressing,Hub Puzzle: Cooking Pot,2700.0,2700.0,VICTORY,NONE,watch,2700.0,reflective,probe
-6,2705.0070301,probe,scanning_but_passive,0.671,scanning_but_passive,Hub Puzzle: Cooking Pot,2705.0,2705.0,VICTORY,NONE,watch,2705.0,reflective,probe
-6,2710.0053965,watch,scattered_but_progressing,0.736,scattered_but_progressing,Hub Puzzle: Cooking Pot,2710.0,2710.0,VICTORY,NONE,watch,2710.0,reflective,probe
-6,2715.0055803,watch,scattered_but_progressing,0.599,scattered_but_progressing,Hub Puzzle: Cooking Pot,2715.0,2715.0,VICTORY,NONE,watch,2715.0,reflective,probe
-6,2720.0007271,probe,scattered_but_progressing,0.543,scattered_but_progressing,Hub Puzzle: Cooking Pot,2720.0,2720.0,VICTORY,NONE,watch,2720.0,reflective,probe
-6,2725.0111246,probe,scattered_but_progressing,0.791,scattered_but_progressing,Hub Puzzle: Cooking Pot,2725.0,2725.0,VICTORY,NONE,watch,2725.0,reflective,probe
-6,2730.0054183,probe,scattered_but_progressing,0.47,scattered_but_progressing,Hub Puzzle: Cooking Pot,2730.0,2730.0,VICTORY,NONE,watch,2730.0,reflective,probe
-6,2735.003595,probe,scattered_but_progressing,0.573,scattered_but_progressing,Hub Puzzle: Cooking Pot,2735.0,2735.0,VICTORY,NONE,watch,2735.0,reflective,probe
-6,2740.0035889,watch,focused_progress,0.551,focused_progress,Hub Puzzle: Cooking Pot,2740.0,2740.0,VICTORY,NONE,watch,2740.0,reflective,probe
-6,2745.0015682,watch,focused_progress,0.411,focused_progress,Hub Puzzle: Cooking Pot,2745.0,2745.0,VICTORY,NONE,watch,2745.0,reflective,probe
-6,2750.0013414,probe,focused_but_idle,0.568,focused_but_idle,Hub Puzzle: Cooking Pot,2750.0,2750.0,VICTORY,NONE,watch,2750.0,reflective,probe
-6,2755.0076622,watch,scattered_but_progressing,0.662,scattered_but_progressing,Hub Puzzle: Cooking Pot,2755.0,2755.0,VICTORY,NONE,watch,2755.0,reflective,probe
-6,2760.0067072,probe,focused_but_idle,0.607,focused_but_idle,Hub Puzzle: Cooking Pot,2760.0,2760.0,VICTORY,NONE,watch,2760.0,reflective,probe
-6,2765.0138005,watch,focused_progress,0.572,focused_progress,Hub Puzzle: Cooking Pot,2765.0,2765.0,VICTORY,NONE,watch,2765.0,reflective,probe
-6,2770.0096328,watch,focused_progress,0.465,focused_progress,Hub Puzzle: Cooking Pot,2770.0,2770.0,VICTORY,NONE,watch,2770.0,reflective,probe
-6,2775.0029046,watch,scattered_but_progressing,0.735,scattered_but_progressing,Hub Puzzle: Cooking Pot,2775.0,2775.0,VICTORY,NONE,watch,2775.0,reflective,probe
-6,2780.0113467,watch,scattered_but_progressing,0.81,scattered_but_progressing,Hub Puzzle: Cooking Pot,2780.0,2780.0,VICTORY,NONE,watch,2780.0,reflective,probe
-6,2785.0082117,probe,focused_but_idle,0.513,focused_but_idle,Hub Puzzle: Cooking Pot,2785.0,2785.0,VICTORY,NONE,watch,2785.0,reflective,probe
-6,2790.0006687,probe,focused_but_idle,0.718,focused_but_idle,Hub Puzzle: Cooking Pot,2790.0,2790.0,VICTORY,NONE,watch,2790.0,explicit,intervene
-6,2795.0031966,probe,focused_but_idle,0.628,focused_but_idle,Hub Puzzle: Cooking Pot,2795.0,2795.0,VICTORY,NONE,watch,2795.0,explicit,intervene
-6,2800.016162,probe,focused_but_idle,0.701,focused_but_idle,Hub Puzzle: Cooking Pot,2800.0,2800.0,VICTORY,NONE,watch,2800.0,none,watch
-6,2805.0089971,probe,focused_but_idle,0.69,focused_but_idle,Hub Puzzle: Cooking Pot,2805.0,2805.0,VICTORY,NONE,watch,2805.0,none,watch
-6,2810.0222344,probe,focused_but_idle,0.696,focused_but_idle,Hub Puzzle: Cooking Pot,2810.0,2810.0,VICTORY,NONE,watch,2810.0,none,watch
-6,2815.0035521,watch,focused_progress,0.505,focused_progress,Hub Puzzle: Cooking Pot,2815.0,2815.0,VICTORY,NONE,watch,2815.0,none,watch
-6,2820.0005024,watch,focused_progress,0.507,focused_progress,Hub Puzzle: Cooking Pot,2820.0,2820.0,VICTORY,NONE,watch,2820.0,none,watch
-6,2825.004113,watch,focused_progress,0.697,focused_progress,Hub Puzzle: Cooking Pot,2825.0,2825.0,VICTORY,NONE,watch,2825.0,none,watch
-6,2830.014464,probe,scanning_but_passive,0.581,scanning_but_passive,Hub Puzzle: Cooking Pot,2830.0,2830.0,VICTORY,NONE,watch,2830.0,none,watch
-6,2835.0117672,watch,focused_progress,0.474,focused_progress,Hub Puzzle: Cooking Pot,2835.0,2835.0,VICTORY,NONE,watch,2835.0,none,watch
-6,2840.0070556,watch,pop_says_stuck_but_searching,0.35,pop_says_stuck_but_searching,Hub Puzzle: Cooking Pot,2840.0,2840.0,VICTORY,NONE,watch,2840.0,none,watch
-6,2845.0128162,watch,focused_progress,0.445,focused_progress,Hub Puzzle: Cooking Pot,2845.0,2845.0,VICTORY,NONE,watch,2845.0,none,watch
-6,2850.0110807,watch,focused_progress,0.433,focused_progress,Hub Puzzle: Cooking Pot,2850.0,2850.0,VICTORY,NONE,watch,2850.0,none,watch
-6,2855.0096957,probe,scanning_but_passive,0.48,scanning_but_passive,Hub Puzzle: Cooking Pot,2855.0,2855.0,VICTORY,NONE,watch,2855.0,none,watch
-6,2860.0083664,probe,focused_but_idle,0.575,focused_but_idle,Hub Puzzle: Cooking Pot,2860.0,2860.0,VICTORY,NONE,watch,2860.0,none,watch
-6,2865.0038299,watch,scattered_but_progressing,0.68,scattered_but_progressing,Hub Puzzle: Cooking Pot,2865.0,2865.0,VICTORY,NONE,watch,2865.0,none,watch
-6,2870.0004127,probe,focused_but_idle,0.476,focused_but_idle,Hub Puzzle: Cooking Pot,2870.0,2870.0,VICTORY,NONE,watch,2870.0,none,watch
-6,2875.0108756,watch,focused_progress,0.433,focused_progress,Hub Puzzle: Cooking Pot,2875.0,2875.0,VICTORY,NONE,watch,2875.0,none,watch
-6,2880.0069239,watch,focused_progress,0.425,focused_progress,Hub Puzzle: Cooking Pot,2880.0,2880.0,VICTORY,NONE,watch,2880.0,none,watch
-6,2885.0095217,probe,focused_but_idle,0.494,focused_but_idle,Hub Puzzle: Cooking Pot,2885.0,2885.0,VICTORY,NONE,watch,2885.0,none,watch
-6,2890.0082912,probe,focused_but_idle,0.468,focused_but_idle,Hub Puzzle: Cooking Pot,2890.0,2890.0,VICTORY,NONE,watch,2890.0,none,watch
-6,2895.0031368,watch,scattered_but_progressing,0.734,scattered_but_progressing,Hub Puzzle: Cooking Pot,2895.0,2895.0,VICTORY,NONE,watch,2895.0,none,watch
-6,2900.0016105,probe,focused_but_idle,0.57,focused_but_idle,Hub Puzzle: Cooking Pot,2900.0,2900.0,VICTORY,NONE,watch,2900.0,none,watch
-6,2905.001033,watch,scattered_but_progressing,0.752,scattered_but_progressing,Hub Puzzle: Cooking Pot,2905.0,2905.0,VICTORY,NONE,watch,2905.0,none,watch
-6,2910.0154668,probe,scanning_but_passive,0.526,scanning_but_passive,Hub Puzzle: Cooking Pot,2910.0,2910.0,VICTORY,NONE,watch,2910.0,none,watch
-6,2915.0025763,probe,focused_but_idle,0.462,focused_but_idle,Hub Puzzle: Cooking Pot,2915.0,2915.0,VICTORY,NONE,watch,2915.0,none,watch
-6,2920.0098154,probe,focused_but_idle,0.621,focused_but_idle,Hub Puzzle: Cooking Pot,2920.0,2920.0,VICTORY,NONE,watch,2920.0,none,watch
-6,2925.0103758,probe,scanning_but_passive,0.448,scanning_but_passive,Hub Puzzle: Cooking Pot,2925.0,2925.0,VICTORY,NONE,watch,2925.0,none,watch
-6,2930.0085249,probe,scanning_but_passive,0.604,scanning_but_passive,Hub Puzzle: Cooking Pot,2930.0,2930.0,VICTORY,NONE,watch,2930.0,none,watch
-6,2935.0127003,watch,scattered_but_progressing,0.688,scattered_but_progressing,Hub Puzzle: Cooking Pot,2935.0,2935.0,VICTORY,NONE,watch,2935.0,none,watch
-6,2940.0045562,watch,scattered_but_progressing,0.925,scattered_but_progressing,Hub Puzzle: Cooking Pot,2940.0,2940.0,VICTORY,NONE,watch,2940.0,explicit,intervene
-6,2945.0076989,probe,scattered_but_progressing,0.925,scattered_but_progressing,Hub Puzzle: Cooking Pot,2945.0,2945.0,VICTORY,NONE,watch,2945.0,explicit,intervene
-6,2950.0173193,probe,scattered_but_progressing,0.925,scattered_but_progressing,Hub Puzzle: Cooking Pot,2950.0,2950.0,VICTORY,NONE,watch,2950.0,explicit,intervene
-6,2955.0060542,watch,focused_progress,0.472,focused_progress,Hub Puzzle: Cooking Pot,2955.0,2955.0,VICTORY,NONE,watch,2955.0,explicit,intervene
-6,2960.0132384,watch,scattered_but_progressing,0.572,scattered_but_progressing,Hub Puzzle: Cooking Pot,2960.0,2960.0,VICTORY,NONE,watch,2960.0,explicit,intervene
-6,2965.0017143,probe,focused_but_idle,0.469,focused_but_idle,Hub Puzzle: Cooking Pot,2965.0,2965.0,VICTORY,NONE,watch,2965.0,explicit,intervene
-6,2970.0000953,watch,scattered_but_progressing,0.508,scattered_but_progressing,Hub Puzzle: Cooking Pot,2970.0,2970.0,VICTORY,NONE,watch,2970.0,none,watch
-6,2975.0123501,watch,focused_progress,0.406,focused_progress,Hub Puzzle: Cooking Pot,2975.0,2975.0,VICTORY,NONE,watch,2975.0,none,watch
-6,2980.0042876,watch,scattered_but_progressing,0.758,scattered_but_progressing,Hub Puzzle: Cooking Pot,2980.0,2980.0,VICTORY,NONE,watch,2980.0,none,watch
-6,2985.0132471,probe,focused_but_idle,0.663,focused_but_idle,Hub Puzzle: Cooking Pot,2985.0,2985.0,VICTORY,NONE,watch,2985.0,none,watch
-6,2990.0089747,probe,focused_but_idle,0.665,focused_but_idle,Hub Puzzle: Cooking Pot,2990.0,2990.0,VICTORY,NONE,watch,2990.0,none,watch
-6,2995.0191069,probe,focused_but_idle,0.736,focused_but_idle,Hub Puzzle: Cooking Pot,2995.0,2995.0,VICTORY,NONE,watch,2995.0,none,watch
-6,3000.0113865,probe,focused_but_idle,0.674,focused_but_idle,Hub Puzzle: Cooking Pot,3000.0,3000.0,VICTORY,NONE,watch,3000.0,none,watch
-6,3005.0051459,probe,scanning_but_passive,0.459,scanning_but_passive,Hub Puzzle: Cooking Pot,3005.0,3005.0,VICTORY,NONE,watch,3005.0,none,watch
-6,3010.0043813,probe,scanning_but_passive,0.43,scanning_but_passive,Hub Puzzle: Cooking Pot,3010.0,3010.0,VICTORY,NONE,watch,3010.0,none,watch
-6,3015.002023,probe,scanning_but_passive,0.551,scanning_but_passive,Hub Puzzle: Cooking Pot,3015.0,3015.0,VICTORY,NONE,watch,3015.0,none,watch
-6,3020.0162275,probe,focused_but_idle,0.524,focused_but_idle,Hub Puzzle: Cooking Pot,3020.0,3020.0,VICTORY,NONE,watch,3020.0,none,watch
-6,3025.0111415,probe,focused_but_idle,0.456,focused_but_idle,Hub Puzzle: Cooking Pot,3025.0,3025.0,VICTORY,NONE,watch,3025.0,none,watch
-6,3030.0001124,watch,scattered_but_progressing,0.425,scattered_but_progressing,Transition,3030.0,3030.0,VICTORY,NONE,watch,3030.0,none,watch
-6,3035.0151372,watch,focused_but_idle,0.426,focused_but_idle,Transition,3035.0,3035.0,VICTORY,NONE,watch,3035.0,none,watch
-6,3040.027722,watch,focused_progress,0.505,focused_progress,Transition,3040.0,3040.0,VICTORY,NONE,watch,3040.0,none,watch
-6,3045.0020425,watch,focused_but_idle,0.605,focused_but_idle,Transition,3045.0,3045.0,VICTORY,NONE,watch,3045.0,none,watch
-6,3050.0138142,watch,focused_progress,0.523,focused_progress,Transition,3050.0,3050.0,VICTORY,NONE,watch,3050.0,none,watch
-6,3055.026342,watch,focused_progress,0.437,focused_progress,Transition,3055.0,3055.0,VICTORY,NONE,watch,3055.0,none,watch
-6,3060.005505,watch,focused_progress,0.508,focused_progress,Transition,3060.0,3060.0,VICTORY,NONE,watch,3060.0,none,watch
-6,3065.0027353,watch,focused_but_idle,0.631,focused_but_idle,Transition,3065.0,3065.0,VICTORY,NONE,watch,3065.0,none,watch
-6,3070.013121,watch,focused_progress,0.604,focused_progress,Transition,3070.0,3070.0,VICTORY,NONE,watch,3070.0,none,watch
-6,3075.0124285,watch,focused_progress,0.441,focused_progress,Transition,3075.0,3075.0,VICTORY,NONE,watch,3075.0,none,watch
-6,3080.0088399,watch,scattered_but_progressing,0.567,scattered_but_progressing,Transition,3080.0,3080.0,VICTORY,NONE,watch,3080.0,none,watch
-6,3085.0131874,watch,focused_progress,0.585,focused_progress,Transition,3085.0,3085.0,VICTORY,NONE,watch,3085.0,none,watch
+6,2660.0207725,probe,focused_progress,0.248,focused_progress,Hub Puzzle: Cooking Pot,2660.0,2660.0,VICTORY,NONE,watch,2660.0,reflective,probe
+6,2665.0048483,probe,focused_progress,0.248,focused_progress,Hub Puzzle: Cooking Pot,2665.0,2665.0,VICTORY,NONE,watch,2665.0,reflective,probe
+6,2670.0003546,probe,focused_progress,0.377,focused_progress,Hub Puzzle: Cooking Pot,2670.0,2670.0,VICTORY,NONE,watch,2670.0,reflective,probe
+6,2675.0092871,probe,scattered_but_progressing,0.544,scattered_but_progressing,Hub Puzzle: Cooking Pot,2675.0,2675.0,VICTORY,NONE,watch,2675.0,reflective,probe
+6,2680.0224814,probe,pop_says_solving_but_stalled,0.854,pop_says_solving_but_stalled,Hub Puzzle: Cooking Pot,2680.0,2680.0,VICTORY,NONE,watch,2680.0,reflective,probe
+6,2685.005826,intervene,scanning_but_passive,0.454,scanning_but_passive,Hub Puzzle: Cooking Pot,2685.0,2685.0,VICTORY,NONE,watch,2685.0,reflective,probe
+6,2690.0101581,probe,focused_progress,0.424,focused_progress,Hub Puzzle: Cooking Pot,2690.0,2690.0,VICTORY,NONE,watch,2690.0,reflective,probe
+6,2695.0115023,probe,focused_progress,0.507,focused_progress,Hub Puzzle: Cooking Pot,2695.0,2695.0,VICTORY,NONE,watch,2695.0,reflective,probe
+6,2700.0092708,probe,scattered_but_progressing,0.8,scattered_but_progressing,Hub Puzzle: Cooking Pot,2700.0,2700.0,VICTORY,NONE,watch,2700.0,reflective,probe
+6,2705.0070301,intervene,scanning_but_passive,0.671,scanning_but_passive,Hub Puzzle: Cooking Pot,2705.0,2705.0,VICTORY,NONE,watch,2705.0,reflective,probe
+6,2710.0053965,probe,scattered_but_progressing,0.736,scattered_but_progressing,Hub Puzzle: Cooking Pot,2710.0,2710.0,VICTORY,NONE,watch,2710.0,reflective,probe
+6,2715.0055803,probe,scattered_but_progressing,0.599,scattered_but_progressing,Hub Puzzle: Cooking Pot,2715.0,2715.0,VICTORY,NONE,watch,2715.0,reflective,probe
+6,2720.0007271,intervene,scattered_but_progressing,0.543,scattered_but_progressing,Hub Puzzle: Cooking Pot,2720.0,2720.0,VICTORY,NONE,watch,2720.0,reflective,probe
+6,2725.0111246,intervene,scattered_but_progressing,0.791,scattered_but_progressing,Hub Puzzle: Cooking Pot,2725.0,2725.0,VICTORY,NONE,watch,2725.0,reflective,probe
+6,2730.0054183,intervene,scattered_but_progressing,0.47,scattered_but_progressing,Hub Puzzle: Cooking Pot,2730.0,2730.0,VICTORY,NONE,watch,2730.0,reflective,probe
+6,2735.003595,intervene,scattered_but_progressing,0.573,scattered_but_progressing,Hub Puzzle: Cooking Pot,2735.0,2735.0,VICTORY,NONE,watch,2735.0,reflective,probe
+6,2740.0035889,probe,focused_progress,0.551,focused_progress,Hub Puzzle: Cooking Pot,2740.0,2740.0,VICTORY,NONE,watch,2740.0,reflective,probe
+6,2745.0015682,probe,focused_progress,0.411,focused_progress,Hub Puzzle: Cooking Pot,2745.0,2745.0,VICTORY,NONE,watch,2745.0,reflective,probe
+6,2750.0013414,intervene,focused_but_idle,0.568,focused_but_idle,Hub Puzzle: Cooking Pot,2750.0,2750.0,VICTORY,NONE,watch,2750.0,reflective,probe
+6,2755.0076622,probe,scattered_but_progressing,0.662,scattered_but_progressing,Hub Puzzle: Cooking Pot,2755.0,2755.0,VICTORY,NONE,watch,2755.0,reflective,probe
+6,2760.0067072,intervene,focused_but_idle,0.607,focused_but_idle,Hub Puzzle: Cooking Pot,2760.0,2760.0,VICTORY,NONE,watch,2760.0,reflective,probe
+6,2765.0138005,probe,focused_progress,0.572,focused_progress,Hub Puzzle: Cooking Pot,2765.0,2765.0,VICTORY,NONE,watch,2765.0,reflective,probe
+6,2770.0096328,probe,focused_progress,0.465,focused_progress,Hub Puzzle: Cooking Pot,2770.0,2770.0,VICTORY,NONE,watch,2770.0,reflective,probe
+6,2775.0029046,probe,scattered_but_progressing,0.735,scattered_but_progressing,Hub Puzzle: Cooking Pot,2775.0,2775.0,VICTORY,NONE,watch,2775.0,reflective,probe
+6,2780.0113467,probe,scattered_but_progressing,0.81,scattered_but_progressing,Hub Puzzle: Cooking Pot,2780.0,2780.0,VICTORY,NONE,watch,2780.0,reflective,probe
+6,2785.0082117,intervene,focused_but_idle,0.513,focused_but_idle,Hub Puzzle: Cooking Pot,2785.0,2785.0,VICTORY,NONE,watch,2785.0,reflective,probe
+6,2790.0006687,intervene,focused_but_idle,0.718,focused_but_idle,Hub Puzzle: Cooking Pot,2790.0,2790.0,VICTORY,NONE,watch,2790.0,explicit,intervene
+6,2795.0031966,intervene,focused_but_idle,0.628,focused_but_idle,Hub Puzzle: Cooking Pot,2795.0,2795.0,VICTORY,NONE,watch,2795.0,explicit,intervene
+6,2800.016162,intervene,focused_but_idle,0.701,focused_but_idle,Hub Puzzle: Cooking Pot,2800.0,2800.0,VICTORY,NONE,watch,2800.0,none,watch
+6,2805.0089971,intervene,focused_but_idle,0.69,focused_but_idle,Hub Puzzle: Cooking Pot,2805.0,2805.0,VICTORY,NONE,watch,2805.0,none,watch
+6,2810.0222344,intervene,focused_but_idle,0.696,focused_but_idle,Hub Puzzle: Cooking Pot,2810.0,2810.0,VICTORY,NONE,watch,2810.0,none,watch
+6,2815.0035521,probe,focused_progress,0.505,focused_progress,Hub Puzzle: Cooking Pot,2815.0,2815.0,VICTORY,NONE,watch,2815.0,none,watch
+6,2820.0005024,probe,focused_progress,0.507,focused_progress,Hub Puzzle: Cooking Pot,2820.0,2820.0,VICTORY,NONE,watch,2820.0,none,watch
+6,2825.004113,probe,focused_progress,0.697,focused_progress,Hub Puzzle: Cooking Pot,2825.0,2825.0,VICTORY,NONE,watch,2825.0,none,watch
+6,2830.014464,intervene,scanning_but_passive,0.581,scanning_but_passive,Hub Puzzle: Cooking Pot,2830.0,2830.0,VICTORY,NONE,watch,2830.0,none,watch
+6,2835.0117672,probe,focused_progress,0.474,focused_progress,Hub Puzzle: Cooking Pot,2835.0,2835.0,VICTORY,NONE,watch,2835.0,none,watch
+6,2840.0070556,probe,pop_says_stuck_but_searching,0.35,pop_says_stuck_but_searching,Hub Puzzle: Cooking Pot,2840.0,2840.0,VICTORY,NONE,watch,2840.0,none,watch
+6,2845.0128162,probe,focused_progress,0.445,focused_progress,Hub Puzzle: Cooking Pot,2845.0,2845.0,VICTORY,NONE,watch,2845.0,none,watch
+6,2850.0110807,probe,focused_progress,0.433,focused_progress,Hub Puzzle: Cooking Pot,2850.0,2850.0,VICTORY,NONE,watch,2850.0,none,watch
+6,2855.0096957,intervene,scanning_but_passive,0.48,scanning_but_passive,Hub Puzzle: Cooking Pot,2855.0,2855.0,VICTORY,NONE,watch,2855.0,none,watch
+6,2860.0083664,intervene,focused_but_idle,0.575,focused_but_idle,Hub Puzzle: Cooking Pot,2860.0,2860.0,VICTORY,NONE,watch,2860.0,none,watch
+6,2865.0038299,probe,scattered_but_progressing,0.68,scattered_but_progressing,Hub Puzzle: Cooking Pot,2865.0,2865.0,VICTORY,NONE,watch,2865.0,none,watch
+6,2870.0004127,intervene,focused_but_idle,0.476,focused_but_idle,Hub Puzzle: Cooking Pot,2870.0,2870.0,VICTORY,NONE,watch,2870.0,none,watch
+6,2875.0108756,probe,focused_progress,0.433,focused_progress,Hub Puzzle: Cooking Pot,2875.0,2875.0,VICTORY,NONE,watch,2875.0,none,watch
+6,2880.0069239,probe,focused_progress,0.425,focused_progress,Hub Puzzle: Cooking Pot,2880.0,2880.0,VICTORY,NONE,watch,2880.0,none,watch
+6,2885.0095217,intervene,focused_but_idle,0.494,focused_but_idle,Hub Puzzle: Cooking Pot,2885.0,2885.0,VICTORY,NONE,watch,2885.0,none,watch
+6,2890.0082912,intervene,focused_but_idle,0.468,focused_but_idle,Hub Puzzle: Cooking Pot,2890.0,2890.0,VICTORY,NONE,watch,2890.0,none,watch
+6,2895.0031368,probe,scattered_but_progressing,0.734,scattered_but_progressing,Hub Puzzle: Cooking Pot,2895.0,2895.0,VICTORY,NONE,watch,2895.0,none,watch
+6,2900.0016105,intervene,focused_but_idle,0.57,focused_but_idle,Hub Puzzle: Cooking Pot,2900.0,2900.0,VICTORY,NONE,watch,2900.0,none,watch
+6,2905.001033,probe,scattered_but_progressing,0.752,scattered_but_progressing,Hub Puzzle: Cooking Pot,2905.0,2905.0,VICTORY,NONE,watch,2905.0,none,watch
+6,2910.0154668,intervene,scanning_but_passive,0.526,scanning_but_passive,Hub Puzzle: Cooking Pot,2910.0,2910.0,VICTORY,NONE,watch,2910.0,none,watch
+6,2915.0025763,intervene,focused_but_idle,0.462,focused_but_idle,Hub Puzzle: Cooking Pot,2915.0,2915.0,VICTORY,NONE,watch,2915.0,none,watch
+6,2920.0098154,intervene,focused_but_idle,0.621,focused_but_idle,Hub Puzzle: Cooking Pot,2920.0,2920.0,VICTORY,NONE,watch,2920.0,none,watch
+6,2925.0103758,intervene,scanning_but_passive,0.448,scanning_but_passive,Hub Puzzle: Cooking Pot,2925.0,2925.0,VICTORY,NONE,watch,2925.0,none,watch
+6,2930.0085249,intervene,scanning_but_passive,0.604,scanning_but_passive,Hub Puzzle: Cooking Pot,2930.0,2930.0,VICTORY,NONE,watch,2930.0,none,watch
+6,2935.0127003,probe,scattered_but_progressing,0.688,scattered_but_progressing,Hub Puzzle: Cooking Pot,2935.0,2935.0,VICTORY,NONE,watch,2935.0,none,watch
+6,2940.0045562,probe,scattered_but_progressing,0.925,scattered_but_progressing,Hub Puzzle: Cooking Pot,2940.0,2940.0,VICTORY,NONE,watch,2940.0,explicit,intervene
+6,2945.0076989,intervene,scattered_but_progressing,0.925,scattered_but_progressing,Hub Puzzle: Cooking Pot,2945.0,2945.0,VICTORY,NONE,watch,2945.0,explicit,intervene
+6,2950.0173193,intervene,scattered_but_progressing,0.925,scattered_but_progressing,Hub Puzzle: Cooking Pot,2950.0,2950.0,VICTORY,NONE,watch,2950.0,explicit,intervene
+6,2955.0060542,probe,focused_progress,0.472,focused_progress,Hub Puzzle: Cooking Pot,2955.0,2955.0,VICTORY,NONE,watch,2955.0,explicit,intervene
+6,2960.0132384,probe,scattered_but_progressing,0.572,scattered_but_progressing,Hub Puzzle: Cooking Pot,2960.0,2960.0,VICTORY,NONE,watch,2960.0,explicit,intervene
+6,2965.0017143,intervene,focused_but_idle,0.469,focused_but_idle,Hub Puzzle: Cooking Pot,2965.0,2965.0,VICTORY,NONE,watch,2965.0,explicit,intervene
+6,2970.0000953,probe,scattered_but_progressing,0.508,scattered_but_progressing,Hub Puzzle: Cooking Pot,2970.0,2970.0,VICTORY,NONE,watch,2970.0,none,watch
+6,2975.0123501,probe,focused_progress,0.406,focused_progress,Hub Puzzle: Cooking Pot,2975.0,2975.0,VICTORY,NONE,watch,2975.0,none,watch
+6,2980.0042876,probe,scattered_but_progressing,0.758,scattered_but_progressing,Hub Puzzle: Cooking Pot,2980.0,2980.0,VICTORY,NONE,watch,2980.0,none,watch
+6,2985.0132471,intervene,focused_but_idle,0.663,focused_but_idle,Hub Puzzle: Cooking Pot,2985.0,2985.0,VICTORY,NONE,watch,2985.0,none,watch
+6,2990.0089747,intervene,focused_but_idle,0.665,focused_but_idle,Hub Puzzle: Cooking Pot,2990.0,2990.0,VICTORY,NONE,watch,2990.0,none,watch
+6,2995.0191069,intervene,focused_but_idle,0.736,focused_but_idle,Hub Puzzle: Cooking Pot,2995.0,2995.0,VICTORY,NONE,watch,2995.0,none,watch
+6,3000.0113865,intervene,focused_but_idle,0.674,focused_but_idle,Hub Puzzle: Cooking Pot,3000.0,3000.0,VICTORY,NONE,watch,3000.0,none,watch
+6,3005.0051459,intervene,scanning_but_passive,0.459,scanning_but_passive,Hub Puzzle: Cooking Pot,3005.0,3005.0,VICTORY,NONE,watch,3005.0,none,watch
+6,3010.0043813,intervene,scanning_but_passive,0.43,scanning_but_passive,Hub Puzzle: Cooking Pot,3010.0,3010.0,VICTORY,NONE,watch,3010.0,none,watch
+6,3015.002023,intervene,scanning_but_passive,0.551,scanning_but_passive,Hub Puzzle: Cooking Pot,3015.0,3015.0,VICTORY,NONE,watch,3015.0,none,watch
+6,3020.0162275,intervene,focused_but_idle,0.524,focused_but_idle,Hub Puzzle: Cooking Pot,3020.0,3020.0,VICTORY,NONE,watch,3020.0,none,watch
+6,3025.0111415,intervene,focused_but_idle,0.456,focused_but_idle,Hub Puzzle: Cooking Pot,3025.0,3025.0,VICTORY,NONE,watch,3025.0,none,watch
+6,3030.0001124,probe,scattered_but_progressing,0.425,scattered_but_progressing,Transition,3030.0,3030.0,VICTORY,NONE,watch,3030.0,none,watch
+6,3035.0151372,probe,focused_but_idle,0.426,focused_but_idle,Transition,3035.0,3035.0,VICTORY,NONE,watch,3035.0,none,watch
+6,3040.027722,probe,focused_progress,0.505,focused_progress,Transition,3040.0,3040.0,VICTORY,NONE,watch,3040.0,none,watch
+6,3045.0020425,probe,focused_but_idle,0.605,focused_but_idle,Transition,3045.0,3045.0,VICTORY,NONE,watch,3045.0,none,watch
+6,3050.0138142,probe,focused_progress,0.523,focused_progress,Transition,3050.0,3050.0,VICTORY,NONE,watch,3050.0,none,watch
+6,3055.026342,probe,focused_progress,0.437,focused_progress,Transition,3055.0,3055.0,VICTORY,NONE,watch,3055.0,none,watch
+6,3060.005505,probe,focused_progress,0.508,focused_progress,Transition,3060.0,3060.0,VICTORY,NONE,watch,3060.0,none,watch
+6,3065.0027353,probe,focused_but_idle,0.631,focused_but_idle,Transition,3065.0,3065.0,VICTORY,NONE,watch,3065.0,none,watch
+6,3070.013121,probe,focused_progress,0.604,focused_progress,Transition,3070.0,3070.0,VICTORY,NONE,watch,3070.0,none,watch
+6,3075.0124285,probe,focused_progress,0.441,focused_progress,Transition,3075.0,3075.0,VICTORY,NONE,watch,3075.0,none,watch
+6,3080.0088399,probe,scattered_but_progressing,0.567,scattered_but_progressing,Transition,3080.0,3080.0,VICTORY,NONE,watch,3080.0,none,watch
+6,3085.0131874,probe,focused_progress,0.585,focused_progress,Transition,3085.0,3085.0,VICTORY,NONE,watch,3085.0,none,watch
 9,0.1058692,watch,scanning_but_passive,0.661,scanning_but_passive,Transition,0.0,0.0,EXPLORE,PROMPT,intervene,0.0,none,watch
 9,5.0095401,watch,scanning_but_passive,0.713,scanning_but_passive,Transition,5.0,5.0,EXPLORE,NONE,watch,5.0,none,watch
 9,10.0054899,watch,scattered_but_progressing,0.791,scattered_but_progressing,Transition,10.0,10.0,EXPLORE,NONE,watch,10.0,none,watch
@@ -2035,20 +2035,20 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 9,895.0127585,probe,focused_but_idle,0.725,focused_but_idle,Spoke Puzzle: Pasta in Sauce,895.0,895.0,EXPLORE,NONE,watch,895.0,none,watch
 9,900.0034275,probe,focused_but_idle,0.725,focused_but_idle,Spoke Puzzle: Pasta in Sauce,900.0,900.0,SOLVING,NONE,watch,900.0,none,watch
 9,905.0037057,probe,focused_but_idle,0.599,focused_but_idle,Spoke Puzzle: Pasta in Sauce,905.0,905.0,SOLVING,NONE,watch,905.0,none,watch
-9,910.0013331,watch,focused_progress,0.141,focused_progress,Spoke Puzzle: Pasta in Sauce,910.0,910.0,SOLVING,NONE,watch,910.0,none,watch
+9,910.0013331,probe,focused_progress,0.141,focused_progress,Spoke Puzzle: Pasta in Sauce,910.0,910.0,SOLVING,NONE,watch,910.0,none,watch
 9,915.0102459,intervene,passive_and_stuck,0.318,passive_and_stuck,Spoke Puzzle: Pasta in Sauce,915.0,915.0,SOLVING,NONE,watch,915.0,none,watch
 9,920.0045794,probe,scanning_but_passive,0.475,scanning_but_passive,Spoke Puzzle: Pasta in Sauce,920.0,920.0,SOLVING,NONE,watch,920.0,none,watch
-9,925.0067871,watch,scattered_but_progressing,0.54,scattered_but_progressing,Spoke Puzzle: Pasta in Sauce,925.0,925.0,SOLVING,NONE,watch,925.0,none,watch
-9,930.0008599,watch,focused_progress,0.452,focused_progress,Spoke Puzzle: Pasta in Sauce,930.0,930.0,EXPLORE,PROMPT,intervene,930.0,none,watch
-9,935.0183421,watch,pop_confirms_exploration,0.582,pop_confirms_exploration,Spoke Puzzle: Pasta in Sauce,935.0,935.0,EXPLORE,NONE,watch,935.0,none,watch
-9,940.0117398,watch,pop_confirms_exploration,0.548,pop_confirms_exploration,Spoke Puzzle: Pasta in Sauce,940.0,940.0,EXPLORE,NONE,watch,940.0,none,watch
+9,925.0067871,probe,scattered_but_progressing,0.54,scattered_but_progressing,Spoke Puzzle: Pasta in Sauce,925.0,925.0,SOLVING,NONE,watch,925.0,none,watch
+9,930.0008599,probe,focused_progress,0.452,focused_progress,Spoke Puzzle: Pasta in Sauce,930.0,930.0,EXPLORE,PROMPT,intervene,930.0,none,watch
+9,935.0183421,probe,pop_confirms_exploration,0.582,pop_confirms_exploration,Spoke Puzzle: Pasta in Sauce,935.0,935.0,EXPLORE,NONE,watch,935.0,none,watch
+9,940.0117398,probe,pop_confirms_exploration,0.548,pop_confirms_exploration,Spoke Puzzle: Pasta in Sauce,940.0,940.0,EXPLORE,NONE,watch,940.0,none,watch
 9,945.0107468,probe,focused_but_idle,0.558,focused_but_idle,Spoke Puzzle: Pasta in Sauce,945.0,945.0,EXPLORE,NONE,watch,945.0,none,watch
 9,950.005052,probe,focused_but_idle,0.62,focused_but_idle,Spoke Puzzle: Pasta in Sauce,950.0,950.0,SOLVING,NONE,watch,950.0,none,watch
 9,955.0032323,probe,focused_but_idle,0.446,focused_but_idle,Spoke Puzzle: Pasta in Sauce,955.0,955.0,SOLVING,NONE,watch,955.0,none,watch
 9,960.0152009,probe,focused_but_idle,0.679,focused_but_idle,Spoke Puzzle: Pasta in Sauce,960.0,960.0,SOLVING,NONE,watch,960.0,none,watch
-9,965.0083244,watch,focused_progress,0.236,focused_progress,Spoke Puzzle: Pasta in Sauce,965.0,965.0,SOLVING,NONE,watch,965.0,none,watch
+9,965.0083244,probe,focused_progress,0.236,focused_progress,Spoke Puzzle: Pasta in Sauce,965.0,965.0,SOLVING,NONE,watch,965.0,none,watch
 9,970.0097365,probe,focused_but_idle,0.606,focused_but_idle,Spoke Puzzle: Pasta in Sauce,970.0,970.0,SOLVING,NONE,watch,970.0,none,watch
-9,975.0194917,watch,focused_progress,0.433,focused_progress,Spoke Puzzle: Pasta in Sauce,975.0,975.0,VICTORY,NONE,watch,975.0,none,watch
+9,975.0194917,probe,focused_progress,0.433,focused_progress,Spoke Puzzle: Pasta in Sauce,975.0,975.0,VICTORY,NONE,watch,975.0,none,watch
 9,980.004972,watch,pop_confirms_progress,0.481,pop_confirms_progress,Transition,980.0,980.0,VICTORY,NONE,watch,980.0,none,watch
 9,985.0200139,watch,scanning_but_passive,0.643,scanning_but_passive,Transition,985.0,985.0,VICTORY,NONE,watch,985.0,explicit,intervene
 9,990.0036955,watch,focused_but_idle,0.499,focused_but_idle,Transition,990.0,990.0,VICTORY,NONE,watch,990.0,none,watch
@@ -2214,11 +2214,11 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 9,1790.000692,watch,scanning_but_passive,0.575,scanning_but_passive,Transition,1790.0,1790.0,VICTORY,NONE,watch,1790.0,none,watch
 9,1795.0152568,watch,scanning_but_passive,0.762,scanning_but_passive,Transition,1795.0,1795.0,VICTORY,NONE,watch,1795.0,none,watch
 9,1800.0067496,watch,scanning_but_passive,0.895,scanning_but_passive,Transition,1800.0,1800.0,VICTORY,NONE,watch,1800.0,none,watch
-9,1805.0027282,watch,pop_confirms_exploration,0.399,pop_confirms_exploration,Transition,1805.0,1805.0,VICTORY,NONE,watch,1805.0,none,watch
-9,1810.0095027,watch,pop_confirms_exploration,0.413,pop_confirms_exploration,Transition,1810.0,1810.0,VICTORY,NONE,watch,1810.0,none,watch
-9,1815.0010164,watch,pop_confirms_exploration,0.533,pop_confirms_exploration,Transition,1815.0,1815.0,VICTORY,NONE,watch,1815.0,none,watch
-9,1820.0143251,watch,pop_confirms_exploration,0.299,pop_confirms_exploration,Transition,1820.0,1820.0,VICTORY,NONE,watch,1820.0,none,watch
-9,1825.0030052,watch,pop_says_stuck_but_searching,0.337,pop_says_stuck_but_searching,Transition,1825.0,1825.0,VICTORY,NONE,watch,1825.0,none,watch
+9,1805.0027282,probe,pop_confirms_exploration,0.399,pop_confirms_exploration,Transition,1805.0,1805.0,VICTORY,NONE,watch,1805.0,none,watch
+9,1810.0095027,probe,pop_confirms_exploration,0.413,pop_confirms_exploration,Transition,1810.0,1810.0,VICTORY,NONE,watch,1810.0,none,watch
+9,1815.0010164,probe,pop_confirms_exploration,0.533,pop_confirms_exploration,Transition,1815.0,1815.0,VICTORY,NONE,watch,1815.0,none,watch
+9,1820.0143251,probe,pop_confirms_exploration,0.299,pop_confirms_exploration,Transition,1820.0,1820.0,VICTORY,NONE,watch,1820.0,none,watch
+9,1825.0030052,probe,pop_says_stuck_but_searching,0.337,pop_says_stuck_but_searching,Transition,1825.0,1825.0,VICTORY,NONE,watch,1825.0,none,watch
 9,1830.0063978,watch,none,1.0,none,Spoke Puzzle: Amount of Sunlight,1830.0,1830.0,VICTORY,NONE,watch,1830.0,none,watch
 9,1835.0133281,watch,focused_progress,0.299,focused_progress,Spoke Puzzle: Amount of Sunlight,1835.0,1835.0,VICTORY,NONE,watch,1835.0,none,watch
 9,1840.0100385,watch,scattered_but_progressing,0.925,scattered_but_progressing,Spoke Puzzle: Amount of Sunlight,1840.0,1840.0,VICTORY,NONE,watch,1840.0,none,watch
@@ -2302,79 +2302,79 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 9,2230.0116062,watch,scattered_but_progressing,0.715,scattered_but_progressing,Spoke Puzzle: Amount of Sunlight,2230.0,2230.0,VICTORY,NONE,watch,2230.0,none,watch
 9,2235.0033234,probe,scattered_but_progressing,0.669,scattered_but_progressing,Spoke Puzzle: Amount of Sunlight,2235.0,2235.0,VICTORY,NONE,watch,2235.0,none,watch
 9,2240.0100828,probe,scattered_but_progressing,0.8,scattered_but_progressing,Spoke Puzzle: Amount of Sunlight,2240.0,2240.0,VICTORY,NONE,watch,2240.0,none,watch
-9,2245.015871,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2245.0,2245.0,VICTORY,NONE,watch,2245.0,none,watch
-9,2250.0125023,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2250.0,2250.0,VICTORY,NONE,watch,2250.0,none,watch
-9,2255.013041,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2255.0,2255.0,VICTORY,NONE,watch,2255.0,none,watch
-9,2260.0034692,watch,scattered_but_progressing,0.854,scattered_but_progressing,Transition,2260.0,2260.0,VICTORY,NONE,watch,2260.0,none,watch
-9,2265.0240124,watch,scattered_but_progressing,0.848,scattered_but_progressing,Transition,2265.0,2265.0,VICTORY,NONE,watch,2265.0,none,watch
-9,2270.0120514,watch,scattered_but_progressing,0.827,scattered_but_progressing,Transition,2270.0,2270.0,VICTORY,NONE,watch,2270.0,none,watch
-9,2275.0103446,watch,focused_progress,0.454,focused_progress,Transition,2275.0,2275.0,VICTORY,NONE,watch,2275.0,none,watch
-9,2280.0014486,watch,scattered_but_progressing,0.821,scattered_but_progressing,Transition,2280.0,2280.0,VICTORY,NONE,watch,2280.0,none,watch
-9,2285.0113851,watch,pop_confirms_exploration,0.324,pop_confirms_exploration,Transition,2285.0,2285.0,VICTORY,NONE,watch,2285.0,none,watch
-9,2290.0103031,watch,scattered_but_progressing,0.769,scattered_but_progressing,Transition,2290.0,2290.0,VICTORY,NONE,watch,2290.0,none,watch
-9,2295.0040248,watch,scattered_but_progressing,0.766,scattered_but_progressing,Transition,2295.0,2295.0,VICTORY,NONE,watch,2295.0,none,watch
-9,2300.0097486,watch,scattered_but_progressing,0.621,scattered_but_progressing,Transition,2300.0,2300.0,VICTORY,NONE,watch,2300.0,none,watch
-9,2305.0127717,watch,scattered_but_progressing,0.742,scattered_but_progressing,Transition,2305.0,2305.0,VICTORY,NONE,watch,2305.0,none,watch
-9,2310.0099102,watch,scattered_but_progressing,0.51,scattered_but_progressing,Transition,2310.0,2310.0,VICTORY,NONE,watch,2310.0,none,watch
-9,2315.0049381,watch,scattered_but_progressing,0.446,scattered_but_progressing,Transition,2315.0,2315.0,VICTORY,NONE,watch,2315.0,none,watch
-9,2320.0026289,watch,focused_but_idle,0.553,focused_but_idle,Transition,2320.0,2320.0,VICTORY,NONE,watch,2320.0,none,watch
-9,2325.0060708,watch,focused_but_idle,0.711,focused_but_idle,Transition,2325.0,2325.0,VICTORY,NONE,watch,2325.0,none,watch
-9,2330.0095301,watch,focused_but_idle,0.718,focused_but_idle,Transition,2330.0,2330.0,VICTORY,NONE,watch,2330.0,none,watch
-9,2335.0110829,watch,focused_but_idle,0.724,focused_but_idle,Transition,2335.0,2335.0,VICTORY,NONE,watch,2335.0,none,watch
-9,2340.0136448,watch,focused_but_idle,0.725,focused_but_idle,Transition,2340.0,2340.0,VICTORY,NONE,watch,2340.0,none,watch
-9,2345.0146686,watch,focused_but_idle,0.725,focused_but_idle,Transition,2345.0,2345.0,VICTORY,NONE,watch,2345.0,none,watch
-9,2350.0144421,watch,focused_but_idle,0.725,focused_but_idle,Transition,2350.0,2350.0,VICTORY,NONE,watch,2350.0,reflective,probe
-9,2355.0003352,watch,focused_but_idle,0.725,focused_but_idle,Transition,2355.0,2355.0,VICTORY,NONE,watch,2355.0,reflective,probe
-9,2360.0155174,watch,focused_but_idle,0.725,focused_but_idle,Transition,2360.0,2360.0,VICTORY,NONE,watch,2360.0,reflective,probe
-9,2365.0001449,watch,focused_but_idle,0.725,focused_but_idle,Transition,2365.0,2365.0,VICTORY,NONE,watch,2365.0,reflective,probe
-9,2370.0001267,watch,focused_but_idle,0.725,focused_but_idle,Transition,2370.0,2370.0,VICTORY,NONE,watch,2370.0,reflective,probe
-9,2375.0012227,watch,focused_but_idle,0.725,focused_but_idle,Transition,2375.0,2375.0,VICTORY,NONE,watch,2375.0,reflective,probe
-9,2380.0013374,watch,focused_but_idle,0.725,focused_but_idle,Transition,2380.0,2380.0,VICTORY,NONE,watch,2380.0,none,watch
-9,2385.0005677,watch,focused_but_idle,0.725,focused_but_idle,Transition,2385.0,2385.0,VICTORY,NONE,watch,2385.0,none,watch
-9,2390.0012141,watch,focused_but_idle,0.725,focused_but_idle,Transition,2390.0,2390.0,VICTORY,NONE,watch,2390.0,none,watch
-9,2395.0022481,watch,focused_but_idle,0.725,focused_but_idle,Transition,2395.0,2395.0,VICTORY,NONE,watch,2395.0,reflective,probe
-9,2400.0005082,watch,focused_but_idle,0.725,focused_but_idle,Transition,2400.0,2400.0,VICTORY,NONE,watch,2400.0,reflective,probe
-9,2405.0005114,watch,focused_but_idle,0.725,focused_but_idle,Transition,2405.0,2405.0,VICTORY,NONE,watch,2405.0,reflective,probe
-9,2410.0012081,watch,focused_but_idle,0.725,focused_but_idle,Transition,2410.0,2410.0,VICTORY,NONE,watch,2410.0,reflective,probe
-9,2415.0154411,watch,focused_but_idle,0.725,focused_but_idle,Transition,2415.0,2415.0,VICTORY,NONE,watch,2415.0,reflective,probe
-9,2420.0000795,watch,focused_but_idle,0.725,focused_but_idle,Transition,2420.0,2420.0,VICTORY,NONE,watch,2420.0,reflective,probe
-9,2425.0002691,watch,focused_but_idle,0.725,focused_but_idle,Transition,2425.0,2425.0,VICTORY,NONE,watch,2425.0,reflective,probe
-9,2430.0156674,watch,focused_but_idle,0.725,focused_but_idle,Transition,2430.0,2430.0,VICTORY,NONE,watch,2430.0,reflective,probe
-9,2435.002015,watch,focused_but_idle,0.725,focused_but_idle,Transition,2435.0,2435.0,VICTORY,NONE,watch,2435.0,reflective,probe
-9,2440.0003419,watch,focused_but_idle,0.725,focused_but_idle,Transition,2440.0,2440.0,VICTORY,NONE,watch,2440.0,reflective,probe
-9,2445.0155092,watch,focused_but_idle,0.725,focused_but_idle,Transition,2445.0,2445.0,VICTORY,NONE,watch,2445.0,reflective,probe
-9,2450.0002831,watch,focused_but_idle,0.725,focused_but_idle,Transition,2450.0,2450.0,VICTORY,NONE,watch,2450.0,reflective,probe
-9,2455.0153675,watch,focused_but_idle,0.725,focused_but_idle,Transition,2455.0,2455.0,VICTORY,NONE,watch,2455.0,reflective,probe
-9,2460.000361,watch,focused_but_idle,0.725,focused_but_idle,Transition,2460.0,2460.0,VICTORY,NONE,watch,2460.0,none,watch
-9,2465.0013317,watch,scanning_but_passive,0.575,scanning_but_passive,Transition,2465.0,2465.0,VICTORY,NONE,watch,2465.0,none,watch
-9,2470.0085763,watch,pop_confirms_exploration,0.564,pop_confirms_exploration,Transition,2470.0,2470.0,VICTORY,NONE,watch,2470.0,none,watch
-9,2475.0064589,watch,scanning_but_passive,0.726,scanning_but_passive,Transition,2475.0,2475.0,VICTORY,NONE,watch,2475.0,none,watch
-9,2480.0034586,watch,pop_says_stuck_but_searching,0.282,pop_says_stuck_but_searching,Transition,2480.0,2480.0,VICTORY,NONE,watch,2480.0,none,watch
-9,2485.0008561,watch,scanning_but_passive,0.723,scanning_but_passive,Transition,2485.0,2485.0,VICTORY,NONE,watch,2485.0,none,watch
-9,2490.0145013,watch,pop_confirms_exploration,0.416,pop_confirms_exploration,Transition,2490.0,2490.0,VICTORY,NONE,watch,2490.0,none,watch
-9,2495.0095562,watch,scanning_but_passive,0.672,scanning_but_passive,Transition,2495.0,2495.0,VICTORY,NONE,watch,2495.0,none,watch
-9,2500.0100823,watch,acting_without_progress,0.456,acting_without_progress,Transition,2500.0,2500.0,VICTORY,NONE,watch,2500.0,none,watch
-9,2505.0089513,watch,scanning_but_passive,0.861,scanning_but_passive,Transition,2505.0,2505.0,VICTORY,NONE,watch,2505.0,none,watch
-9,2510.0062535,watch,acting_without_progress,0.459,acting_without_progress,Transition,2510.0,2510.0,VICTORY,NONE,watch,2510.0,none,watch
-9,2515.0041034,watch,scanning_but_passive,0.733,scanning_but_passive,Transition,2515.0,2515.0,VICTORY,NONE,watch,2515.0,none,watch
-9,2520.0028143,watch,scanning_but_passive,0.773,scanning_but_passive,Transition,2520.0,2520.0,VICTORY,NONE,watch,2520.0,none,watch
-9,2525.0006134,watch,scanning_but_passive,0.718,scanning_but_passive,Transition,2525.0,2525.0,VICTORY,NONE,watch,2525.0,none,watch
-9,2530.0107027,watch,scanning_but_passive,0.652,scanning_but_passive,Transition,2530.0,2530.0,VICTORY,NONE,watch,2530.0,none,watch
-9,2535.0122038,watch,scanning_but_passive,0.655,scanning_but_passive,Transition,2535.0,2535.0,VICTORY,NONE,watch,2535.0,none,watch
-9,2540.0087538,watch,scanning_but_passive,0.738,scanning_but_passive,Transition,2540.0,2540.0,VICTORY,NONE,watch,2540.0,none,watch
-9,2545.0064353,watch,scanning_but_passive,0.65,scanning_but_passive,Transition,2545.0,2545.0,VICTORY,NONE,watch,2545.0,none,watch
-9,2550.0033348,watch,pop_says_stuck_but_searching,0.251,pop_says_stuck_but_searching,Transition,2550.0,2550.0,VICTORY,NONE,watch,2550.0,none,watch
-9,2555.0130902,watch,pop_says_stuck_but_searching,0.359,pop_says_stuck_but_searching,Transition,2555.0,2555.0,VICTORY,NONE,watch,2555.0,none,watch
-9,2560.0036174,watch,focused_but_idle,0.578,focused_but_idle,Transition,2560.0,2560.0,VICTORY,NONE,watch,2560.0,none,watch
-9,2565.0129779,watch,pop_confirms_exploration,0.578,pop_confirms_exploration,Transition,2565.0,2565.0,VICTORY,NONE,watch,2565.0,none,watch
-9,2570.0115334,watch,pop_confirms_exploration,0.409,pop_confirms_exploration,Transition,2570.0,2570.0,VICTORY,NONE,watch,2570.0,none,watch
-9,2575.0144292,watch,pop_confirms_exploration,0.608,pop_confirms_exploration,Transition,2575.0,2575.0,VICTORY,NONE,watch,2575.0,none,watch
-9,2580.004818,watch,focused_but_idle,0.574,focused_but_idle,Transition,2580.0,2580.0,VICTORY,NONE,watch,2580.0,none,watch
-9,2585.0022414,watch,scanning_but_passive,0.815,scanning_but_passive,Transition,2585.0,2585.0,VICTORY,NONE,watch,2585.0,none,watch
-9,2590.0018589,watch,scanning_but_passive,0.885,scanning_but_passive,Transition,2590.0,2590.0,VICTORY,NONE,watch,2590.0,none,watch
-9,2595.0139581,watch,scanning_but_passive,0.587,scanning_but_passive,Transition,2595.0,2595.0,VICTORY,NONE,watch,2595.0,none,watch
-9,2600.0114569,watch,none,1.0,none,Transition,2600.0,2600.0,VICTORY,NONE,watch,2600.0,none,watch
-9,2605.0098201,watch,pop_confirms_exploration,0.62,pop_confirms_exploration,Transition,2605.0,2605.0,VICTORY,NONE,watch,2605.0,none,watch
+9,2245.015871,probe,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2245.0,2245.0,VICTORY,NONE,watch,2245.0,none,watch
+9,2250.0125023,probe,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2250.0,2250.0,VICTORY,NONE,watch,2250.0,none,watch
+9,2255.013041,probe,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2255.0,2255.0,VICTORY,NONE,watch,2255.0,none,watch
+9,2260.0034692,probe,scattered_but_progressing,0.854,scattered_but_progressing,Transition,2260.0,2260.0,VICTORY,NONE,watch,2260.0,none,watch
+9,2265.0240124,probe,scattered_but_progressing,0.848,scattered_but_progressing,Transition,2265.0,2265.0,VICTORY,NONE,watch,2265.0,none,watch
+9,2270.0120514,probe,scattered_but_progressing,0.827,scattered_but_progressing,Transition,2270.0,2270.0,VICTORY,NONE,watch,2270.0,none,watch
+9,2275.0103446,probe,focused_progress,0.454,focused_progress,Transition,2275.0,2275.0,VICTORY,NONE,watch,2275.0,none,watch
+9,2280.0014486,probe,scattered_but_progressing,0.821,scattered_but_progressing,Transition,2280.0,2280.0,VICTORY,NONE,watch,2280.0,none,watch
+9,2285.0113851,probe,pop_confirms_exploration,0.324,pop_confirms_exploration,Transition,2285.0,2285.0,VICTORY,NONE,watch,2285.0,none,watch
+9,2290.0103031,probe,scattered_but_progressing,0.769,scattered_but_progressing,Transition,2290.0,2290.0,VICTORY,NONE,watch,2290.0,none,watch
+9,2295.0040248,probe,scattered_but_progressing,0.766,scattered_but_progressing,Transition,2295.0,2295.0,VICTORY,NONE,watch,2295.0,none,watch
+9,2300.0097486,probe,scattered_but_progressing,0.621,scattered_but_progressing,Transition,2300.0,2300.0,VICTORY,NONE,watch,2300.0,none,watch
+9,2305.0127717,probe,scattered_but_progressing,0.742,scattered_but_progressing,Transition,2305.0,2305.0,VICTORY,NONE,watch,2305.0,none,watch
+9,2310.0099102,probe,scattered_but_progressing,0.51,scattered_but_progressing,Transition,2310.0,2310.0,VICTORY,NONE,watch,2310.0,none,watch
+9,2315.0049381,probe,scattered_but_progressing,0.446,scattered_but_progressing,Transition,2315.0,2315.0,VICTORY,NONE,watch,2315.0,none,watch
+9,2320.0026289,probe,focused_but_idle,0.553,focused_but_idle,Transition,2320.0,2320.0,VICTORY,NONE,watch,2320.0,none,watch
+9,2325.0060708,probe,focused_but_idle,0.711,focused_but_idle,Transition,2325.0,2325.0,VICTORY,NONE,watch,2325.0,none,watch
+9,2330.0095301,probe,focused_but_idle,0.718,focused_but_idle,Transition,2330.0,2330.0,VICTORY,NONE,watch,2330.0,none,watch
+9,2335.0110829,probe,focused_but_idle,0.724,focused_but_idle,Transition,2335.0,2335.0,VICTORY,NONE,watch,2335.0,none,watch
+9,2340.0136448,probe,focused_but_idle,0.725,focused_but_idle,Transition,2340.0,2340.0,VICTORY,NONE,watch,2340.0,none,watch
+9,2345.0146686,probe,focused_but_idle,0.725,focused_but_idle,Transition,2345.0,2345.0,VICTORY,NONE,watch,2345.0,none,watch
+9,2350.0144421,probe,focused_but_idle,0.725,focused_but_idle,Transition,2350.0,2350.0,VICTORY,NONE,watch,2350.0,reflective,probe
+9,2355.0003352,probe,focused_but_idle,0.725,focused_but_idle,Transition,2355.0,2355.0,VICTORY,NONE,watch,2355.0,reflective,probe
+9,2360.0155174,probe,focused_but_idle,0.725,focused_but_idle,Transition,2360.0,2360.0,VICTORY,NONE,watch,2360.0,reflective,probe
+9,2365.0001449,probe,focused_but_idle,0.725,focused_but_idle,Transition,2365.0,2365.0,VICTORY,NONE,watch,2365.0,reflective,probe
+9,2370.0001267,probe,focused_but_idle,0.725,focused_but_idle,Transition,2370.0,2370.0,VICTORY,NONE,watch,2370.0,reflective,probe
+9,2375.0012227,probe,focused_but_idle,0.725,focused_but_idle,Transition,2375.0,2375.0,VICTORY,NONE,watch,2375.0,reflective,probe
+9,2380.0013374,probe,focused_but_idle,0.725,focused_but_idle,Transition,2380.0,2380.0,VICTORY,NONE,watch,2380.0,none,watch
+9,2385.0005677,probe,focused_but_idle,0.725,focused_but_idle,Transition,2385.0,2385.0,VICTORY,NONE,watch,2385.0,none,watch
+9,2390.0012141,probe,focused_but_idle,0.725,focused_but_idle,Transition,2390.0,2390.0,VICTORY,NONE,watch,2390.0,none,watch
+9,2395.0022481,probe,focused_but_idle,0.725,focused_but_idle,Transition,2395.0,2395.0,VICTORY,NONE,watch,2395.0,reflective,probe
+9,2400.0005082,probe,focused_but_idle,0.725,focused_but_idle,Transition,2400.0,2400.0,VICTORY,NONE,watch,2400.0,reflective,probe
+9,2405.0005114,probe,focused_but_idle,0.725,focused_but_idle,Transition,2405.0,2405.0,VICTORY,NONE,watch,2405.0,reflective,probe
+9,2410.0012081,probe,focused_but_idle,0.725,focused_but_idle,Transition,2410.0,2410.0,VICTORY,NONE,watch,2410.0,reflective,probe
+9,2415.0154411,probe,focused_but_idle,0.725,focused_but_idle,Transition,2415.0,2415.0,VICTORY,NONE,watch,2415.0,reflective,probe
+9,2420.0000795,probe,focused_but_idle,0.725,focused_but_idle,Transition,2420.0,2420.0,VICTORY,NONE,watch,2420.0,reflective,probe
+9,2425.0002691,probe,focused_but_idle,0.725,focused_but_idle,Transition,2425.0,2425.0,VICTORY,NONE,watch,2425.0,reflective,probe
+9,2430.0156674,probe,focused_but_idle,0.725,focused_but_idle,Transition,2430.0,2430.0,VICTORY,NONE,watch,2430.0,reflective,probe
+9,2435.002015,probe,focused_but_idle,0.725,focused_but_idle,Transition,2435.0,2435.0,VICTORY,NONE,watch,2435.0,reflective,probe
+9,2440.0003419,probe,focused_but_idle,0.725,focused_but_idle,Transition,2440.0,2440.0,VICTORY,NONE,watch,2440.0,reflective,probe
+9,2445.0155092,probe,focused_but_idle,0.725,focused_but_idle,Transition,2445.0,2445.0,VICTORY,NONE,watch,2445.0,reflective,probe
+9,2450.0002831,probe,focused_but_idle,0.725,focused_but_idle,Transition,2450.0,2450.0,VICTORY,NONE,watch,2450.0,reflective,probe
+9,2455.0153675,probe,focused_but_idle,0.725,focused_but_idle,Transition,2455.0,2455.0,VICTORY,NONE,watch,2455.0,reflective,probe
+9,2460.000361,probe,focused_but_idle,0.725,focused_but_idle,Transition,2460.0,2460.0,VICTORY,NONE,watch,2460.0,none,watch
+9,2465.0013317,probe,scanning_but_passive,0.575,scanning_but_passive,Transition,2465.0,2465.0,VICTORY,NONE,watch,2465.0,none,watch
+9,2470.0085763,probe,pop_confirms_exploration,0.564,pop_confirms_exploration,Transition,2470.0,2470.0,VICTORY,NONE,watch,2470.0,none,watch
+9,2475.0064589,probe,scanning_but_passive,0.726,scanning_but_passive,Transition,2475.0,2475.0,VICTORY,NONE,watch,2475.0,none,watch
+9,2480.0034586,probe,pop_says_stuck_but_searching,0.282,pop_says_stuck_but_searching,Transition,2480.0,2480.0,VICTORY,NONE,watch,2480.0,none,watch
+9,2485.0008561,probe,scanning_but_passive,0.723,scanning_but_passive,Transition,2485.0,2485.0,VICTORY,NONE,watch,2485.0,none,watch
+9,2490.0145013,probe,pop_confirms_exploration,0.416,pop_confirms_exploration,Transition,2490.0,2490.0,VICTORY,NONE,watch,2490.0,none,watch
+9,2495.0095562,probe,scanning_but_passive,0.672,scanning_but_passive,Transition,2495.0,2495.0,VICTORY,NONE,watch,2495.0,none,watch
+9,2500.0100823,probe,acting_without_progress,0.456,acting_without_progress,Transition,2500.0,2500.0,VICTORY,NONE,watch,2500.0,none,watch
+9,2505.0089513,probe,scanning_but_passive,0.861,scanning_but_passive,Transition,2505.0,2505.0,VICTORY,NONE,watch,2505.0,none,watch
+9,2510.0062535,probe,acting_without_progress,0.459,acting_without_progress,Transition,2510.0,2510.0,VICTORY,NONE,watch,2510.0,none,watch
+9,2515.0041034,probe,scanning_but_passive,0.733,scanning_but_passive,Transition,2515.0,2515.0,VICTORY,NONE,watch,2515.0,none,watch
+9,2520.0028143,probe,scanning_but_passive,0.773,scanning_but_passive,Transition,2520.0,2520.0,VICTORY,NONE,watch,2520.0,none,watch
+9,2525.0006134,probe,scanning_but_passive,0.718,scanning_but_passive,Transition,2525.0,2525.0,VICTORY,NONE,watch,2525.0,none,watch
+9,2530.0107027,probe,scanning_but_passive,0.652,scanning_but_passive,Transition,2530.0,2530.0,VICTORY,NONE,watch,2530.0,none,watch
+9,2535.0122038,probe,scanning_but_passive,0.655,scanning_but_passive,Transition,2535.0,2535.0,VICTORY,NONE,watch,2535.0,none,watch
+9,2540.0087538,probe,scanning_but_passive,0.738,scanning_but_passive,Transition,2540.0,2540.0,VICTORY,NONE,watch,2540.0,none,watch
+9,2545.0064353,probe,scanning_but_passive,0.65,scanning_but_passive,Transition,2545.0,2545.0,VICTORY,NONE,watch,2545.0,none,watch
+9,2550.0033348,probe,pop_says_stuck_but_searching,0.251,pop_says_stuck_but_searching,Transition,2550.0,2550.0,VICTORY,NONE,watch,2550.0,none,watch
+9,2555.0130902,probe,pop_says_stuck_but_searching,0.359,pop_says_stuck_but_searching,Transition,2555.0,2555.0,VICTORY,NONE,watch,2555.0,none,watch
+9,2560.0036174,probe,focused_but_idle,0.578,focused_but_idle,Transition,2560.0,2560.0,VICTORY,NONE,watch,2560.0,none,watch
+9,2565.0129779,probe,pop_confirms_exploration,0.578,pop_confirms_exploration,Transition,2565.0,2565.0,VICTORY,NONE,watch,2565.0,none,watch
+9,2570.0115334,probe,pop_confirms_exploration,0.409,pop_confirms_exploration,Transition,2570.0,2570.0,VICTORY,NONE,watch,2570.0,none,watch
+9,2575.0144292,probe,pop_confirms_exploration,0.608,pop_confirms_exploration,Transition,2575.0,2575.0,VICTORY,NONE,watch,2575.0,none,watch
+9,2580.004818,probe,focused_but_idle,0.574,focused_but_idle,Transition,2580.0,2580.0,VICTORY,NONE,watch,2580.0,none,watch
+9,2585.0022414,probe,scanning_but_passive,0.815,scanning_but_passive,Transition,2585.0,2585.0,VICTORY,NONE,watch,2585.0,none,watch
+9,2590.0018589,probe,scanning_but_passive,0.885,scanning_but_passive,Transition,2590.0,2590.0,VICTORY,NONE,watch,2590.0,none,watch
+9,2595.0139581,probe,scanning_but_passive,0.587,scanning_but_passive,Transition,2595.0,2595.0,VICTORY,NONE,watch,2595.0,none,watch
+9,2600.0114569,probe,none,1.0,none,Transition,2600.0,2600.0,VICTORY,NONE,watch,2600.0,none,watch
+9,2605.0098201,probe,pop_confirms_exploration,0.62,pop_confirms_exploration,Transition,2605.0,2605.0,VICTORY,NONE,watch,2605.0,none,watch
 9,2610.0041354,probe,focused_but_idle,0.545,focused_but_idle,Spoke Puzzle: Amount of Protein,2610.0,2610.0,VICTORY,NONE,watch,2610.0,none,watch
 9,2615.0065932,probe,scanning_but_passive,0.45,scanning_but_passive,Spoke Puzzle: Amount of Protein,2615.0,2615.0,VICTORY,NONE,watch,2615.0,none,watch
 9,2620.0004737,probe,scanning_but_passive,0.592,scanning_but_passive,Spoke Puzzle: Amount of Protein,2620.0,2620.0,VICTORY,NONE,watch,2620.0,none,watch
@@ -2427,45 +2427,45 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 9,2855.0139965,watch,scattered_but_progressing,0.741,scattered_but_progressing,Spoke Puzzle: Amount of Protein,2855.0,2855.0,VICTORY,NONE,watch,2855.0,none,watch
 9,2860.0075427,watch,scattered_but_progressing,0.786,scattered_but_progressing,Spoke Puzzle: Amount of Protein,2860.0,2860.0,VICTORY,NONE,watch,2860.0,none,watch
 9,2865.0153906,probe,scattered_but_progressing,0.4,scattered_but_progressing,Spoke Puzzle: Amount of Protein,2865.0,2865.0,VICTORY,NONE,watch,2865.0,none,watch
-9,2870.0058985,watch,scanning_but_passive,0.769,scanning_but_passive,Transition,2870.0,2870.0,VICTORY,NONE,watch,2870.0,none,watch
-9,2875.0044193,watch,scattered_but_progressing,0.844,scattered_but_progressing,Transition,2875.0,2875.0,VICTORY,NONE,watch,2875.0,none,watch
-9,2880.004381,watch,scattered_but_progressing,0.759,scattered_but_progressing,Transition,2880.0,2880.0,VICTORY,NONE,watch,2880.0,none,watch
-9,2885.000728,watch,focused_progress,0.38,focused_progress,Transition,2885.0,2885.0,VICTORY,NONE,watch,2885.0,none,watch
-9,2890.0097301,watch,focused_progress,0.478,focused_progress,Transition,2890.0,2890.0,VICTORY,NONE,watch,2890.0,none,watch
-9,2895.0133968,watch,focused_progress,0.461,focused_progress,Transition,2895.0,2895.0,VICTORY,NONE,watch,2895.0,none,watch
-9,2900.0142131,watch,focused_progress,0.335,focused_progress,Transition,2900.0,2900.0,VICTORY,NONE,watch,2900.0,none,watch
-9,2905.0054067,watch,focused_progress,0.321,focused_progress,Transition,2905.0,2905.0,VICTORY,NONE,watch,2905.0,none,watch
-9,2910.0039584,watch,passive_and_stuck,0.242,passive_and_stuck,Transition,2910.0,2910.0,VICTORY,NONE,watch,2910.0,none,watch
-9,2915.0126074,watch,scattered_but_progressing,0.715,scattered_but_progressing,Transition,2915.0,2915.0,VICTORY,NONE,watch,2915.0,none,watch
-9,2920.0025799,watch,focused_but_idle,0.74,focused_but_idle,Transition,2920.0,2920.0,VICTORY,NONE,watch,2920.0,none,watch
-9,2925.0104945,watch,focused_progress,0.167,focused_progress,Transition,2925.0,2925.0,VICTORY,NONE,watch,2925.0,none,watch
-9,2930.0158252,watch,focused_progress,0.215,focused_progress,Transition,2930.0,2930.0,VICTORY,NONE,watch,2930.0,none,watch
-9,2935.003145,watch,focused_progress,0.439,focused_progress,Transition,2935.0,2935.0,VICTORY,NONE,watch,2935.0,none,watch
-9,2940.0118871,watch,focused_progress,0.314,focused_progress,Transition,2940.0,2940.0,VICTORY,NONE,watch,2940.0,none,watch
-9,2945.0174724,watch,focused_progress,0.359,focused_progress,Transition,2945.0,2945.0,VICTORY,NONE,watch,2945.0,none,watch
-9,2950.0177425,watch,focused_progress,0.411,focused_progress,Transition,2950.0,2950.0,VICTORY,NONE,watch,2950.0,none,watch
-9,2955.0128742,watch,focused_progress,0.323,focused_progress,Transition,2955.0,2955.0,VICTORY,NONE,watch,2955.0,reflective,probe
-9,2960.0139636,watch,focused_progress,0.385,focused_progress,Transition,2960.0,2960.0,VICTORY,NONE,watch,2960.0,reflective,probe
-9,2965.0104951,watch,focused_but_idle,0.822,focused_but_idle,Transition,2965.0,2965.0,VICTORY,NONE,watch,2965.0,reflective,probe
-9,2970.0104288,watch,focused_but_idle,0.783,focused_but_idle,Transition,2970.0,2970.0,VICTORY,NONE,watch,2970.0,reflective,probe
-9,2975.0041691,watch,focused_but_idle,0.775,focused_but_idle,Transition,2975.0,2975.0,VICTORY,NONE,watch,2975.0,reflective,probe
-9,2980.0093736,watch,focused_but_idle,0.835,focused_but_idle,Transition,2980.0,2980.0,VICTORY,NONE,watch,2980.0,reflective,probe
-9,2985.0003009,watch,focused_but_idle,0.733,focused_but_idle,Transition,2985.0,2985.0,VICTORY,NONE,watch,2985.0,none,watch
-9,2990.0023313,watch,focused_but_idle,0.734,focused_but_idle,Transition,2990.0,2990.0,VICTORY,NONE,watch,2990.0,none,watch
-9,2995.0050936,watch,focused_but_idle,0.837,focused_but_idle,Transition,2995.0,2995.0,VICTORY,NONE,watch,2995.0,none,watch
-9,3000.0121294,watch,focused_but_idle,0.759,focused_but_idle,Transition,3000.0,3000.0,VICTORY,NONE,watch,3000.0,none,watch
-9,3005.0073546,watch,focused_but_idle,0.859,focused_but_idle,Transition,3005.0,3005.0,VICTORY,NONE,watch,3005.0,none,watch
+9,2870.0058985,probe,scanning_but_passive,0.769,scanning_but_passive,Transition,2870.0,2870.0,VICTORY,NONE,watch,2870.0,none,watch
+9,2875.0044193,probe,scattered_but_progressing,0.844,scattered_but_progressing,Transition,2875.0,2875.0,VICTORY,NONE,watch,2875.0,none,watch
+9,2880.004381,probe,scattered_but_progressing,0.759,scattered_but_progressing,Transition,2880.0,2880.0,VICTORY,NONE,watch,2880.0,none,watch
+9,2885.000728,probe,focused_progress,0.38,focused_progress,Transition,2885.0,2885.0,VICTORY,NONE,watch,2885.0,none,watch
+9,2890.0097301,probe,focused_progress,0.478,focused_progress,Transition,2890.0,2890.0,VICTORY,NONE,watch,2890.0,none,watch
+9,2895.0133968,probe,focused_progress,0.461,focused_progress,Transition,2895.0,2895.0,VICTORY,NONE,watch,2895.0,none,watch
+9,2900.0142131,probe,focused_progress,0.335,focused_progress,Transition,2900.0,2900.0,VICTORY,NONE,watch,2900.0,none,watch
+9,2905.0054067,probe,focused_progress,0.321,focused_progress,Transition,2905.0,2905.0,VICTORY,NONE,watch,2905.0,none,watch
+9,2910.0039584,probe,passive_and_stuck,0.242,passive_and_stuck,Transition,2910.0,2910.0,VICTORY,NONE,watch,2910.0,none,watch
+9,2915.0126074,probe,scattered_but_progressing,0.715,scattered_but_progressing,Transition,2915.0,2915.0,VICTORY,NONE,watch,2915.0,none,watch
+9,2920.0025799,probe,focused_but_idle,0.74,focused_but_idle,Transition,2920.0,2920.0,VICTORY,NONE,watch,2920.0,none,watch
+9,2925.0104945,probe,focused_progress,0.167,focused_progress,Transition,2925.0,2925.0,VICTORY,NONE,watch,2925.0,none,watch
+9,2930.0158252,probe,focused_progress,0.215,focused_progress,Transition,2930.0,2930.0,VICTORY,NONE,watch,2930.0,none,watch
+9,2935.003145,probe,focused_progress,0.439,focused_progress,Transition,2935.0,2935.0,VICTORY,NONE,watch,2935.0,none,watch
+9,2940.0118871,probe,focused_progress,0.314,focused_progress,Transition,2940.0,2940.0,VICTORY,NONE,watch,2940.0,none,watch
+9,2945.0174724,probe,focused_progress,0.359,focused_progress,Transition,2945.0,2945.0,VICTORY,NONE,watch,2945.0,none,watch
+9,2950.0177425,probe,focused_progress,0.411,focused_progress,Transition,2950.0,2950.0,VICTORY,NONE,watch,2950.0,none,watch
+9,2955.0128742,probe,focused_progress,0.323,focused_progress,Transition,2955.0,2955.0,VICTORY,NONE,watch,2955.0,reflective,probe
+9,2960.0139636,probe,focused_progress,0.385,focused_progress,Transition,2960.0,2960.0,VICTORY,NONE,watch,2960.0,reflective,probe
+9,2965.0104951,probe,focused_but_idle,0.822,focused_but_idle,Transition,2965.0,2965.0,VICTORY,NONE,watch,2965.0,reflective,probe
+9,2970.0104288,probe,focused_but_idle,0.783,focused_but_idle,Transition,2970.0,2970.0,VICTORY,NONE,watch,2970.0,reflective,probe
+9,2975.0041691,probe,focused_but_idle,0.775,focused_but_idle,Transition,2975.0,2975.0,VICTORY,NONE,watch,2975.0,reflective,probe
+9,2980.0093736,probe,focused_but_idle,0.835,focused_but_idle,Transition,2980.0,2980.0,VICTORY,NONE,watch,2980.0,reflective,probe
+9,2985.0003009,probe,focused_but_idle,0.733,focused_but_idle,Transition,2985.0,2985.0,VICTORY,NONE,watch,2985.0,none,watch
+9,2990.0023313,probe,focused_but_idle,0.734,focused_but_idle,Transition,2990.0,2990.0,VICTORY,NONE,watch,2990.0,none,watch
+9,2995.0050936,probe,focused_but_idle,0.837,focused_but_idle,Transition,2995.0,2995.0,VICTORY,NONE,watch,2995.0,none,watch
+9,3000.0121294,probe,focused_but_idle,0.759,focused_but_idle,Transition,3000.0,3000.0,VICTORY,NONE,watch,3000.0,none,watch
+9,3005.0073546,probe,focused_but_idle,0.859,focused_but_idle,Transition,3005.0,3005.0,VICTORY,NONE,watch,3005.0,none,watch
 9,3010.0028974,intervene,passive_and_stuck,0.075,passive_and_stuck,Transition,3010.0,3010.0,VICTORY,NONE,watch,3010.0,reflective,probe
-9,3015.0118535,watch,focused_but_idle,0.746,focused_but_idle,Transition,3015.0,3015.0,VICTORY,NONE,watch,3015.0,reflective,probe
-9,3020.0076299,watch,focused_but_idle,0.839,focused_but_idle,Transition,3020.0,3020.0,VICTORY,NONE,watch,3020.0,reflective,probe
-9,3025.0036843,watch,focused_but_idle,0.725,focused_but_idle,Transition,3025.0,3025.0,VICTORY,NONE,watch,3025.0,none,watch
-9,3030.0147831,watch,focused_but_idle,0.717,focused_but_idle,Transition,3030.0,3030.0,VICTORY,NONE,watch,3030.0,none,watch
-9,3035.0021967,watch,focused_but_idle,0.728,focused_but_idle,Transition,3035.0,3035.0,VICTORY,NONE,watch,3035.0,none,watch
-9,3040.0081556,watch,focused_but_idle,0.783,focused_but_idle,Transition,3040.0,3040.0,VICTORY,NONE,watch,3040.0,none,watch
-9,3045.011684,watch,focused_but_idle,0.863,focused_but_idle,Transition,3045.0,3045.0,VICTORY,NONE,watch,3045.0,none,watch
-9,3050.0069862,watch,none,1.0,none,Transition,3050.0,3050.0,VICTORY,NONE,watch,3050.0,none,watch
-9,3055.0066436,watch,none,1.0,none,Transition,3055.0,3055.0,VICTORY,NONE,watch,3055.0,none,watch
-9,3060.0091846,watch,none,1.0,none,Transition,3060.0,3060.0,VICTORY,NONE,watch,3060.0,none,watch
+9,3015.0118535,probe,focused_but_idle,0.746,focused_but_idle,Transition,3015.0,3015.0,VICTORY,NONE,watch,3015.0,reflective,probe
+9,3020.0076299,probe,focused_but_idle,0.839,focused_but_idle,Transition,3020.0,3020.0,VICTORY,NONE,watch,3020.0,reflective,probe
+9,3025.0036843,probe,focused_but_idle,0.725,focused_but_idle,Transition,3025.0,3025.0,VICTORY,NONE,watch,3025.0,none,watch
+9,3030.0147831,probe,focused_but_idle,0.717,focused_but_idle,Transition,3030.0,3030.0,VICTORY,NONE,watch,3030.0,none,watch
+9,3035.0021967,probe,focused_but_idle,0.728,focused_but_idle,Transition,3035.0,3035.0,VICTORY,NONE,watch,3035.0,none,watch
+9,3040.0081556,probe,focused_but_idle,0.783,focused_but_idle,Transition,3040.0,3040.0,VICTORY,NONE,watch,3040.0,none,watch
+9,3045.011684,probe,focused_but_idle,0.863,focused_but_idle,Transition,3045.0,3045.0,VICTORY,NONE,watch,3045.0,none,watch
+9,3050.0069862,probe,none,1.0,none,Transition,3050.0,3050.0,VICTORY,NONE,watch,3050.0,none,watch
+9,3055.0066436,probe,none,1.0,none,Transition,3055.0,3055.0,VICTORY,NONE,watch,3055.0,none,watch
+9,3060.0091846,probe,none,1.0,none,Transition,3060.0,3060.0,VICTORY,NONE,watch,3060.0,none,watch
 9,3065.0036443,intervene,focused_but_failing,0.475,focused_but_failing,Hub Puzzle: Cooking Pot,3065.0,3065.0,EXPLORE,PROMPT,intervene,3065.0,none,watch
 9,3070.0118322,probe,focused_but_idle,0.667,focused_but_idle,Hub Puzzle: Cooking Pot,3070.0,3070.0,EXPLORE,NONE,watch,3070.0,none,watch
 9,3075.0061228,watch,focused_progress,0.257,focused_progress,Hub Puzzle: Cooking Pot,3075.0,3075.0,EXPLORE,NONE,watch,3075.0,none,watch
@@ -2690,13 +2690,13 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 10,695.0029255,probe,focused_but_idle,0.534,focused_but_idle,Spoke Puzzle: Pasta in Sauce,695.0,695.0,EXPLORE,NONE,watch,695.0,reflective,probe
 10,700.0091134,probe,focused_but_idle,0.718,focused_but_idle,Spoke Puzzle: Pasta in Sauce,700.0,700.0,EXPLORE,PROMPT,intervene,700.0,reflective,probe
 10,705.0123376,probe,scattered_but_progressing,0.645,scattered_but_progressing,Spoke Puzzle: Pasta in Sauce,705.0,705.0,EXPLORE,NONE,watch,705.0,reflective,probe
-10,710.0075044,watch,focused_progress,0.443,focused_progress,Spoke Puzzle: Pasta in Sauce,710.0,710.0,EXPLORE,NONE,watch,710.0,none,watch
+10,710.0075044,probe,focused_progress,0.443,focused_progress,Spoke Puzzle: Pasta in Sauce,710.0,710.0,EXPLORE,NONE,watch,710.0,none,watch
 10,715.0127024,probe,scattered_but_progressing,0.764,scattered_but_progressing,Spoke Puzzle: Pasta in Sauce,715.0,715.0,EXPLORE,NONE,watch,715.0,none,watch
 10,720.0046684,probe,scattered_but_progressing,0.646,scattered_but_progressing,Spoke Puzzle: Pasta in Sauce,720.0,720.0,EXPLORE,NONE,watch,720.0,none,watch
-10,725.0079505,watch,pop_says_exploring_but_inactive,0.71,pop_says_exploring_but_inactive,Spoke Puzzle: Pasta in Sauce,725.0,725.0,EXPLORE,NONE,watch,725.0,none,watch
+10,725.0079505,probe,pop_says_exploring_but_inactive,0.71,pop_says_exploring_but_inactive,Spoke Puzzle: Pasta in Sauce,725.0,725.0,EXPLORE,NONE,watch,725.0,none,watch
 10,730.0030507,probe,scattered_but_progressing,0.658,scattered_but_progressing,Spoke Puzzle: Pasta in Sauce,730.0,730.0,EXPLORE,PROMPT,intervene,730.0,none,watch
 10,735.0093581,probe,focused_but_idle,0.534,focused_but_idle,Spoke Puzzle: Pasta in Sauce,735.0,735.0,EXPLORE,NONE,watch,735.0,none,watch
-10,740.0034814,watch,none,1.0,none,Spoke Puzzle: Pasta in Sauce,740.0,740.0,VICTORY,NONE,watch,740.0,none,watch
+10,740.0034814,probe,none,1.0,none,Spoke Puzzle: Pasta in Sauce,740.0,740.0,VICTORY,NONE,watch,740.0,none,watch
 10,745.0244639,watch,focused_progress,0.375,focused_progress,Transition,745.0,745.0,VICTORY,NONE,watch,745.0,none,watch
 10,750.0062806,watch,scanning_but_passive,0.637,scanning_but_passive,Transition,750.0,750.0,VICTORY,NONE,watch,750.0,none,watch
 10,755.0037935,watch,scattered_but_progressing,0.791,scattered_but_progressing,Transition,755.0,755.0,VICTORY,NONE,watch,755.0,none,watch
@@ -2848,14 +2848,14 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 10,1485.0109638,watch,pop_confirms_progress,0.522,pop_confirms_progress,Spoke Puzzle: Amount of Protein,1485.0,1485.0,VICTORY,NONE,watch,1485.0,none,watch
 10,1490.0080591,probe,focused_but_idle,0.533,focused_but_idle,Spoke Puzzle: Amount of Protein,1490.0,1490.0,VICTORY,NONE,watch,1490.0,none,watch
 10,1495.0085979,watch,pop_says_exploring_but_focused,0.54,pop_says_exploring_but_focused,Spoke Puzzle: Amount of Protein,1495.0,1495.0,VICTORY,NONE,watch,1495.0,none,watch
-10,1500.0008666,watch,pop_says_exploring_but_focused,0.543,pop_says_exploring_but_focused,Spoke Puzzle: Amount of Protein,1500.0,1500.0,VICTORY,NONE,watch,1500.0,none,watch
+10,1500.0008666,probe,pop_says_exploring_but_focused,0.543,pop_says_exploring_but_focused,Spoke Puzzle: Amount of Protein,1500.0,1500.0,VICTORY,NONE,watch,1500.0,none,watch
 10,1505.008525,probe,focused_but_idle,0.546,focused_but_idle,Spoke Puzzle: Amount of Protein,1505.0,1505.0,VICTORY,NONE,watch,1505.0,none,watch
-10,1510.0137027,watch,pop_confirms_progress,0.36,pop_confirms_progress,Spoke Puzzle: Amount of Protein,1510.0,1510.0,VICTORY,NONE,watch,1510.0,none,watch
+10,1510.0137027,probe,pop_confirms_progress,0.36,pop_confirms_progress,Spoke Puzzle: Amount of Protein,1510.0,1510.0,VICTORY,NONE,watch,1510.0,none,watch
 10,1515.0045271,intervene,focused_but_failing,0.305,focused_but_failing,Spoke Puzzle: Amount of Protein,1515.0,1515.0,VICTORY,NONE,watch,1515.0,none,watch
-10,1520.0062349,watch,pop_confirms_progress,0.402,pop_confirms_progress,Spoke Puzzle: Amount of Protein,1520.0,1520.0,VICTORY,NONE,watch,1520.0,none,watch
-10,1525.0066901,watch,pop_confirms_progress,0.359,pop_confirms_progress,Spoke Puzzle: Amount of Protein,1525.0,1525.0,VICTORY,NONE,watch,1525.0,none,watch
-10,1530.0125486,watch,focused_progress,0.3,focused_progress,Spoke Puzzle: Amount of Protein,1530.0,1530.0,VICTORY,NONE,watch,1530.0,none,watch
-10,1535.0079891,watch,scattered_but_progressing,0.478,scattered_but_progressing,Spoke Puzzle: Amount of Protein,1535.0,1535.0,VICTORY,NONE,watch,1535.0,none,watch
+10,1520.0062349,probe,pop_confirms_progress,0.402,pop_confirms_progress,Spoke Puzzle: Amount of Protein,1520.0,1520.0,VICTORY,NONE,watch,1520.0,none,watch
+10,1525.0066901,probe,pop_confirms_progress,0.359,pop_confirms_progress,Spoke Puzzle: Amount of Protein,1525.0,1525.0,VICTORY,NONE,watch,1525.0,none,watch
+10,1530.0125486,probe,focused_progress,0.3,focused_progress,Spoke Puzzle: Amount of Protein,1530.0,1530.0,VICTORY,NONE,watch,1530.0,none,watch
+10,1535.0079891,probe,scattered_but_progressing,0.478,scattered_but_progressing,Spoke Puzzle: Amount of Protein,1535.0,1535.0,VICTORY,NONE,watch,1535.0,none,watch
 10,1540.0114242,watch,pop_confirms_progress,0.359,pop_confirms_progress,Transition,1540.0,1540.0,VICTORY,NONE,watch,1540.0,none,watch
 10,1545.0092721,watch,focused_but_idle,0.606,focused_but_idle,Transition,1545.0,1545.0,VICTORY,NONE,watch,1545.0,none,watch
 10,1550.0031889,watch,scattered_but_progressing,0.426,scattered_but_progressing,Transition,1550.0,1550.0,VICTORY,NONE,watch,1550.0,none,watch
@@ -2909,7 +2909,7 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 10,1790.0053307,watch,pop_confirms_exploration,0.562,pop_confirms_exploration,Transition,1790.0,1790.0,VICTORY,NONE,watch,1790.0,none,watch
 10,1795.0116477,watch,pop_says_solving_but_stalled,0.415,pop_says_solving_but_stalled,Transition,1795.0,1795.0,VICTORY,NONE,watch,1795.0,none,watch
 10,1800.0081205,watch,none,1.0,none,Transition,1800.0,1800.0,VICTORY,NONE,watch,1800.0,none,watch
-10,1805.022357,watch,scanning_but_passive,0.648,scanning_but_passive,Transition,1805.0,1805.0,VICTORY,NONE,watch,1805.0,none,watch
+10,1805.022357,probe,scanning_but_passive,0.648,scanning_but_passive,Transition,1805.0,1805.0,VICTORY,NONE,watch,1805.0,none,watch
 10,1810.0002605,intervene,focused_but_failing,0.474,focused_but_failing,Spoke Puzzle: Water Amount,1810.0,1810.0,VICTORY,NONE,watch,1810.0,none,watch
 10,1815.0126713,watch,pop_confirms_progress,0.412,pop_confirms_progress,Spoke Puzzle: Water Amount,1815.0,1815.0,VICTORY,NONE,watch,1815.0,none,watch
 10,1820.0117299,probe,scanning_but_passive,0.652,scanning_but_passive,Spoke Puzzle: Water Amount,1820.0,1820.0,VICTORY,NONE,watch,1820.0,none,watch
@@ -2974,56 +2974,56 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 10,2115.0084737,watch,scattered_but_progressing,0.592,scattered_but_progressing,Spoke Puzzle: Water Amount,2115.0,2115.0,SOLVING,NONE,watch,2115.0,none,watch
 10,2120.0108248,watch,scattered_but_progressing,0.732,scattered_but_progressing,Spoke Puzzle: Water Amount,2120.0,2120.0,SOLVING,NONE,watch,2120.0,none,watch
 10,2125.0069542,probe,scattered_but_progressing,0.633,scattered_but_progressing,Spoke Puzzle: Water Amount,2125.0,2125.0,VICTORY,NONE,watch,2125.0,none,watch
-10,2130.0023417,watch,scattered_but_progressing,0.791,scattered_but_progressing,Transition,2130.0,2130.0,VICTORY,NONE,watch,2130.0,none,watch
-10,2135.0085174,watch,scanning_but_passive,0.673,scanning_but_passive,Transition,2135.0,2135.0,VICTORY,NONE,watch,2135.0,none,watch
-10,2140.0021427,watch,focused_but_idle,0.578,focused_but_idle,Transition,2140.0,2140.0,VICTORY,NONE,watch,2140.0,none,watch
-10,2145.0042032,watch,scattered_but_progressing,0.772,scattered_but_progressing,Transition,2145.0,2145.0,VICTORY,NONE,watch,2145.0,none,watch
-10,2150.000914,watch,focused_progress,0.301,focused_progress,Transition,2150.0,2150.0,VICTORY,NONE,watch,2150.0,none,watch
-10,2155.007182,watch,scanning_but_passive,0.692,scanning_but_passive,Transition,2155.0,2155.0,VICTORY,NONE,watch,2155.0,none,watch
-10,2160.0012744,watch,focused_but_idle,0.374,focused_but_idle,Transition,2160.0,2160.0,VICTORY,NONE,watch,2160.0,none,watch
-10,2165.0066166,watch,focused_progress,0.353,focused_progress,Transition,2165.0,2165.0,VICTORY,NONE,watch,2165.0,none,watch
-10,2170.0000457,watch,scanning_but_passive,0.663,scanning_but_passive,Transition,2170.0,2170.0,VICTORY,NONE,watch,2170.0,none,watch
-10,2175.0048689,watch,scattered_but_progressing,0.695,scattered_but_progressing,Transition,2175.0,2175.0,VICTORY,NONE,watch,2175.0,none,watch
-10,2180.001537,watch,scattered_but_progressing,0.473,scattered_but_progressing,Transition,2180.0,2180.0,VICTORY,NONE,watch,2180.0,none,watch
-10,2185.009539,watch,scanning_but_passive,0.617,scanning_but_passive,Transition,2185.0,2185.0,VICTORY,NONE,watch,2185.0,none,watch
-10,2190.0056939,watch,scanning_but_passive,0.732,scanning_but_passive,Transition,2190.0,2190.0,VICTORY,NONE,watch,2190.0,none,watch
-10,2195.0030273,watch,scanning_but_passive,0.848,scanning_but_passive,Transition,2195.0,2195.0,VICTORY,NONE,watch,2195.0,none,watch
-10,2200.0126996,watch,focused_progress,0.446,focused_progress,Transition,2200.0,2200.0,VICTORY,NONE,watch,2200.0,none,watch
-10,2205.0027961,watch,scattered_but_progressing,0.667,scattered_but_progressing,Transition,2205.0,2205.0,VICTORY,NONE,watch,2205.0,none,watch
-10,2210.0098528,watch,scattered_but_progressing,0.559,scattered_but_progressing,Transition,2210.0,2210.0,VICTORY,NONE,watch,2210.0,none,watch
-10,2215.0060835,watch,passive_and_stuck,0.153,passive_and_stuck,Transition,2215.0,2215.0,VICTORY,NONE,watch,2215.0,none,watch
-10,2220.0024262,watch,passive_and_stuck,0.133,passive_and_stuck,Transition,2220.0,2220.0,VICTORY,NONE,watch,2220.0,none,watch
+10,2130.0023417,probe,scattered_but_progressing,0.791,scattered_but_progressing,Transition,2130.0,2130.0,VICTORY,NONE,watch,2130.0,none,watch
+10,2135.0085174,probe,scanning_but_passive,0.673,scanning_but_passive,Transition,2135.0,2135.0,VICTORY,NONE,watch,2135.0,none,watch
+10,2140.0021427,probe,focused_but_idle,0.578,focused_but_idle,Transition,2140.0,2140.0,VICTORY,NONE,watch,2140.0,none,watch
+10,2145.0042032,probe,scattered_but_progressing,0.772,scattered_but_progressing,Transition,2145.0,2145.0,VICTORY,NONE,watch,2145.0,none,watch
+10,2150.000914,probe,focused_progress,0.301,focused_progress,Transition,2150.0,2150.0,VICTORY,NONE,watch,2150.0,none,watch
+10,2155.007182,probe,scanning_but_passive,0.692,scanning_but_passive,Transition,2155.0,2155.0,VICTORY,NONE,watch,2155.0,none,watch
+10,2160.0012744,probe,focused_but_idle,0.374,focused_but_idle,Transition,2160.0,2160.0,VICTORY,NONE,watch,2160.0,none,watch
+10,2165.0066166,probe,focused_progress,0.353,focused_progress,Transition,2165.0,2165.0,VICTORY,NONE,watch,2165.0,none,watch
+10,2170.0000457,probe,scanning_but_passive,0.663,scanning_but_passive,Transition,2170.0,2170.0,VICTORY,NONE,watch,2170.0,none,watch
+10,2175.0048689,probe,scattered_but_progressing,0.695,scattered_but_progressing,Transition,2175.0,2175.0,VICTORY,NONE,watch,2175.0,none,watch
+10,2180.001537,probe,scattered_but_progressing,0.473,scattered_but_progressing,Transition,2180.0,2180.0,VICTORY,NONE,watch,2180.0,none,watch
+10,2185.009539,probe,scanning_but_passive,0.617,scanning_but_passive,Transition,2185.0,2185.0,VICTORY,NONE,watch,2185.0,none,watch
+10,2190.0056939,probe,scanning_but_passive,0.732,scanning_but_passive,Transition,2190.0,2190.0,VICTORY,NONE,watch,2190.0,none,watch
+10,2195.0030273,probe,scanning_but_passive,0.848,scanning_but_passive,Transition,2195.0,2195.0,VICTORY,NONE,watch,2195.0,none,watch
+10,2200.0126996,probe,focused_progress,0.446,focused_progress,Transition,2200.0,2200.0,VICTORY,NONE,watch,2200.0,none,watch
+10,2205.0027961,probe,scattered_but_progressing,0.667,scattered_but_progressing,Transition,2205.0,2205.0,VICTORY,NONE,watch,2205.0,none,watch
+10,2210.0098528,probe,scattered_but_progressing,0.559,scattered_but_progressing,Transition,2210.0,2210.0,VICTORY,NONE,watch,2210.0,none,watch
+10,2215.0060835,probe,passive_and_stuck,0.153,passive_and_stuck,Transition,2215.0,2215.0,VICTORY,NONE,watch,2215.0,none,watch
+10,2220.0024262,probe,passive_and_stuck,0.133,passive_and_stuck,Transition,2220.0,2220.0,VICTORY,NONE,watch,2220.0,none,watch
 10,2225.0114878,intervene,passive_and_stuck,0.127,passive_and_stuck,Transition,2225.0,2225.0,VICTORY,NONE,watch,2225.0,none,watch
 10,2230.0054859,intervene,passive_and_stuck,0.122,passive_and_stuck,Transition,2230.0,2230.0,VICTORY,NONE,watch,2230.0,none,watch
-10,2235.0031015,watch,scanning_but_passive,0.807,scanning_but_passive,Transition,2235.0,2235.0,VICTORY,NONE,watch,2235.0,none,watch
-10,2240.009333,watch,scattered_but_progressing,0.768,scattered_but_progressing,Transition,2240.0,2240.0,VICTORY,NONE,watch,2240.0,none,watch
-10,2245.0030805,watch,focused_progress,0.24,focused_progress,Transition,2245.0,2245.0,VICTORY,NONE,watch,2245.0,none,watch
-10,2250.0138658,watch,focused_but_idle,0.656,focused_but_idle,Transition,2250.0,2250.0,VICTORY,NONE,watch,2250.0,none,watch
-10,2255.0086726,watch,scattered_but_progressing,0.81,scattered_but_progressing,Transition,2255.0,2255.0,VICTORY,NONE,watch,2255.0,none,watch
-10,2260.0100701,watch,pop_confirms_exploration,0.288,pop_confirms_exploration,Transition,2260.0,2260.0,VICTORY,NONE,watch,2260.0,none,watch
-10,2265.0068896,watch,passive_and_stuck,0.082,passive_and_stuck,Transition,2265.0,2265.0,VICTORY,NONE,watch,2265.0,none,watch
-10,2270.0054468,watch,pop_confirms_exploration,0.326,pop_confirms_exploration,Transition,2270.0,2270.0,VICTORY,NONE,watch,2270.0,none,watch
+10,2235.0031015,probe,scanning_but_passive,0.807,scanning_but_passive,Transition,2235.0,2235.0,VICTORY,NONE,watch,2235.0,none,watch
+10,2240.009333,probe,scattered_but_progressing,0.768,scattered_but_progressing,Transition,2240.0,2240.0,VICTORY,NONE,watch,2240.0,none,watch
+10,2245.0030805,probe,focused_progress,0.24,focused_progress,Transition,2245.0,2245.0,VICTORY,NONE,watch,2245.0,none,watch
+10,2250.0138658,probe,focused_but_idle,0.656,focused_but_idle,Transition,2250.0,2250.0,VICTORY,NONE,watch,2250.0,none,watch
+10,2255.0086726,probe,scattered_but_progressing,0.81,scattered_but_progressing,Transition,2255.0,2255.0,VICTORY,NONE,watch,2255.0,none,watch
+10,2260.0100701,probe,pop_confirms_exploration,0.288,pop_confirms_exploration,Transition,2260.0,2260.0,VICTORY,NONE,watch,2260.0,none,watch
+10,2265.0068896,probe,passive_and_stuck,0.082,passive_and_stuck,Transition,2265.0,2265.0,VICTORY,NONE,watch,2265.0,none,watch
+10,2270.0054468,probe,pop_confirms_exploration,0.326,pop_confirms_exploration,Transition,2270.0,2270.0,VICTORY,NONE,watch,2270.0,none,watch
 10,2275.009857,intervene,passive_and_stuck,0.071,passive_and_stuck,Transition,2275.0,2275.0,VICTORY,NONE,watch,2275.0,none,watch
-10,2280.013987,watch,scanning_but_passive,0.792,scanning_but_passive,Transition,2280.0,2280.0,VICTORY,NONE,watch,2280.0,none,watch
-10,2285.0096244,watch,scattered_but_progressing,0.691,scattered_but_progressing,Transition,2285.0,2285.0,VICTORY,NONE,watch,2285.0,none,watch
-10,2290.0088433,watch,scanning_but_passive,0.567,scanning_but_passive,Transition,2290.0,2290.0,VICTORY,NONE,watch,2290.0,none,watch
-10,2295.0044385,watch,focused_but_idle,0.574,focused_but_idle,Transition,2295.0,2295.0,VICTORY,NONE,watch,2295.0,none,watch
-10,2300.0012388,watch,pop_says_stuck_but_searching,0.282,pop_says_stuck_but_searching,Transition,2300.0,2300.0,VICTORY,NONE,watch,2300.0,none,watch
-10,2305.012787,watch,pop_confirms_exploration,0.284,pop_confirms_exploration,Transition,2305.0,2305.0,VICTORY,NONE,watch,2305.0,none,watch
-10,2310.0014503,watch,scanning_but_passive,0.9,scanning_but_passive,Transition,2310.0,2310.0,VICTORY,NONE,watch,2310.0,none,watch
-10,2315.0119932,watch,scanning_but_passive,0.672,scanning_but_passive,Transition,2315.0,2315.0,VICTORY,NONE,watch,2315.0,none,watch
-10,2320.0122177,watch,pop_confirms_exploration,0.287,pop_confirms_exploration,Transition,2320.0,2320.0,VICTORY,NONE,watch,2320.0,none,watch
-10,2325.0083752,watch,none,1.0,none,Transition,2325.0,2325.0,VICTORY,NONE,watch,2325.0,none,watch
-10,2330.0007282,watch,pop_confirms_exploration,0.595,pop_confirms_exploration,Transition,2330.0,2330.0,VICTORY,NONE,watch,2330.0,none,watch
-10,2335.0215191,watch,pop_says_stuck_but_searching,0.225,pop_says_stuck_but_searching,Transition,2335.0,2335.0,VICTORY,NONE,watch,2335.0,none,watch
-10,2340.0069101,watch,scanning_but_passive,0.578,scanning_but_passive,Transition,2340.0,2340.0,VICTORY,NONE,watch,2340.0,none,watch
-10,2345.0049712,watch,pop_says_stuck_but_searching,0.302,pop_says_stuck_but_searching,Transition,2345.0,2345.0,VICTORY,NONE,watch,2345.0,none,watch
-10,2350.0108288,watch,focused_but_idle,0.815,focused_but_idle,Transition,2350.0,2350.0,VICTORY,NONE,watch,2350.0,none,watch
-10,2355.006214,watch,pop_confirms_exploration,0.493,pop_confirms_exploration,Transition,2355.0,2355.0,VICTORY,NONE,watch,2355.0,none,watch
-10,2360.009202,watch,none,1.0,none,Transition,2360.0,2360.0,VICTORY,NONE,watch,2360.0,none,watch
-10,2365.0113709,watch,none,1.0,none,Transition,2365.0,2365.0,VICTORY,NONE,watch,2365.0,none,watch
-10,2370.0145657,watch,focused_but_idle,0.593,focused_but_idle,Transition,2370.0,2370.0,VICTORY,NONE,watch,2370.0,none,watch
-10,2375.0067852,watch,none,1.0,none,Transition,2375.0,2375.0,VICTORY,NONE,watch,2375.0,none,watch
+10,2280.013987,probe,scanning_but_passive,0.792,scanning_but_passive,Transition,2280.0,2280.0,VICTORY,NONE,watch,2280.0,none,watch
+10,2285.0096244,probe,scattered_but_progressing,0.691,scattered_but_progressing,Transition,2285.0,2285.0,VICTORY,NONE,watch,2285.0,none,watch
+10,2290.0088433,probe,scanning_but_passive,0.567,scanning_but_passive,Transition,2290.0,2290.0,VICTORY,NONE,watch,2290.0,none,watch
+10,2295.0044385,probe,focused_but_idle,0.574,focused_but_idle,Transition,2295.0,2295.0,VICTORY,NONE,watch,2295.0,none,watch
+10,2300.0012388,probe,pop_says_stuck_but_searching,0.282,pop_says_stuck_but_searching,Transition,2300.0,2300.0,VICTORY,NONE,watch,2300.0,none,watch
+10,2305.012787,probe,pop_confirms_exploration,0.284,pop_confirms_exploration,Transition,2305.0,2305.0,VICTORY,NONE,watch,2305.0,none,watch
+10,2310.0014503,probe,scanning_but_passive,0.9,scanning_but_passive,Transition,2310.0,2310.0,VICTORY,NONE,watch,2310.0,none,watch
+10,2315.0119932,probe,scanning_but_passive,0.672,scanning_but_passive,Transition,2315.0,2315.0,VICTORY,NONE,watch,2315.0,none,watch
+10,2320.0122177,probe,pop_confirms_exploration,0.287,pop_confirms_exploration,Transition,2320.0,2320.0,VICTORY,NONE,watch,2320.0,none,watch
+10,2325.0083752,probe,none,1.0,none,Transition,2325.0,2325.0,VICTORY,NONE,watch,2325.0,none,watch
+10,2330.0007282,probe,pop_confirms_exploration,0.595,pop_confirms_exploration,Transition,2330.0,2330.0,VICTORY,NONE,watch,2330.0,none,watch
+10,2335.0215191,probe,pop_says_stuck_but_searching,0.225,pop_says_stuck_but_searching,Transition,2335.0,2335.0,VICTORY,NONE,watch,2335.0,none,watch
+10,2340.0069101,probe,scanning_but_passive,0.578,scanning_but_passive,Transition,2340.0,2340.0,VICTORY,NONE,watch,2340.0,none,watch
+10,2345.0049712,probe,pop_says_stuck_but_searching,0.302,pop_says_stuck_but_searching,Transition,2345.0,2345.0,VICTORY,NONE,watch,2345.0,none,watch
+10,2350.0108288,probe,focused_but_idle,0.815,focused_but_idle,Transition,2350.0,2350.0,VICTORY,NONE,watch,2350.0,none,watch
+10,2355.006214,probe,pop_confirms_exploration,0.493,pop_confirms_exploration,Transition,2355.0,2355.0,VICTORY,NONE,watch,2355.0,none,watch
+10,2360.009202,probe,none,1.0,none,Transition,2360.0,2360.0,VICTORY,NONE,watch,2360.0,none,watch
+10,2365.0113709,probe,none,1.0,none,Transition,2365.0,2365.0,VICTORY,NONE,watch,2365.0,none,watch
+10,2370.0145657,probe,focused_but_idle,0.593,focused_but_idle,Transition,2370.0,2370.0,VICTORY,NONE,watch,2370.0,none,watch
+10,2375.0067852,probe,none,1.0,none,Transition,2375.0,2375.0,VICTORY,NONE,watch,2375.0,none,watch
 10,2380.0208641,probe,scanning_but_passive,0.842,scanning_but_passive,Spoke Puzzle: Amount of Sunlight,2380.0,2380.0,VICTORY,NONE,watch,2380.0,none,watch
 10,2385.000906,probe,scanning_but_passive,0.679,scanning_but_passive,Spoke Puzzle: Amount of Sunlight,2385.0,2385.0,VICTORY,NONE,watch,2385.0,none,watch
 10,2390.0031208,watch,pop_confirms_progress,0.387,pop_confirms_progress,Spoke Puzzle: Amount of Sunlight,2390.0,2390.0,VICTORY,NONE,watch,2390.0,none,watch
@@ -3056,46 +3056,46 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 10,2525.0010008,probe,scanning_but_passive,0.746,scanning_but_passive,Spoke Puzzle: Amount of Sunlight,2525.0,2525.0,VICTORY,NONE,watch,2525.0,none,watch
 10,2530.0110537,probe,scanning_but_passive,0.576,scanning_but_passive,Spoke Puzzle: Amount of Sunlight,2530.0,2530.0,VICTORY,NONE,watch,2530.0,none,watch
 10,2535.0085078,watch,scattered_but_progressing,0.87,scattered_but_progressing,Spoke Puzzle: Amount of Sunlight,2535.0,2535.0,VICTORY,NONE,watch,2535.0,none,watch
-10,2540.0069957,watch,scattered_but_progressing,0.697,scattered_but_progressing,Transition,2540.0,2540.0,VICTORY,NONE,watch,2540.0,none,watch
-10,2545.005871,watch,scanning_but_passive,0.57,scanning_but_passive,Transition,2545.0,2545.0,VICTORY,NONE,watch,2545.0,none,watch
-10,2550.0013885,watch,scattered_but_progressing,0.911,scattered_but_progressing,Transition,2550.0,2550.0,VICTORY,NONE,watch,2550.0,none,watch
-10,2555.0059795,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2555.0,2555.0,VICTORY,NONE,watch,2555.0,none,watch
-10,2560.0079241,watch,scattered_but_progressing,0.922,scattered_but_progressing,Transition,2560.0,2560.0,VICTORY,NONE,watch,2560.0,none,watch
-10,2565.0053523,watch,scattered_but_progressing,0.859,scattered_but_progressing,Transition,2565.0,2565.0,VICTORY,NONE,watch,2565.0,none,watch
-10,2570.0017555,watch,scattered_but_progressing,0.922,scattered_but_progressing,Transition,2570.0,2570.0,VICTORY,NONE,watch,2570.0,none,watch
-10,2575.002951,watch,scattered_but_progressing,0.801,scattered_but_progressing,Transition,2575.0,2575.0,VICTORY,NONE,watch,2575.0,none,watch
-10,2580.0055977,watch,focused_progress,0.294,focused_progress,Transition,2580.0,2580.0,VICTORY,NONE,watch,2580.0,none,watch
-10,2585.0015108,watch,passive_and_stuck,0.238,passive_and_stuck,Transition,2585.0,2585.0,VICTORY,NONE,watch,2585.0,none,watch
-10,2590.0008589,watch,focused_but_idle,0.793,focused_but_idle,Transition,2590.0,2590.0,VICTORY,NONE,watch,2590.0,none,watch
+10,2540.0069957,probe,scattered_but_progressing,0.697,scattered_but_progressing,Transition,2540.0,2540.0,VICTORY,NONE,watch,2540.0,none,watch
+10,2545.005871,probe,scanning_but_passive,0.57,scanning_but_passive,Transition,2545.0,2545.0,VICTORY,NONE,watch,2545.0,none,watch
+10,2550.0013885,probe,scattered_but_progressing,0.911,scattered_but_progressing,Transition,2550.0,2550.0,VICTORY,NONE,watch,2550.0,none,watch
+10,2555.0059795,probe,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2555.0,2555.0,VICTORY,NONE,watch,2555.0,none,watch
+10,2560.0079241,probe,scattered_but_progressing,0.922,scattered_but_progressing,Transition,2560.0,2560.0,VICTORY,NONE,watch,2560.0,none,watch
+10,2565.0053523,probe,scattered_but_progressing,0.859,scattered_but_progressing,Transition,2565.0,2565.0,VICTORY,NONE,watch,2565.0,none,watch
+10,2570.0017555,probe,scattered_but_progressing,0.922,scattered_but_progressing,Transition,2570.0,2570.0,VICTORY,NONE,watch,2570.0,none,watch
+10,2575.002951,probe,scattered_but_progressing,0.801,scattered_but_progressing,Transition,2575.0,2575.0,VICTORY,NONE,watch,2575.0,none,watch
+10,2580.0055977,probe,focused_progress,0.294,focused_progress,Transition,2580.0,2580.0,VICTORY,NONE,watch,2580.0,none,watch
+10,2585.0015108,probe,passive_and_stuck,0.238,passive_and_stuck,Transition,2585.0,2585.0,VICTORY,NONE,watch,2585.0,none,watch
+10,2590.0008589,probe,focused_but_idle,0.793,focused_but_idle,Transition,2590.0,2590.0,VICTORY,NONE,watch,2590.0,none,watch
 10,2595.0117169,intervene,passive_and_stuck,0.22,passive_and_stuck,Transition,2595.0,2595.0,VICTORY,NONE,watch,2595.0,none,watch
 10,2600.0062201,intervene,passive_and_stuck,0.205,passive_and_stuck,Transition,2600.0,2600.0,VICTORY,NONE,watch,2600.0,none,watch
-10,2605.0066679,watch,scanning_but_passive,0.815,scanning_but_passive,Transition,2605.0,2605.0,VICTORY,NONE,watch,2605.0,none,watch
-10,2610.0098133,watch,focused_but_idle,0.724,focused_but_idle,Transition,2610.0,2610.0,VICTORY,NONE,watch,2610.0,none,watch
-10,2615.0094249,watch,focused_progress,0.36,focused_progress,Transition,2615.0,2615.0,VICTORY,NONE,watch,2615.0,none,watch
-10,2620.0114914,watch,focused_progress,0.489,focused_progress,Transition,2620.0,2620.0,VICTORY,NONE,watch,2620.0,none,watch
-10,2625.0112675,watch,focused_but_idle,0.703,focused_but_idle,Transition,2625.0,2625.0,VICTORY,NONE,watch,2625.0,none,watch
-10,2630.009775,watch,focused_but_idle,0.714,focused_but_idle,Transition,2630.0,2630.0,VICTORY,NONE,watch,2630.0,none,watch
-10,2635.0111593,watch,scattered_but_progressing,0.577,scattered_but_progressing,Transition,2635.0,2635.0,VICTORY,NONE,watch,2635.0,none,watch
-10,2640.0037392,watch,focused_progress,0.489,focused_progress,Transition,2640.0,2640.0,VICTORY,NONE,watch,2640.0,none,watch
-10,2645.0005383,watch,scattered_but_progressing,0.776,scattered_but_progressing,Transition,2645.0,2645.0,VICTORY,NONE,watch,2645.0,none,watch
-10,2650.0120795,watch,focused_but_idle,0.652,focused_but_idle,Transition,2650.0,2650.0,VICTORY,NONE,watch,2650.0,none,watch
-10,2655.0076219,watch,focused_progress,0.527,focused_progress,Transition,2655.0,2655.0,VICTORY,NONE,watch,2655.0,none,watch
-10,2660.002658,watch,focused_progress,0.611,focused_progress,Transition,2660.0,2660.0,VICTORY,NONE,watch,2660.0,none,watch
-10,2665.010822,watch,scattered_but_progressing,0.478,scattered_but_progressing,Transition,2665.0,2665.0,VICTORY,NONE,watch,2665.0,none,watch
-10,2670.0095068,watch,scattered_but_progressing,0.426,scattered_but_progressing,Transition,2670.0,2670.0,VICTORY,NONE,watch,2670.0,none,watch
-10,2675.0184481,watch,focused_but_idle,0.718,focused_but_idle,Transition,2675.0,2675.0,VICTORY,NONE,watch,2675.0,reflective,probe
-10,2680.0094406,watch,focused_but_idle,0.725,focused_but_idle,Transition,2680.0,2680.0,VICTORY,NONE,watch,2680.0,reflective,probe
-10,2685.0087035,watch,none,1.0,none,Transition,2685.0,2685.0,VICTORY,NONE,watch,2685.0,explicit,intervene
-10,2690.0065294,watch,none,1.0,none,Transition,2690.0,2690.0,VICTORY,NONE,watch,2690.0,none,watch
-10,2695.0066693,watch,focused_but_idle,0.548,focused_but_idle,Transition,2695.0,2695.0,VICTORY,NONE,watch,2695.0,none,watch
-10,2700.0092974,watch,scattered_but_progressing,0.326,scattered_but_progressing,Transition,2700.0,2700.0,VICTORY,NONE,watch,2700.0,none,watch
-10,2705.0079603,watch,focused_but_idle,0.509,focused_but_idle,Transition,2705.0,2705.0,VICTORY,NONE,watch,2705.0,none,watch
-10,2710.0004659,watch,focused_but_idle,0.654,focused_but_idle,Transition,2710.0,2710.0,VICTORY,NONE,watch,2710.0,reflective,probe
-10,2715.0043811,watch,focused_but_idle,0.792,focused_but_idle,Transition,2715.0,2715.0,VICTORY,NONE,watch,2715.0,reflective,probe
-10,2720.004916,watch,focused_but_idle,0.705,focused_but_idle,Transition,2720.0,2720.0,VICTORY,NONE,watch,2720.0,reflective,probe
-10,2725.0007633,watch,focused_but_idle,0.646,focused_but_idle,Transition,2725.0,2725.0,VICTORY,NONE,watch,2725.0,reflective,probe
-10,2730.0013504,watch,focused_but_idle,0.725,focused_but_idle,Transition,2730.0,2730.0,VICTORY,NONE,watch,2730.0,reflective,probe
-10,2735.0070677,watch,scanning_but_passive,0.639,scanning_but_passive,Transition,2735.0,2735.0,VICTORY,NONE,watch,2735.0,reflective,probe
+10,2605.0066679,probe,scanning_but_passive,0.815,scanning_but_passive,Transition,2605.0,2605.0,VICTORY,NONE,watch,2605.0,none,watch
+10,2610.0098133,probe,focused_but_idle,0.724,focused_but_idle,Transition,2610.0,2610.0,VICTORY,NONE,watch,2610.0,none,watch
+10,2615.0094249,probe,focused_progress,0.36,focused_progress,Transition,2615.0,2615.0,VICTORY,NONE,watch,2615.0,none,watch
+10,2620.0114914,probe,focused_progress,0.489,focused_progress,Transition,2620.0,2620.0,VICTORY,NONE,watch,2620.0,none,watch
+10,2625.0112675,probe,focused_but_idle,0.703,focused_but_idle,Transition,2625.0,2625.0,VICTORY,NONE,watch,2625.0,none,watch
+10,2630.009775,probe,focused_but_idle,0.714,focused_but_idle,Transition,2630.0,2630.0,VICTORY,NONE,watch,2630.0,none,watch
+10,2635.0111593,probe,scattered_but_progressing,0.577,scattered_but_progressing,Transition,2635.0,2635.0,VICTORY,NONE,watch,2635.0,none,watch
+10,2640.0037392,probe,focused_progress,0.489,focused_progress,Transition,2640.0,2640.0,VICTORY,NONE,watch,2640.0,none,watch
+10,2645.0005383,probe,scattered_but_progressing,0.776,scattered_but_progressing,Transition,2645.0,2645.0,VICTORY,NONE,watch,2645.0,none,watch
+10,2650.0120795,probe,focused_but_idle,0.652,focused_but_idle,Transition,2650.0,2650.0,VICTORY,NONE,watch,2650.0,none,watch
+10,2655.0076219,probe,focused_progress,0.527,focused_progress,Transition,2655.0,2655.0,VICTORY,NONE,watch,2655.0,none,watch
+10,2660.002658,probe,focused_progress,0.611,focused_progress,Transition,2660.0,2660.0,VICTORY,NONE,watch,2660.0,none,watch
+10,2665.010822,probe,scattered_but_progressing,0.478,scattered_but_progressing,Transition,2665.0,2665.0,VICTORY,NONE,watch,2665.0,none,watch
+10,2670.0095068,probe,scattered_but_progressing,0.426,scattered_but_progressing,Transition,2670.0,2670.0,VICTORY,NONE,watch,2670.0,none,watch
+10,2675.0184481,probe,focused_but_idle,0.718,focused_but_idle,Transition,2675.0,2675.0,VICTORY,NONE,watch,2675.0,reflective,probe
+10,2680.0094406,probe,focused_but_idle,0.725,focused_but_idle,Transition,2680.0,2680.0,VICTORY,NONE,watch,2680.0,reflective,probe
+10,2685.0087035,probe,none,1.0,none,Transition,2685.0,2685.0,VICTORY,NONE,watch,2685.0,explicit,intervene
+10,2690.0065294,probe,none,1.0,none,Transition,2690.0,2690.0,VICTORY,NONE,watch,2690.0,none,watch
+10,2695.0066693,probe,focused_but_idle,0.548,focused_but_idle,Transition,2695.0,2695.0,VICTORY,NONE,watch,2695.0,none,watch
+10,2700.0092974,probe,scattered_but_progressing,0.326,scattered_but_progressing,Transition,2700.0,2700.0,VICTORY,NONE,watch,2700.0,none,watch
+10,2705.0079603,probe,focused_but_idle,0.509,focused_but_idle,Transition,2705.0,2705.0,VICTORY,NONE,watch,2705.0,none,watch
+10,2710.0004659,probe,focused_but_idle,0.654,focused_but_idle,Transition,2710.0,2710.0,VICTORY,NONE,watch,2710.0,reflective,probe
+10,2715.0043811,probe,focused_but_idle,0.792,focused_but_idle,Transition,2715.0,2715.0,VICTORY,NONE,watch,2715.0,reflective,probe
+10,2720.004916,probe,focused_but_idle,0.705,focused_but_idle,Transition,2720.0,2720.0,VICTORY,NONE,watch,2720.0,reflective,probe
+10,2725.0007633,probe,focused_but_idle,0.646,focused_but_idle,Transition,2725.0,2725.0,VICTORY,NONE,watch,2725.0,reflective,probe
+10,2730.0013504,probe,focused_but_idle,0.725,focused_but_idle,Transition,2730.0,2730.0,VICTORY,NONE,watch,2730.0,reflective,probe
+10,2735.0070677,probe,scanning_but_passive,0.639,scanning_but_passive,Transition,2735.0,2735.0,VICTORY,NONE,watch,2735.0,reflective,probe
 10,2740.0043048,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,2740.0,2740.0,VICTORY,NONE,watch,2740.0,reflective,probe
 10,2745.0074605,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,2745.0,2745.0,VICTORY,NONE,watch,2745.0,none,watch
 10,2750.0075555,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,2750.0,2750.0,VICTORY,NONE,watch,2750.0,none,watch
@@ -3104,26 +3104,26 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 10,2765.0108307,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,2765.0,2765.0,VICTORY,NONE,watch,2765.0,none,watch
 10,2770.0074284,intervene,passive_and_stuck,0.051,passive_and_stuck,Transition,2770.0,2770.0,VICTORY,NONE,watch,2770.0,none,watch
 10,2775.0102214,intervene,passive_and_stuck,0.058,passive_and_stuck,Transition,2775.0,2775.0,VICTORY,NONE,watch,2775.0,none,watch
-10,2780.0083904,watch,none,1.0,none,Transition,2780.0,2780.0,VICTORY,NONE,watch,2780.0,none,watch
-10,2785.0115188,watch,none,1.0,none,Transition,2785.0,2785.0,VICTORY,NONE,watch,2785.0,none,watch
-10,2790.0116544,watch,focused_but_idle,0.695,focused_but_idle,Transition,2790.0,2790.0,VICTORY,NONE,watch,2790.0,none,watch
-10,2795.0118107,watch,none,1.0,none,Transition,2795.0,2795.0,VICTORY,NONE,watch,2795.0,none,watch
+10,2780.0083904,probe,none,1.0,none,Transition,2780.0,2780.0,VICTORY,NONE,watch,2780.0,none,watch
+10,2785.0115188,probe,none,1.0,none,Transition,2785.0,2785.0,VICTORY,NONE,watch,2785.0,none,watch
+10,2790.0116544,probe,focused_but_idle,0.695,focused_but_idle,Transition,2790.0,2790.0,VICTORY,NONE,watch,2790.0,none,watch
+10,2795.0118107,probe,none,1.0,none,Transition,2795.0,2795.0,VICTORY,NONE,watch,2795.0,none,watch
 10,2800.0107534,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,2800.0,2800.0,VICTORY,NONE,watch,2800.0,none,watch
-10,2805.0035741,watch,scanning_but_passive,0.861,scanning_but_passive,Transition,2805.0,2805.0,VICTORY,NONE,watch,2805.0,none,watch
+10,2805.0035741,probe,scanning_but_passive,0.861,scanning_but_passive,Transition,2805.0,2805.0,VICTORY,NONE,watch,2805.0,none,watch
 10,2810.0126932,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,2810.0,2810.0,VICTORY,NONE,watch,2810.0,none,watch
-10,2815.0104316,watch,pop_confirms_exploration,0.521,pop_confirms_exploration,Transition,2815.0,2815.0,VICTORY,NONE,watch,2815.0,none,watch
-10,2820.0035588,watch,pop_confirms_exploration,0.641,pop_confirms_exploration,Transition,2820.0,2820.0,VICTORY,NONE,watch,2820.0,none,watch
+10,2815.0104316,probe,pop_confirms_exploration,0.521,pop_confirms_exploration,Transition,2815.0,2815.0,VICTORY,NONE,watch,2815.0,none,watch
+10,2820.0035588,probe,pop_confirms_exploration,0.641,pop_confirms_exploration,Transition,2820.0,2820.0,VICTORY,NONE,watch,2820.0,none,watch
 10,2825.000341,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,2825.0,2825.0,VICTORY,NONE,watch,2825.0,none,watch
-10,2830.0074657,watch,focused_but_idle,0.852,focused_but_idle,Transition,2830.0,2830.0,VICTORY,NONE,watch,2830.0,none,watch
+10,2830.0074657,probe,focused_but_idle,0.852,focused_but_idle,Transition,2830.0,2830.0,VICTORY,NONE,watch,2830.0,none,watch
 10,2835.0051088,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,2835.0,2835.0,VICTORY,NONE,watch,2835.0,none,watch
-10,2840.0018244,watch,focused_but_idle,0.832,focused_but_idle,Transition,2840.0,2840.0,VICTORY,NONE,watch,2840.0,none,watch
-10,2845.0022771,watch,none,1.0,none,Transition,2845.0,2845.0,VICTORY,NONE,watch,2845.0,none,watch
-10,2850.0104025,watch,focused_but_idle,0.819,focused_but_idle,Transition,2850.0,2850.0,VICTORY,NONE,watch,2850.0,none,watch
-10,2855.010676,watch,scanning_but_passive,0.571,scanning_but_passive,Transition,2855.0,2855.0,VICTORY,NONE,watch,2855.0,none,watch
-10,2860.0118066,watch,focused_but_idle,0.712,focused_but_idle,Transition,2860.0,2860.0,VICTORY,NONE,watch,2860.0,none,watch
-10,2865.0030878,watch,none,1.0,none,Transition,2865.0,2865.0,VICTORY,NONE,watch,2865.0,none,watch
-10,2870.0144333,watch,acting_without_progress,0.578,acting_without_progress,Transition,2870.0,2870.0,VICTORY,NONE,watch,2870.0,none,watch
-10,2875.0107749,watch,scanning_but_passive,0.574,scanning_but_passive,Transition,2875.0,2875.0,VICTORY,NONE,watch,2875.0,none,watch
+10,2840.0018244,probe,focused_but_idle,0.832,focused_but_idle,Transition,2840.0,2840.0,VICTORY,NONE,watch,2840.0,none,watch
+10,2845.0022771,probe,none,1.0,none,Transition,2845.0,2845.0,VICTORY,NONE,watch,2845.0,none,watch
+10,2850.0104025,probe,focused_but_idle,0.819,focused_but_idle,Transition,2850.0,2850.0,VICTORY,NONE,watch,2850.0,none,watch
+10,2855.010676,probe,scanning_but_passive,0.571,scanning_but_passive,Transition,2855.0,2855.0,VICTORY,NONE,watch,2855.0,none,watch
+10,2860.0118066,probe,focused_but_idle,0.712,focused_but_idle,Transition,2860.0,2860.0,VICTORY,NONE,watch,2860.0,none,watch
+10,2865.0030878,probe,none,1.0,none,Transition,2865.0,2865.0,VICTORY,NONE,watch,2865.0,none,watch
+10,2870.0144333,probe,acting_without_progress,0.578,acting_without_progress,Transition,2870.0,2870.0,VICTORY,NONE,watch,2870.0,none,watch
+10,2875.0107749,probe,scanning_but_passive,0.574,scanning_but_passive,Transition,2875.0,2875.0,VICTORY,NONE,watch,2875.0,none,watch
 10,2880.0083917,watch,pop_confirms_exploration,0.605,pop_confirms_exploration,Hub Puzzle: Cooking Pot,2880.0,2880.0,EXPLORE,PROMPT,intervene,2880.0,none,watch
 10,2885.0094794,watch,focused_progress,0.467,focused_progress,Hub Puzzle: Cooking Pot,2885.0,2885.0,EXPLORE,NONE,watch,2885.0,none,watch
 10,2890.0039796,watch,pop_confirms_progress,0.34,pop_confirms_progress,Hub Puzzle: Cooking Pot,2890.0,2890.0,EXPLORE,NONE,watch,2890.0,none,watch
@@ -3266,8 +3266,8 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 10,3575.0073419,probe,focused_but_idle,0.727,focused_but_idle,Hub Puzzle: Cooking Pot,3575.0,3575.0,VICTORY,NONE,watch,3575.0,none,watch
 10,3580.011016,watch,focused_progress,0.307,focused_progress,Hub Puzzle: Cooking Pot,3580.0,3580.0,VICTORY,NONE,watch,3580.0,none,watch
 10,3585.0051932,watch,scattered_but_progressing,0.693,scattered_but_progressing,Hub Puzzle: Cooking Pot,3585.0,3585.0,VICTORY,NONE,watch,3585.0,none,watch
-10,3590.0043907,watch,focused_progress,0.472,focused_progress,Transition,3590.0,3590.0,VICTORY,NONE,watch,3590.0,none,watch
-10,3595.0027905,watch,focused_but_idle,0.613,focused_but_idle,Transition,3595.0,3595.0,VICTORY,NONE,watch,3595.0,none,watch
+10,3590.0043907,probe,focused_progress,0.472,focused_progress,Transition,3590.0,3590.0,VICTORY,NONE,watch,3590.0,none,watch
+10,3595.0027905,probe,focused_but_idle,0.613,focused_but_idle,Transition,3595.0,3595.0,VICTORY,NONE,watch,3595.0,none,watch
 12,0.1247601,watch,scattered_but_progressing,0.859,scattered_but_progressing,Transition,0.0,0.0,EXPLORE,PROMPT,intervene,0.0,none,watch
 12,5.0010233,watch,scattered_but_progressing,0.674,scattered_but_progressing,Transition,5.0,5.0,EXPLORE,NONE,watch,5.0,none,watch
 12,10.0134817,watch,scanning_but_passive,0.761,scanning_but_passive,Transition,10.0,10.0,EXPLORE,NONE,watch,10.0,none,watch
@@ -3634,56 +3634,56 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 12,1815.004031,watch,scattered_but_progressing,0.541,scattered_but_progressing,Spoke Puzzle: Amount of Protein,1815.0,1815.0,VICTORY,NONE,watch,1815.0,none,watch
 12,1820.0123866,watch,focused_progress,0.348,focused_progress,Spoke Puzzle: Amount of Protein,1820.0,1820.0,VICTORY,NONE,watch,1820.0,none,watch
 12,1825.0089617,watch,scattered_but_progressing,0.401,scattered_but_progressing,Spoke Puzzle: Amount of Protein,1825.0,1825.0,VICTORY,NONE,watch,1825.0,none,watch
-12,1830.0075472,watch,scattered_but_progressing,0.531,scattered_but_progressing,Transition,1830.0,1830.0,VICTORY,NONE,watch,1830.0,none,watch
-12,1835.0003141,watch,scanning_but_passive,0.578,scanning_but_passive,Transition,1835.0,1835.0,VICTORY,NONE,watch,1835.0,none,watch
-12,1840.0113865,watch,scattered_but_progressing,0.601,scattered_but_progressing,Transition,1840.0,1840.0,VICTORY,NONE,watch,1840.0,none,watch
-12,1845.0052487,watch,focused_progress,0.448,focused_progress,Transition,1845.0,1845.0,VICTORY,NONE,watch,1845.0,none,watch
-12,1850.0058831,watch,focused_but_idle,0.605,focused_but_idle,Transition,1850.0,1850.0,VICTORY,NONE,watch,1850.0,none,watch
-12,1855.0056197,watch,focused_but_idle,0.631,focused_but_idle,Transition,1855.0,1855.0,VICTORY,NONE,watch,1855.0,none,watch
-12,1860.0130402,watch,focused_but_idle,0.518,focused_but_idle,Transition,1860.0,1860.0,VICTORY,NONE,watch,1860.0,none,watch
-12,1865.0035508,watch,scattered_but_progressing,0.728,scattered_but_progressing,Transition,1865.0,1865.0,VICTORY,NONE,watch,1865.0,none,watch
-12,1870.012213,watch,pop_says_stuck_but_active,0.372,pop_says_stuck_but_active,Transition,1870.0,1870.0,VICTORY,NONE,watch,1870.0,none,watch
-12,1875.0105513,watch,focused_progress,0.347,focused_progress,Transition,1875.0,1875.0,VICTORY,NONE,watch,1875.0,none,watch
-12,1880.0017835,watch,scanning_but_passive,0.72,scanning_but_passive,Transition,1880.0,1880.0,VICTORY,NONE,watch,1880.0,none,watch
-12,1885.0116675,watch,scattered_but_progressing,0.419,scattered_but_progressing,Transition,1885.0,1885.0,VICTORY,NONE,watch,1885.0,none,watch
-12,1890.004982,watch,focused_progress,0.387,focused_progress,Transition,1890.0,1890.0,VICTORY,NONE,watch,1890.0,none,watch
-12,1895.000606,watch,scattered_but_progressing,0.461,scattered_but_progressing,Transition,1895.0,1895.0,VICTORY,NONE,watch,1895.0,none,watch
-12,1900.0000235,watch,focused_progress,0.341,focused_progress,Transition,1900.0,1900.0,VICTORY,NONE,watch,1900.0,none,watch
-12,1905.0079505,watch,focused_progress,0.409,focused_progress,Transition,1905.0,1905.0,VICTORY,NONE,watch,1905.0,none,watch
-12,1910.0062856,watch,focused_but_idle,0.689,focused_but_idle,Transition,1910.0,1910.0,VICTORY,NONE,watch,1910.0,none,watch
-12,1915.011831,watch,focused_progress,0.466,focused_progress,Transition,1915.0,1915.0,VICTORY,NONE,watch,1915.0,none,watch
-12,1920.0099336,watch,focused_but_idle,0.815,focused_but_idle,Transition,1920.0,1920.0,VICTORY,NONE,watch,1920.0,none,watch
-12,1925.0198168,watch,focused_but_idle,0.741,focused_but_idle,Transition,1925.0,1925.0,VICTORY,NONE,watch,1925.0,none,watch
-12,1930.0106412,watch,focused_but_idle,0.72,focused_but_idle,Transition,1930.0,1930.0,VICTORY,NONE,watch,1930.0,none,watch
-12,1935.004236,watch,focused_but_idle,0.697,focused_but_idle,Transition,1935.0,1935.0,VICTORY,NONE,watch,1935.0,none,watch
-12,1940.0093216,watch,focused_but_idle,0.577,focused_but_idle,Transition,1940.0,1940.0,VICTORY,NONE,watch,1940.0,none,watch
-12,1945.0052567,watch,focused_but_idle,0.677,focused_but_idle,Transition,1945.0,1945.0,VICTORY,NONE,watch,1945.0,none,watch
-12,1950.008073,watch,focused_but_idle,0.72,focused_but_idle,Transition,1950.0,1950.0,VICTORY,NONE,watch,1950.0,none,watch
-12,1955.0052133,watch,focused_but_idle,0.829,focused_but_idle,Transition,1955.0,1955.0,VICTORY,NONE,watch,1955.0,none,watch
-12,1960.001181,watch,focused_but_idle,0.663,focused_but_idle,Transition,1960.0,1960.0,VICTORY,NONE,watch,1960.0,none,watch
-12,1965.0013433,watch,focused_but_idle,0.861,focused_but_idle,Transition,1965.0,1965.0,VICTORY,NONE,watch,1965.0,none,watch
-12,1970.0117526,watch,focused_but_idle,0.835,focused_but_idle,Transition,1970.0,1970.0,VICTORY,NONE,watch,1970.0,none,watch
-12,1975.0036345,watch,focused_but_idle,0.772,focused_but_idle,Transition,1975.0,1975.0,VICTORY,NONE,watch,1975.0,none,watch
-12,1980.0104478,watch,pop_says_stuck_but_searching,0.312,pop_says_stuck_but_searching,Transition,1980.0,1980.0,VICTORY,NONE,watch,1980.0,none,watch
-12,1985.0049308,watch,none,1.0,none,Transition,1985.0,1985.0,VICTORY,NONE,watch,1985.0,reflective,probe
-12,1990.0031744,watch,none,1.0,none,Transition,1990.0,1990.0,VICTORY,NONE,watch,1990.0,reflective,probe
-12,1995.0092822,watch,focused_but_idle,0.712,focused_but_idle,Transition,1995.0,1995.0,VICTORY,NONE,watch,1995.0,reflective,probe
-12,2000.0064963,watch,focused_but_idle,0.72,focused_but_idle,Transition,2000.0,2000.0,VICTORY,NONE,watch,2000.0,reflective,probe
-12,2005.0022066,watch,none,1.0,none,Transition,2005.0,2005.0,VICTORY,NONE,watch,2005.0,reflective,probe
-12,2010.0000832,watch,focused_but_idle,0.725,focused_but_idle,Transition,2010.0,2010.0,VICTORY,NONE,watch,2010.0,reflective,probe
-12,2015.008474,watch,focused_but_idle,0.758,focused_but_idle,Transition,2015.0,2015.0,VICTORY,NONE,watch,2015.0,reflective,probe
-12,2020.0235753,watch,focused_but_idle,0.619,focused_but_idle,Transition,2020.0,2020.0,VICTORY,NONE,watch,2020.0,reflective,probe
-12,2025.0059836,watch,focused_but_idle,0.796,focused_but_idle,Transition,2025.0,2025.0,VICTORY,NONE,watch,2025.0,reflective,probe
-12,2030.0095117,watch,focused_but_idle,0.821,focused_but_idle,Transition,2030.0,2030.0,VICTORY,NONE,watch,2030.0,reflective,probe
-12,2035.0064749,watch,focused_but_idle,0.744,focused_but_idle,Transition,2035.0,2035.0,VICTORY,NONE,watch,2035.0,reflective,probe
-12,2040.0006346,watch,focused_but_idle,0.828,focused_but_idle,Transition,2040.0,2040.0,VICTORY,NONE,watch,2040.0,reflective,probe
-12,2045.021336,watch,none,1.0,none,Transition,2045.0,2045.0,VICTORY,NONE,watch,2045.0,reflective,probe
-12,2050.0184819,watch,none,1.0,none,Transition,2050.0,2050.0,VICTORY,NONE,watch,2050.0,none,watch
-12,2055.0007933,watch,none,1.0,none,Transition,2055.0,2055.0,VICTORY,NONE,watch,2055.0,none,watch
-12,2060.0018194,watch,none,1.0,none,Transition,2060.0,2060.0,VICTORY,NONE,watch,2060.0,none,watch
-12,2065.0095911,watch,acting_without_progress,0.565,acting_without_progress,Transition,2065.0,2065.0,VICTORY,NONE,watch,2065.0,none,watch
-12,2070.0034943,watch,focused_but_idle,0.596,focused_but_idle,Transition,2070.0,2070.0,VICTORY,NONE,watch,2070.0,explicit,intervene
-12,2075.0039634,watch,focused_but_idle,0.532,focused_but_idle,Transition,2075.0,2075.0,VICTORY,NONE,watch,2075.0,none,watch
+12,1830.0075472,probe,scattered_but_progressing,0.531,scattered_but_progressing,Transition,1830.0,1830.0,VICTORY,NONE,watch,1830.0,none,watch
+12,1835.0003141,probe,scanning_but_passive,0.578,scanning_but_passive,Transition,1835.0,1835.0,VICTORY,NONE,watch,1835.0,none,watch
+12,1840.0113865,probe,scattered_but_progressing,0.601,scattered_but_progressing,Transition,1840.0,1840.0,VICTORY,NONE,watch,1840.0,none,watch
+12,1845.0052487,probe,focused_progress,0.448,focused_progress,Transition,1845.0,1845.0,VICTORY,NONE,watch,1845.0,none,watch
+12,1850.0058831,probe,focused_but_idle,0.605,focused_but_idle,Transition,1850.0,1850.0,VICTORY,NONE,watch,1850.0,none,watch
+12,1855.0056197,probe,focused_but_idle,0.631,focused_but_idle,Transition,1855.0,1855.0,VICTORY,NONE,watch,1855.0,none,watch
+12,1860.0130402,probe,focused_but_idle,0.518,focused_but_idle,Transition,1860.0,1860.0,VICTORY,NONE,watch,1860.0,none,watch
+12,1865.0035508,probe,scattered_but_progressing,0.728,scattered_but_progressing,Transition,1865.0,1865.0,VICTORY,NONE,watch,1865.0,none,watch
+12,1870.012213,probe,pop_says_stuck_but_active,0.372,pop_says_stuck_but_active,Transition,1870.0,1870.0,VICTORY,NONE,watch,1870.0,none,watch
+12,1875.0105513,probe,focused_progress,0.347,focused_progress,Transition,1875.0,1875.0,VICTORY,NONE,watch,1875.0,none,watch
+12,1880.0017835,probe,scanning_but_passive,0.72,scanning_but_passive,Transition,1880.0,1880.0,VICTORY,NONE,watch,1880.0,none,watch
+12,1885.0116675,probe,scattered_but_progressing,0.419,scattered_but_progressing,Transition,1885.0,1885.0,VICTORY,NONE,watch,1885.0,none,watch
+12,1890.004982,probe,focused_progress,0.387,focused_progress,Transition,1890.0,1890.0,VICTORY,NONE,watch,1890.0,none,watch
+12,1895.000606,probe,scattered_but_progressing,0.461,scattered_but_progressing,Transition,1895.0,1895.0,VICTORY,NONE,watch,1895.0,none,watch
+12,1900.0000235,probe,focused_progress,0.341,focused_progress,Transition,1900.0,1900.0,VICTORY,NONE,watch,1900.0,none,watch
+12,1905.0079505,probe,focused_progress,0.409,focused_progress,Transition,1905.0,1905.0,VICTORY,NONE,watch,1905.0,none,watch
+12,1910.0062856,probe,focused_but_idle,0.689,focused_but_idle,Transition,1910.0,1910.0,VICTORY,NONE,watch,1910.0,none,watch
+12,1915.011831,probe,focused_progress,0.466,focused_progress,Transition,1915.0,1915.0,VICTORY,NONE,watch,1915.0,none,watch
+12,1920.0099336,probe,focused_but_idle,0.815,focused_but_idle,Transition,1920.0,1920.0,VICTORY,NONE,watch,1920.0,none,watch
+12,1925.0198168,probe,focused_but_idle,0.741,focused_but_idle,Transition,1925.0,1925.0,VICTORY,NONE,watch,1925.0,none,watch
+12,1930.0106412,probe,focused_but_idle,0.72,focused_but_idle,Transition,1930.0,1930.0,VICTORY,NONE,watch,1930.0,none,watch
+12,1935.004236,probe,focused_but_idle,0.697,focused_but_idle,Transition,1935.0,1935.0,VICTORY,NONE,watch,1935.0,none,watch
+12,1940.0093216,probe,focused_but_idle,0.577,focused_but_idle,Transition,1940.0,1940.0,VICTORY,NONE,watch,1940.0,none,watch
+12,1945.0052567,probe,focused_but_idle,0.677,focused_but_idle,Transition,1945.0,1945.0,VICTORY,NONE,watch,1945.0,none,watch
+12,1950.008073,probe,focused_but_idle,0.72,focused_but_idle,Transition,1950.0,1950.0,VICTORY,NONE,watch,1950.0,none,watch
+12,1955.0052133,probe,focused_but_idle,0.829,focused_but_idle,Transition,1955.0,1955.0,VICTORY,NONE,watch,1955.0,none,watch
+12,1960.001181,probe,focused_but_idle,0.663,focused_but_idle,Transition,1960.0,1960.0,VICTORY,NONE,watch,1960.0,none,watch
+12,1965.0013433,probe,focused_but_idle,0.861,focused_but_idle,Transition,1965.0,1965.0,VICTORY,NONE,watch,1965.0,none,watch
+12,1970.0117526,probe,focused_but_idle,0.835,focused_but_idle,Transition,1970.0,1970.0,VICTORY,NONE,watch,1970.0,none,watch
+12,1975.0036345,probe,focused_but_idle,0.772,focused_but_idle,Transition,1975.0,1975.0,VICTORY,NONE,watch,1975.0,none,watch
+12,1980.0104478,probe,pop_says_stuck_but_searching,0.312,pop_says_stuck_but_searching,Transition,1980.0,1980.0,VICTORY,NONE,watch,1980.0,none,watch
+12,1985.0049308,probe,none,1.0,none,Transition,1985.0,1985.0,VICTORY,NONE,watch,1985.0,reflective,probe
+12,1990.0031744,probe,none,1.0,none,Transition,1990.0,1990.0,VICTORY,NONE,watch,1990.0,reflective,probe
+12,1995.0092822,probe,focused_but_idle,0.712,focused_but_idle,Transition,1995.0,1995.0,VICTORY,NONE,watch,1995.0,reflective,probe
+12,2000.0064963,probe,focused_but_idle,0.72,focused_but_idle,Transition,2000.0,2000.0,VICTORY,NONE,watch,2000.0,reflective,probe
+12,2005.0022066,probe,none,1.0,none,Transition,2005.0,2005.0,VICTORY,NONE,watch,2005.0,reflective,probe
+12,2010.0000832,probe,focused_but_idle,0.725,focused_but_idle,Transition,2010.0,2010.0,VICTORY,NONE,watch,2010.0,reflective,probe
+12,2015.008474,probe,focused_but_idle,0.758,focused_but_idle,Transition,2015.0,2015.0,VICTORY,NONE,watch,2015.0,reflective,probe
+12,2020.0235753,probe,focused_but_idle,0.619,focused_but_idle,Transition,2020.0,2020.0,VICTORY,NONE,watch,2020.0,reflective,probe
+12,2025.0059836,probe,focused_but_idle,0.796,focused_but_idle,Transition,2025.0,2025.0,VICTORY,NONE,watch,2025.0,reflective,probe
+12,2030.0095117,probe,focused_but_idle,0.821,focused_but_idle,Transition,2030.0,2030.0,VICTORY,NONE,watch,2030.0,reflective,probe
+12,2035.0064749,probe,focused_but_idle,0.744,focused_but_idle,Transition,2035.0,2035.0,VICTORY,NONE,watch,2035.0,reflective,probe
+12,2040.0006346,probe,focused_but_idle,0.828,focused_but_idle,Transition,2040.0,2040.0,VICTORY,NONE,watch,2040.0,reflective,probe
+12,2045.021336,probe,none,1.0,none,Transition,2045.0,2045.0,VICTORY,NONE,watch,2045.0,reflective,probe
+12,2050.0184819,probe,none,1.0,none,Transition,2050.0,2050.0,VICTORY,NONE,watch,2050.0,none,watch
+12,2055.0007933,probe,none,1.0,none,Transition,2055.0,2055.0,VICTORY,NONE,watch,2055.0,none,watch
+12,2060.0018194,probe,none,1.0,none,Transition,2060.0,2060.0,VICTORY,NONE,watch,2060.0,none,watch
+12,2065.0095911,probe,acting_without_progress,0.565,acting_without_progress,Transition,2065.0,2065.0,VICTORY,NONE,watch,2065.0,none,watch
+12,2070.0034943,probe,focused_but_idle,0.596,focused_but_idle,Transition,2070.0,2070.0,VICTORY,NONE,watch,2070.0,explicit,intervene
+12,2075.0039634,probe,focused_but_idle,0.532,focused_but_idle,Transition,2075.0,2075.0,VICTORY,NONE,watch,2075.0,none,watch
 12,2080.0194597,watch,none,1.0,none,Hub Puzzle: Cooking Pot,2080.0,2080.0,VICTORY,NONE,watch,2080.0,none,watch
 12,2085.0187703,watch,pop_confirms_progress,0.398,pop_confirms_progress,Hub Puzzle: Cooking Pot,2085.0,2085.0,VICTORY,NONE,watch,2085.0,none,watch
 12,2090.0086526,watch,focused_progress,0.326,focused_progress,Hub Puzzle: Cooking Pot,2090.0,2090.0,VICTORY,NONE,watch,2090.0,none,watch
@@ -3719,7 +3719,7 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 12,2240.0041887,watch,focused_progress,0.398,focused_progress,Hub Puzzle: Cooking Pot,2240.0,2240.0,VICTORY,NONE,watch,2240.0,none,watch
 12,2245.0098301,watch,pop_confirms_progress,0.342,pop_confirms_progress,Hub Puzzle: Cooking Pot,2245.0,2245.0,VICTORY,NONE,watch,2245.0,none,watch
 12,2250.0229266,watch,scattered_but_progressing,0.799,scattered_but_progressing,Hub Puzzle: Cooking Pot,2250.0,2250.0,VICTORY,NONE,watch,2250.0,reflective,probe
-12,2255.0053839,watch,scattered_but_progressing,0.651,scattered_but_progressing,Transition,2255.0,2255.0,VICTORY,NONE,watch,2255.0,reflective,probe
+12,2255.0053839,probe,scattered_but_progressing,0.651,scattered_but_progressing,Transition,2255.0,2255.0,VICTORY,NONE,watch,2255.0,reflective,probe
 14,0.1385758,watch,scattered_but_progressing,0.881,scattered_but_progressing,Transition,0.0,0.0,EXPLORE,PROMPT,intervene,0.0,none,watch
 14,5.0062766,watch,scattered_but_progressing,0.687,scattered_but_progressing,Transition,5.0,5.0,EXPLORE,NONE,watch,5.0,none,watch
 14,10.0030181,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,10.0,10.0,EXPLORE,NONE,watch,10.0,none,watch
@@ -3963,8 +3963,8 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 14,1200.0155713,watch,engaged_and_active,0.198,engaged_and_active,Spoke Puzzle: Amount of Protein,1200.0,1200.0,VICTORY,NONE,watch,1200.0,reflective,probe
 14,1205.0027115,watch,focused_progress,0.195,focused_progress,Spoke Puzzle: Amount of Protein,1205.0,1205.0,VICTORY,NONE,watch,1205.0,reflective,probe
 14,1210.0016697,intervene,passive_and_stuck,0.306,passive_and_stuck,Spoke Puzzle: Amount of Protein,1210.0,1210.0,VICTORY,NONE,watch,1210.0,reflective,probe
-14,1215.0082246,watch,engaged_and_active,0.323,engaged_and_active,Spoke Puzzle: Amount of Protein,1215.0,1215.0,VICTORY,NONE,watch,1215.0,reflective,probe
-14,1220.0020451,watch,focused_progress,0.427,focused_progress,Spoke Puzzle: Amount of Protein,1220.0,1220.0,VICTORY,NONE,watch,1220.0,reflective,probe
+14,1215.0082246,probe,engaged_and_active,0.323,engaged_and_active,Spoke Puzzle: Amount of Protein,1215.0,1215.0,VICTORY,NONE,watch,1215.0,reflective,probe
+14,1220.0020451,probe,focused_progress,0.427,focused_progress,Spoke Puzzle: Amount of Protein,1220.0,1220.0,VICTORY,NONE,watch,1220.0,reflective,probe
 14,1225.0006307,watch,scattered_but_progressing,0.532,scattered_but_progressing,Transition,1225.0,1225.0,VICTORY,NONE,watch,1225.0,reflective,probe
 14,1230.0107911,watch,focused_progress,0.3,focused_progress,Transition,1230.0,1230.0,VICTORY,NONE,watch,1230.0,reflective,probe
 14,1235.0078627,watch,focused_progress,0.357,focused_progress,Transition,1235.0,1235.0,VICTORY,NONE,watch,1235.0,reflective,probe
@@ -4081,33 +4081,33 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 14,1790.0204942,watch,focused_but_idle,0.558,focused_but_idle,Transition,1790.0,1790.0,VICTORY,NONE,watch,1790.0,none,watch
 14,1795.0016687,watch,focused_but_idle,0.579,focused_but_idle,Transition,1795.0,1795.0,VICTORY,NONE,watch,1795.0,none,watch
 14,1800.0067762,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,1800.0,1800.0,VICTORY,NONE,watch,1800.0,none,watch
-14,1805.0204426,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,1805.0,1805.0,VICTORY,NONE,watch,1805.0,none,watch
-14,1810.0052197,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,1810.0,1810.0,VICTORY,NONE,watch,1810.0,none,watch
-14,1815.0017904,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,1815.0,1815.0,VICTORY,NONE,watch,1815.0,none,watch
-14,1820.0211647,watch,scattered_but_progressing,0.691,scattered_but_progressing,Transition,1820.0,1820.0,VICTORY,NONE,watch,1820.0,none,watch
-14,1825.0061389,watch,scattered_but_progressing,0.739,scattered_but_progressing,Transition,1825.0,1825.0,VICTORY,NONE,watch,1825.0,none,watch
-14,1830.0046742,watch,focused_progress,0.446,focused_progress,Transition,1830.0,1830.0,VICTORY,NONE,watch,1830.0,none,watch
-14,1835.0058545,watch,scattered_but_progressing,0.614,scattered_but_progressing,Transition,1835.0,1835.0,VICTORY,NONE,watch,1835.0,none,watch
-14,1840.0051179,watch,scanning_but_passive,0.747,scanning_but_passive,Transition,1840.0,1840.0,VICTORY,NONE,watch,1840.0,none,watch
-14,1845.0054873,watch,focused_but_idle,0.803,focused_but_idle,Transition,1845.0,1845.0,VICTORY,NONE,watch,1845.0,none,watch
-14,1850.0103892,watch,scanning_but_passive,0.741,scanning_but_passive,Transition,1850.0,1850.0,VICTORY,NONE,watch,1850.0,none,watch
-14,1855.0003751,watch,frozen_on_clue,0.113,frozen_on_clue,Transition,1855.0,1855.0,VICTORY,NONE,watch,1855.0,none,watch
-14,1860.0015731,watch,focused_but_idle,0.568,focused_but_idle,Transition,1860.0,1860.0,VICTORY,NONE,watch,1860.0,none,watch
-14,1865.005269,watch,pop_confirms_progress,0.565,pop_confirms_progress,Transition,1865.0,1865.0,VICTORY,NONE,watch,1865.0,none,watch
-14,1870.0099688,watch,passive_and_stuck,0.269,passive_and_stuck,Transition,1870.0,1870.0,VICTORY,NONE,watch,1870.0,none,watch
-14,1875.01422,watch,passive_and_stuck,0.257,passive_and_stuck,Transition,1875.0,1875.0,VICTORY,NONE,watch,1875.0,none,watch
-14,1880.0076857,watch,focused_but_idle,0.715,focused_but_idle,Transition,1880.0,1880.0,VICTORY,NONE,watch,1880.0,none,watch
+14,1805.0204426,probe,scattered_but_progressing,0.925,scattered_but_progressing,Transition,1805.0,1805.0,VICTORY,NONE,watch,1805.0,none,watch
+14,1810.0052197,probe,scattered_but_progressing,0.925,scattered_but_progressing,Transition,1810.0,1810.0,VICTORY,NONE,watch,1810.0,none,watch
+14,1815.0017904,probe,scattered_but_progressing,0.925,scattered_but_progressing,Transition,1815.0,1815.0,VICTORY,NONE,watch,1815.0,none,watch
+14,1820.0211647,probe,scattered_but_progressing,0.691,scattered_but_progressing,Transition,1820.0,1820.0,VICTORY,NONE,watch,1820.0,none,watch
+14,1825.0061389,probe,scattered_but_progressing,0.739,scattered_but_progressing,Transition,1825.0,1825.0,VICTORY,NONE,watch,1825.0,none,watch
+14,1830.0046742,probe,focused_progress,0.446,focused_progress,Transition,1830.0,1830.0,VICTORY,NONE,watch,1830.0,none,watch
+14,1835.0058545,probe,scattered_but_progressing,0.614,scattered_but_progressing,Transition,1835.0,1835.0,VICTORY,NONE,watch,1835.0,none,watch
+14,1840.0051179,probe,scanning_but_passive,0.747,scanning_but_passive,Transition,1840.0,1840.0,VICTORY,NONE,watch,1840.0,none,watch
+14,1845.0054873,probe,focused_but_idle,0.803,focused_but_idle,Transition,1845.0,1845.0,VICTORY,NONE,watch,1845.0,none,watch
+14,1850.0103892,probe,scanning_but_passive,0.741,scanning_but_passive,Transition,1850.0,1850.0,VICTORY,NONE,watch,1850.0,none,watch
+14,1855.0003751,probe,frozen_on_clue,0.113,frozen_on_clue,Transition,1855.0,1855.0,VICTORY,NONE,watch,1855.0,none,watch
+14,1860.0015731,probe,focused_but_idle,0.568,focused_but_idle,Transition,1860.0,1860.0,VICTORY,NONE,watch,1860.0,none,watch
+14,1865.005269,probe,pop_confirms_progress,0.565,pop_confirms_progress,Transition,1865.0,1865.0,VICTORY,NONE,watch,1865.0,none,watch
+14,1870.0099688,probe,passive_and_stuck,0.269,passive_and_stuck,Transition,1870.0,1870.0,VICTORY,NONE,watch,1870.0,none,watch
+14,1875.01422,probe,passive_and_stuck,0.257,passive_and_stuck,Transition,1875.0,1875.0,VICTORY,NONE,watch,1875.0,none,watch
+14,1880.0076857,probe,focused_but_idle,0.715,focused_but_idle,Transition,1880.0,1880.0,VICTORY,NONE,watch,1880.0,none,watch
 14,1885.0084419,intervene,passive_and_stuck,0.235,passive_and_stuck,Transition,1885.0,1885.0,VICTORY,NONE,watch,1885.0,none,watch
 14,1890.0097546,intervene,passive_and_stuck,0.23,passive_and_stuck,Transition,1890.0,1890.0,VICTORY,NONE,watch,1890.0,none,watch
-14,1895.0015487,watch,focused_but_idle,0.748,focused_but_idle,Transition,1895.0,1895.0,VICTORY,NONE,watch,1895.0,none,watch
-14,1900.0095223,watch,focused_but_idle,0.65,focused_but_idle,Transition,1900.0,1900.0,VICTORY,NONE,watch,1900.0,none,watch
-14,1905.0101315,watch,focused_but_idle,0.711,focused_but_idle,Transition,1905.0,1905.0,VICTORY,NONE,watch,1905.0,none,watch
-14,1910.0005735,watch,focused_but_idle,0.708,focused_but_idle,Transition,1910.0,1910.0,VICTORY,NONE,watch,1910.0,none,watch
-14,1915.0021194,watch,scanning_but_passive,0.517,scanning_but_passive,Transition,1915.0,1915.0,VICTORY,NONE,watch,1915.0,none,watch
-14,1920.0071059,watch,none,1.0,none,Transition,1920.0,1920.0,VICTORY,NONE,watch,1920.0,none,watch
-14,1925.0051631,watch,none,1.0,none,Transition,1925.0,1925.0,VICTORY,NONE,watch,1925.0,none,watch
-14,1930.0020705,watch,pop_says_solving_but_stalled,0.38,pop_says_solving_but_stalled,Transition,1930.0,1930.0,VICTORY,NONE,watch,1930.0,none,watch
-14,1935.0017122,watch,focused_but_idle,0.728,focused_but_idle,Transition,1935.0,1935.0,VICTORY,NONE,watch,1935.0,none,watch
+14,1895.0015487,probe,focused_but_idle,0.748,focused_but_idle,Transition,1895.0,1895.0,VICTORY,NONE,watch,1895.0,none,watch
+14,1900.0095223,probe,focused_but_idle,0.65,focused_but_idle,Transition,1900.0,1900.0,VICTORY,NONE,watch,1900.0,none,watch
+14,1905.0101315,probe,focused_but_idle,0.711,focused_but_idle,Transition,1905.0,1905.0,VICTORY,NONE,watch,1905.0,none,watch
+14,1910.0005735,probe,focused_but_idle,0.708,focused_but_idle,Transition,1910.0,1910.0,VICTORY,NONE,watch,1910.0,none,watch
+14,1915.0021194,probe,scanning_but_passive,0.517,scanning_but_passive,Transition,1915.0,1915.0,VICTORY,NONE,watch,1915.0,none,watch
+14,1920.0071059,probe,none,1.0,none,Transition,1920.0,1920.0,VICTORY,NONE,watch,1920.0,none,watch
+14,1925.0051631,probe,none,1.0,none,Transition,1925.0,1925.0,VICTORY,NONE,watch,1925.0,none,watch
+14,1930.0020705,probe,pop_says_solving_but_stalled,0.38,pop_says_solving_but_stalled,Transition,1930.0,1930.0,VICTORY,NONE,watch,1930.0,none,watch
+14,1935.0017122,probe,focused_but_idle,0.728,focused_but_idle,Transition,1935.0,1935.0,VICTORY,NONE,watch,1935.0,none,watch
 14,1940.0213747,probe,scanning_but_passive,0.659,scanning_but_passive,Hub Puzzle: Cooking Pot,1940.0,1940.0,EXPLORE,PROMPT,intervene,1940.0,none,watch
 14,1945.0070592,watch,scattered_but_progressing,0.502,scattered_but_progressing,Hub Puzzle: Cooking Pot,1945.0,1945.0,EXPLORE,NONE,watch,1945.0,none,watch
 14,1950.002682,watch,focused_progress,0.409,focused_progress,Hub Puzzle: Cooking Pot,1950.0,1950.0,EXPLORE,NONE,watch,1950.0,none,watch
@@ -4254,28 +4254,28 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 14,2655.0107628,watch,pop_confirms_progress,0.454,pop_confirms_progress,Hub Puzzle: Cooking Pot,2655.0,2655.0,VICTORY,NONE,watch,2655.0,none,watch
 14,2660.0060608,watch,focused_progress,0.346,focused_progress,Hub Puzzle: Cooking Pot,2660.0,2660.0,VICTORY,NONE,watch,2660.0,none,watch
 14,2665.0071169,watch,scattered_but_progressing,0.772,scattered_but_progressing,Hub Puzzle: Cooking Pot,2665.0,2665.0,VICTORY,NONE,watch,2665.0,none,watch
-14,2670.0194546,watch,scattered_but_progressing,0.73,scattered_but_progressing,Transition,2670.0,2670.0,VICTORY,NONE,watch,2670.0,none,watch
-14,2675.0025464,watch,scattered_but_progressing,0.543,scattered_but_progressing,Transition,2675.0,2675.0,VICTORY,NONE,watch,2675.0,none,watch
-14,2680.0047781,watch,scattered_but_progressing,0.69,scattered_but_progressing,Transition,2680.0,2680.0,VICTORY,NONE,watch,2680.0,none,watch
-14,2685.0046395,watch,focused_progress,0.433,focused_progress,Transition,2685.0,2685.0,VICTORY,NONE,watch,2685.0,none,watch
-14,2690.0046805,watch,focused_progress,0.279,focused_progress,Transition,2690.0,2690.0,VICTORY,NONE,watch,2690.0,none,watch
-14,2695.001609,watch,focused_progress,0.32,focused_progress,Transition,2695.0,2695.0,VICTORY,NONE,watch,2695.0,none,watch
-14,2700.0030438,watch,pop_confirms_exploration,0.221,pop_confirms_exploration,Transition,2700.0,2700.0,VICTORY,NONE,watch,2700.0,none,watch
-14,2705.0067023,watch,scanning_but_passive,0.613,scanning_but_passive,Transition,2705.0,2705.0,VICTORY,NONE,watch,2705.0,none,watch
-14,2710.0042704,watch,scattered_but_progressing,0.806,scattered_but_progressing,Transition,2710.0,2710.0,VICTORY,NONE,watch,2710.0,none,watch
-14,2715.0029698,watch,focused_but_idle,0.666,focused_but_idle,Transition,2715.0,2715.0,VICTORY,NONE,watch,2715.0,none,watch
-14,2720.0029957,watch,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2720.0,2720.0,VICTORY,NONE,watch,2720.0,none,watch
-14,2725.004407,watch,scattered_but_progressing,0.862,scattered_but_progressing,Transition,2725.0,2725.0,VICTORY,NONE,watch,2725.0,none,watch
-14,2730.0047435,watch,scattered_but_progressing,0.843,scattered_but_progressing,Transition,2730.0,2730.0,VICTORY,NONE,watch,2730.0,none,watch
-14,2735.0010162,watch,scattered_but_progressing,0.673,scattered_but_progressing,Transition,2735.0,2735.0,VICTORY,NONE,watch,2735.0,none,watch
-14,2740.0174035,watch,scattered_but_progressing,0.681,scattered_but_progressing,Transition,2740.0,2740.0,VICTORY,NONE,watch,2740.0,none,watch
-14,2745.0163058,watch,scattered_but_progressing,0.707,scattered_but_progressing,Transition,2745.0,2745.0,VICTORY,NONE,watch,2745.0,none,watch
-14,2750.0049209,watch,focused_progress,0.4,focused_progress,Transition,2750.0,2750.0,VICTORY,NONE,watch,2750.0,none,watch
-14,2755.001984,watch,focused_progress,0.503,focused_progress,Transition,2755.0,2755.0,VICTORY,NONE,watch,2755.0,none,watch
-14,2760.002959,watch,focused_progress,0.514,focused_progress,Transition,2760.0,2760.0,VICTORY,NONE,watch,2760.0,none,watch
-14,2765.0043945,watch,scattered_but_progressing,0.493,scattered_but_progressing,Transition,2765.0,2765.0,VICTORY,NONE,watch,2765.0,none,watch
-14,2770.0104177,watch,scanning_but_passive,0.559,scanning_but_passive,Transition,2770.0,2770.0,VICTORY,NONE,watch,2770.0,none,watch
-14,2775.0099592,watch,scattered_but_progressing,0.478,scattered_but_progressing,Transition,2775.0,2775.0,VICTORY,NONE,watch,2775.0,none,watch
+14,2670.0194546,probe,scattered_but_progressing,0.73,scattered_but_progressing,Transition,2670.0,2670.0,VICTORY,NONE,watch,2670.0,none,watch
+14,2675.0025464,probe,scattered_but_progressing,0.543,scattered_but_progressing,Transition,2675.0,2675.0,VICTORY,NONE,watch,2675.0,none,watch
+14,2680.0047781,probe,scattered_but_progressing,0.69,scattered_but_progressing,Transition,2680.0,2680.0,VICTORY,NONE,watch,2680.0,none,watch
+14,2685.0046395,probe,focused_progress,0.433,focused_progress,Transition,2685.0,2685.0,VICTORY,NONE,watch,2685.0,none,watch
+14,2690.0046805,probe,focused_progress,0.279,focused_progress,Transition,2690.0,2690.0,VICTORY,NONE,watch,2690.0,none,watch
+14,2695.001609,probe,focused_progress,0.32,focused_progress,Transition,2695.0,2695.0,VICTORY,NONE,watch,2695.0,none,watch
+14,2700.0030438,probe,pop_confirms_exploration,0.221,pop_confirms_exploration,Transition,2700.0,2700.0,VICTORY,NONE,watch,2700.0,none,watch
+14,2705.0067023,probe,scanning_but_passive,0.613,scanning_but_passive,Transition,2705.0,2705.0,VICTORY,NONE,watch,2705.0,none,watch
+14,2710.0042704,probe,scattered_but_progressing,0.806,scattered_but_progressing,Transition,2710.0,2710.0,VICTORY,NONE,watch,2710.0,none,watch
+14,2715.0029698,probe,focused_but_idle,0.666,focused_but_idle,Transition,2715.0,2715.0,VICTORY,NONE,watch,2715.0,none,watch
+14,2720.0029957,probe,scattered_but_progressing,0.925,scattered_but_progressing,Transition,2720.0,2720.0,VICTORY,NONE,watch,2720.0,none,watch
+14,2725.004407,probe,scattered_but_progressing,0.862,scattered_but_progressing,Transition,2725.0,2725.0,VICTORY,NONE,watch,2725.0,none,watch
+14,2730.0047435,probe,scattered_but_progressing,0.843,scattered_but_progressing,Transition,2730.0,2730.0,VICTORY,NONE,watch,2730.0,none,watch
+14,2735.0010162,probe,scattered_but_progressing,0.673,scattered_but_progressing,Transition,2735.0,2735.0,VICTORY,NONE,watch,2735.0,none,watch
+14,2740.0174035,probe,scattered_but_progressing,0.681,scattered_but_progressing,Transition,2740.0,2740.0,VICTORY,NONE,watch,2740.0,none,watch
+14,2745.0163058,probe,scattered_but_progressing,0.707,scattered_but_progressing,Transition,2745.0,2745.0,VICTORY,NONE,watch,2745.0,none,watch
+14,2750.0049209,probe,focused_progress,0.4,focused_progress,Transition,2750.0,2750.0,VICTORY,NONE,watch,2750.0,none,watch
+14,2755.001984,probe,focused_progress,0.503,focused_progress,Transition,2755.0,2755.0,VICTORY,NONE,watch,2755.0,none,watch
+14,2760.002959,probe,focused_progress,0.514,focused_progress,Transition,2760.0,2760.0,VICTORY,NONE,watch,2760.0,none,watch
+14,2765.0043945,probe,scattered_but_progressing,0.493,scattered_but_progressing,Transition,2765.0,2765.0,VICTORY,NONE,watch,2765.0,none,watch
+14,2770.0104177,probe,scanning_but_passive,0.559,scanning_but_passive,Transition,2770.0,2770.0,VICTORY,NONE,watch,2770.0,none,watch
+14,2775.0099592,probe,scattered_but_progressing,0.478,scattered_but_progressing,Transition,2775.0,2775.0,VICTORY,NONE,watch,2775.0,none,watch
 22,0.1309194,watch,scanning_but_passive,0.674,scanning_but_passive,Transition,0.0,0.0,EXPLORE,PROMPT,intervene,0.0,none,watch
 22,5.0065635,watch,scattered_but_progressing,0.859,scattered_but_progressing,Transition,5.0,5.0,EXPLORE,NONE,watch,5.0,none,watch
 22,10.0044319,watch,scattered_but_progressing,0.782,scattered_but_progressing,Transition,10.0,10.0,EXPLORE,NONE,watch,10.0,none,watch
@@ -5080,24 +5080,24 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 23,1795.0009197,watch,focused_but_idle,0.813,focused_but_idle,Transition,1795.0,1795.0,VICTORY,NONE,watch,1795.0,reflective,probe
 23,1800.0027648,watch,focused_but_idle,0.828,focused_but_idle,Transition,1800.0,1800.0,VICTORY,NONE,watch,1800.0,reflective,probe
 23,1805.0104961,intervene,passive_and_stuck,0.05,passive_and_stuck,Transition,1805.0,1805.0,VICTORY,NONE,watch,1805.0,reflective,probe
-23,1810.0018383,watch,focused_but_idle,0.806,focused_but_idle,Transition,1810.0,1810.0,VICTORY,NONE,watch,1810.0,reflective,probe
-23,1815.0128772,watch,focused_but_idle,0.845,focused_but_idle,Transition,1815.0,1815.0,VICTORY,NONE,watch,1815.0,reflective,probe
-23,1820.0001724,watch,scanning_but_passive,0.841,scanning_but_passive,Transition,1820.0,1820.0,VICTORY,NONE,watch,1820.0,reflective,probe
-23,1825.0086166,watch,focused_but_idle,0.799,focused_but_idle,Transition,1825.0,1825.0,VICTORY,NONE,watch,1825.0,reflective,probe
+23,1810.0018383,probe,focused_but_idle,0.806,focused_but_idle,Transition,1810.0,1810.0,VICTORY,NONE,watch,1810.0,reflective,probe
+23,1815.0128772,probe,focused_but_idle,0.845,focused_but_idle,Transition,1815.0,1815.0,VICTORY,NONE,watch,1815.0,reflective,probe
+23,1820.0001724,probe,scanning_but_passive,0.841,scanning_but_passive,Transition,1820.0,1820.0,VICTORY,NONE,watch,1820.0,reflective,probe
+23,1825.0086166,probe,focused_but_idle,0.799,focused_but_idle,Transition,1825.0,1825.0,VICTORY,NONE,watch,1825.0,reflective,probe
 23,1830.0040407,intervene,passive_and_stuck,0.062,passive_and_stuck,Transition,1830.0,1830.0,VICTORY,NONE,watch,1830.0,reflective,probe
-23,1835.0074572,watch,focused_but_idle,0.735,focused_but_idle,Transition,1835.0,1835.0,VICTORY,NONE,watch,1835.0,none,watch
-23,1840.0135312,watch,focused_but_idle,0.714,focused_but_idle,Transition,1840.0,1840.0,VICTORY,NONE,watch,1840.0,none,watch
-23,1845.0105842,watch,focused_but_idle,0.574,focused_but_idle,Transition,1845.0,1845.0,VICTORY,NONE,watch,1845.0,none,watch
-23,1850.0067823,watch,focused_but_idle,0.816,focused_but_idle,Transition,1850.0,1850.0,VICTORY,NONE,watch,1850.0,none,watch
-23,1855.0011155,watch,scanning_but_passive,0.769,scanning_but_passive,Transition,1855.0,1855.0,VICTORY,NONE,watch,1855.0,none,watch
-23,1860.0083961,watch,focused_but_idle,0.725,focused_but_idle,Transition,1860.0,1860.0,VICTORY,NONE,watch,1860.0,none,watch
-23,1865.010803,watch,focused_but_idle,0.68,focused_but_idle,Transition,1865.0,1865.0,VICTORY,NONE,watch,1865.0,none,watch
-23,1870.0081094,watch,focused_but_idle,0.647,focused_but_idle,Transition,1870.0,1870.0,VICTORY,NONE,watch,1870.0,reflective,probe
-23,1875.0004519,watch,focused_but_idle,0.666,focused_but_idle,Transition,1875.0,1875.0,VICTORY,NONE,watch,1875.0,reflective,probe
-23,1880.0231419,watch,focused_but_idle,0.722,focused_but_idle,Transition,1880.0,1880.0,VICTORY,NONE,watch,1880.0,reflective,probe
-23,1885.0025668,watch,none,1.0,none,Transition,1885.0,1885.0,VICTORY,NONE,watch,1885.0,reflective,probe
-23,1890.0088315,watch,focused_but_idle,0.694,focused_but_idle,Transition,1890.0,1890.0,VICTORY,NONE,watch,1890.0,reflective,probe
-23,1895.0039694,watch,pop_says_stuck_but_searching,0.248,pop_says_stuck_but_searching,Transition,1895.0,1895.0,VICTORY,NONE,watch,1895.0,reflective,probe
+23,1835.0074572,probe,focused_but_idle,0.735,focused_but_idle,Transition,1835.0,1835.0,VICTORY,NONE,watch,1835.0,none,watch
+23,1840.0135312,probe,focused_but_idle,0.714,focused_but_idle,Transition,1840.0,1840.0,VICTORY,NONE,watch,1840.0,none,watch
+23,1845.0105842,probe,focused_but_idle,0.574,focused_but_idle,Transition,1845.0,1845.0,VICTORY,NONE,watch,1845.0,none,watch
+23,1850.0067823,probe,focused_but_idle,0.816,focused_but_idle,Transition,1850.0,1850.0,VICTORY,NONE,watch,1850.0,none,watch
+23,1855.0011155,probe,scanning_but_passive,0.769,scanning_but_passive,Transition,1855.0,1855.0,VICTORY,NONE,watch,1855.0,none,watch
+23,1860.0083961,probe,focused_but_idle,0.725,focused_but_idle,Transition,1860.0,1860.0,VICTORY,NONE,watch,1860.0,none,watch
+23,1865.010803,probe,focused_but_idle,0.68,focused_but_idle,Transition,1865.0,1865.0,VICTORY,NONE,watch,1865.0,none,watch
+23,1870.0081094,probe,focused_but_idle,0.647,focused_but_idle,Transition,1870.0,1870.0,VICTORY,NONE,watch,1870.0,reflective,probe
+23,1875.0004519,probe,focused_but_idle,0.666,focused_but_idle,Transition,1875.0,1875.0,VICTORY,NONE,watch,1875.0,reflective,probe
+23,1880.0231419,probe,focused_but_idle,0.722,focused_but_idle,Transition,1880.0,1880.0,VICTORY,NONE,watch,1880.0,reflective,probe
+23,1885.0025668,probe,none,1.0,none,Transition,1885.0,1885.0,VICTORY,NONE,watch,1885.0,reflective,probe
+23,1890.0088315,probe,focused_but_idle,0.694,focused_but_idle,Transition,1890.0,1890.0,VICTORY,NONE,watch,1890.0,reflective,probe
+23,1895.0039694,probe,pop_says_stuck_but_searching,0.248,pop_says_stuck_but_searching,Transition,1895.0,1895.0,VICTORY,NONE,watch,1895.0,reflective,probe
 23,1900.0095473,probe,acting_without_progress,0.527,acting_without_progress,Hub Puzzle: Cooking Pot,1900.0,1900.0,EXPLORE,PROMPT,intervene,1900.0,none,watch
 23,1905.0000124,watch,pop_says_stuck_but_active,0.48,pop_says_stuck_but_active,Hub Puzzle: Cooking Pot,1905.0,1905.0,EXPLORE,NONE,watch,1905.0,none,watch
 23,1910.0112693,probe,focused_but_idle,0.71,focused_but_idle,Hub Puzzle: Cooking Pot,1910.0,1910.0,EXPLORE,NONE,watch,1910.0,none,watch
@@ -5254,13 +5254,13 @@ participant_id,window_start_io,io_cat,disagreement_pattern,disagreement_intensit
 23,2665.0105755,watch,scattered_but_progressing,0.619,scattered_but_progressing,Hub Puzzle: Cooking Pot,2665.0,2665.0,VICTORY,NONE,watch,2665.0,none,watch
 23,2670.0097577,watch,focused_progress,0.3,focused_progress,Hub Puzzle: Cooking Pot,2670.0,2670.0,VICTORY,NONE,watch,2670.0,none,watch
 23,2675.0001282,watch,scattered_but_progressing,0.571,scattered_but_progressing,Hub Puzzle: Cooking Pot,2675.0,2675.0,VICTORY,NONE,watch,2675.0,none,watch
-23,2680.0027178,watch,focused_progress,0.308,focused_progress,Transition,2680.0,2680.0,VICTORY,NONE,watch,2680.0,none,watch
-23,2685.0062856,watch,focused_progress,0.3,focused_progress,Transition,2685.0,2685.0,VICTORY,NONE,watch,2685.0,none,watch
-23,2690.0011764,watch,focused_but_idle,0.585,focused_but_idle,Transition,2690.0,2690.0,VICTORY,NONE,watch,2690.0,none,watch
-23,2695.0028459,watch,scattered_but_progressing,0.791,scattered_but_progressing,Transition,2695.0,2695.0,VICTORY,NONE,watch,2695.0,none,watch
-23,2700.0012978,watch,scattered_but_progressing,0.791,scattered_but_progressing,Transition,2700.0,2700.0,VICTORY,NONE,watch,2700.0,none,watch
-23,2705.0088627,watch,focused_progress,0.335,focused_progress,Transition,2705.0,2705.0,VICTORY,NONE,watch,2705.0,none,watch
-23,2710.0224488,watch,scattered_but_progressing,0.8,scattered_but_progressing,Transition,2710.0,2710.0,VICTORY,NONE,watch,2710.0,none,watch
-23,2715.0050604,watch,scattered_but_progressing,0.506,scattered_but_progressing,Transition,2715.0,2715.0,VICTORY,NONE,watch,2715.0,none,watch
-23,2720.0199161,watch,focused_progress,0.337,focused_progress,Transition,2720.0,2720.0,VICTORY,NONE,watch,2720.0,none,watch
-23,2725.0081859,watch,scattered_but_progressing,0.788,scattered_but_progressing,Transition,2725.0,2725.0,VICTORY,NONE,watch,2725.0,none,watch
+23,2680.0027178,probe,focused_progress,0.308,focused_progress,Transition,2680.0,2680.0,VICTORY,NONE,watch,2680.0,none,watch
+23,2685.0062856,probe,focused_progress,0.3,focused_progress,Transition,2685.0,2685.0,VICTORY,NONE,watch,2685.0,none,watch
+23,2690.0011764,probe,focused_but_idle,0.585,focused_but_idle,Transition,2690.0,2690.0,VICTORY,NONE,watch,2690.0,none,watch
+23,2695.0028459,probe,scattered_but_progressing,0.791,scattered_but_progressing,Transition,2695.0,2695.0,VICTORY,NONE,watch,2695.0,none,watch
+23,2700.0012978,probe,scattered_but_progressing,0.791,scattered_but_progressing,Transition,2700.0,2700.0,VICTORY,NONE,watch,2700.0,none,watch
+23,2705.0088627,probe,focused_progress,0.335,focused_progress,Transition,2705.0,2705.0,VICTORY,NONE,watch,2705.0,none,watch
+23,2710.0224488,probe,scattered_but_progressing,0.8,scattered_but_progressing,Transition,2710.0,2710.0,VICTORY,NONE,watch,2710.0,none,watch
+23,2715.0050604,probe,scattered_but_progressing,0.506,scattered_but_progressing,Transition,2715.0,2715.0,VICTORY,NONE,watch,2715.0,none,watch
+23,2720.0199161,probe,focused_progress,0.337,focused_progress,Transition,2720.0,2720.0,VICTORY,NONE,watch,2720.0,none,watch
+23,2725.0081859,probe,scattered_but_progressing,0.788,scattered_but_progressing,Transition,2725.0,2725.0,VICTORY,NONE,watch,2725.0,none,watch

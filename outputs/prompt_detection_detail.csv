@@ -12,9 +12,9 @@ participant_id,prompt_type,prompt_start_sec,prompt_end_sec,puzzle,io_hit,expert_
 10,reflective,1309.870753,1351.870753,Spoke Puzzle: Amount of Protein,True,False,"intervene,probe,watch",watch
 10,explicit,1464.870753,1464.870753,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
 10,reflective,1932.870753,2046.870753,Spoke Puzzle: Water Amount,True,True,"intervene,watch,probe","watch,intervene"
-10,reflective,2676.870753,2689.870753,Spoke Puzzle: Amount of Sunlight,False,False,watch,watch
-10,explicit,2689.870753,2689.870753,Spoke Puzzle: Amount of Sunlight,False,False,watch,watch
-10,reflective,2710.870753,2744.870753,Hub Puzzle: Cooking Pot,True,False,"watch,intervene",watch
+10,reflective,2676.870753,2689.870753,Spoke Puzzle: Amount of Sunlight,True,False,probe,watch
+10,explicit,2689.870753,2689.870753,Spoke Puzzle: Amount of Sunlight,True,False,probe,watch
+10,reflective,2710.870753,2744.870753,Hub Puzzle: Cooking Pot,True,False,"probe,intervene",watch
 10,explicit,2756.870753,2756.870753,Hub Puzzle: Cooking Pot,True,False,intervene,watch
 10,reflective,3090.870753,3117.870753,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
 10,explicit,3188.870753,3188.870753,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
@@ -27,9 +27,9 @@ participant_id,prompt_type,prompt_start_sec,prompt_end_sec,puzzle,io_hit,expert_
 12,reflective,848.117705,863.117705,Spoke Puzzle: Water Amount,True,True,"watch,probe,intervene","watch,intervene"
 12,reflective,863.117705,927.117705,Spoke Puzzle: Water Amount,True,True,"intervene,watch,probe","intervene,watch"
 12,reflective,1497.117705,1515.117705,Spoke Puzzle: Amount of Sunlight,False,False,watch,watch
-12,reflective,1985.117705,2047.117705,Hub Puzzle: Cooking Pot,False,False,watch,watch
-12,explicit,2070.117705,2070.117705,Hub Puzzle: Cooking Pot,False,False,watch,watch
-12,reflective,2254.117705,2255.117705,none,False,False,watch,watch
+12,reflective,1985.117705,2047.117705,Hub Puzzle: Cooking Pot,True,False,probe,watch
+12,explicit,2070.117705,2070.117705,Hub Puzzle: Cooking Pot,True,False,"probe,watch",watch
+12,reflective,2254.117705,2255.117705,none,True,False,"watch,probe",watch
 14,explicit,316.431349,316.431349,none,False,True,watch,"watch,intervene"
 14,reflective,482.431349,638.431349,Spoke Puzzle: Pasta in Sauce,True,True,"watch,intervene","watch,intervene"
 14,reflective,643.431349,753.431349,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch,probe","intervene,watch"
@@ -57,8 +57,8 @@ participant_id,prompt_type,prompt_start_sec,prompt_end_sec,puzzle,io_hit,expert_
 23,explicit,1478.439063,1478.439063,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
 23,explicit,1650.439063,1650.439063,Spoke Puzzle: Amount of Protein,False,False,watch,watch
 23,explicit,1771.439063,1771.439063,Hub Puzzle: Cooking Pot,False,False,watch,watch
-23,reflective,1794.439063,1833.439063,Hub Puzzle: Cooking Pot,True,False,"watch,intervene",watch
-23,reflective,1870.439063,1896.439063,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
+23,reflective,1794.439063,1833.439063,Hub Puzzle: Cooking Pot,True,False,"watch,intervene,probe",watch
+23,reflective,1870.439063,1896.439063,Hub Puzzle: Cooking Pot,True,True,"probe,watch","watch,intervene"
 23,reflective,1969.439063,2007.439063,Hub Puzzle: Cooking Pot,True,True,"probe,watch","watch,intervene"
 23,reflective,2008.439063,2012.439063,Hub Puzzle: Cooking Pot,True,True,"probe,watch","watch,intervene"
 23,reflective,2042.439063,2130.439063,Hub Puzzle: Cooking Pot,True,True,"probe,intervene,watch","watch,intervene"
@@ -108,23 +108,23 @@ participant_id,prompt_type,prompt_start_sec,prompt_end_sec,puzzle,io_hit,expert_
 6,explicit,1975.5203,1979.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
 6,explicit,1988.5203,1988.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
 6,explicit,1996.5203,2002.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
-6,reflective,2025.5203,2100.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
-6,explicit,2104.5203,2104.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
-6,explicit,2154.5203,2154.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene,probe",watch
-6,explicit,2206.5203,2206.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
-6,reflective,2403.5203,2433.5203,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
-6,explicit,2453.5203,2465.5203,Hub Puzzle: Cooking Pot,True,True,"probe,watch","watch,intervene"
-6,explicit,2488.5203,2488.5203,Hub Puzzle: Cooking Pot,True,True,"probe,watch","intervene,watch"
-6,explicit,2534.5203,2534.5203,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
-6,explicit,2546.5203,2546.5203,Hub Puzzle: Cooking Pot,True,True,"watch,probe","intervene,watch"
-6,explicit,2605.5203,2607.5203,Hub Puzzle: Cooking Pot,True,True,"probe,watch","intervene,watch"
-6,reflective,2630.5203,2783.5203,Hub Puzzle: Cooking Pot,True,False,"watch,probe,intervene",watch
-6,reflective,2788.5203,2792.5203,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
-6,explicit,2794.5203,2796.5203,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
-6,explicit,2797.5203,2797.5203,Hub Puzzle: Cooking Pot,True,False,probe,watch
-6,explicit,2943.5203,2955.5203,Hub Puzzle: Cooking Pot,True,False,"probe,watch",watch
-6,explicit,2960.5203,2960.5203,Hub Puzzle: Cooking Pot,True,False,"probe,watch",watch
-6,explicit,2968.5203,2968.5203,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
+6,reflective,2025.5203,2100.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,intervene",watch
+6,explicit,2104.5203,2104.5203,Spoke Puzzle: Amount of Protein,True,False,probe,watch
+6,explicit,2154.5203,2154.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,intervene",watch
+6,explicit,2206.5203,2206.5203,Spoke Puzzle: Amount of Protein,True,False,probe,watch
+6,reflective,2403.5203,2433.5203,Hub Puzzle: Cooking Pot,True,True,probe,"watch,intervene"
+6,explicit,2453.5203,2465.5203,Hub Puzzle: Cooking Pot,True,True,probe,"watch,intervene"
+6,explicit,2488.5203,2488.5203,Hub Puzzle: Cooking Pot,True,True,probe,"intervene,watch"
+6,explicit,2534.5203,2534.5203,Hub Puzzle: Cooking Pot,True,True,probe,"watch,intervene"
+6,explicit,2546.5203,2546.5203,Hub Puzzle: Cooking Pot,True,True,probe,"intervene,watch"
+6,explicit,2605.5203,2607.5203,Hub Puzzle: Cooking Pot,True,True,probe,"intervene,watch"
+6,reflective,2630.5203,2783.5203,Hub Puzzle: Cooking Pot,True,False,"probe,intervene",watch
+6,reflective,2788.5203,2792.5203,Hub Puzzle: Cooking Pot,True,False,"probe,intervene",watch
+6,explicit,2794.5203,2796.5203,Hub Puzzle: Cooking Pot,True,False,"probe,intervene",watch
+6,explicit,2797.5203,2797.5203,Hub Puzzle: Cooking Pot,True,False,intervene,watch
+6,explicit,2943.5203,2955.5203,Hub Puzzle: Cooking Pot,True,False,"intervene,probe",watch
+6,explicit,2960.5203,2960.5203,Hub Puzzle: Cooking Pot,True,False,"intervene,probe",watch
+6,explicit,2968.5203,2968.5203,Hub Puzzle: Cooking Pot,True,False,"probe,intervene",watch
 9,reflective,512.164392,562.164392,Spoke Puzzle: Pasta in Sauce,True,True,"watch,intervene","watch,intervene"
 9,reflective,565.164392,579.164392,Spoke Puzzle: Pasta in Sauce,True,True,"watch,intervene","watch,intervene"
 9,explicit,583.164392,590.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch","intervene,watch"
@@ -135,7 +135,7 @@ participant_id,prompt_type,prompt_start_sec,prompt_end_sec,puzzle,io_hit,expert_
 9,reflective,765.164392,769.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,probe","intervene,watch"
 9,reflective,807.164392,832.164392,Spoke Puzzle: Pasta in Sauce,True,True,"watch,intervene,probe","watch,intervene"
 9,explicit,840.164392,840.164392,Spoke Puzzle: Pasta in Sauce,True,True,"probe,intervene","watch,intervene"
-9,explicit,989.164392,989.164392,Spoke Puzzle: Pasta in Sauce,False,False,watch,watch
+9,explicit,989.164392,989.164392,Spoke Puzzle: Pasta in Sauce,True,False,"probe,watch",watch
 9,reflective,1083.164392,1101.164392,Spoke Puzzle: Water Amount,True,False,"watch,probe",watch
 9,explicit,1121.164392,1121.164392,Spoke Puzzle: Water Amount,True,True,"probe,watch,intervene","watch,intervene"
 9,explicit,1324.164392,1324.164392,Spoke Puzzle: Water Amount,True,True,"probe,watch","watch,intervene"
@@ -143,10 +143,10 @@ participant_id,prompt_type,prompt_start_sec,prompt_end_sec,puzzle,io_hit,expert_
 9,reflective,1593.164392,1595.164392,Spoke Puzzle: Water Amount,True,True,"intervene,watch,probe","watch,intervene"
 9,reflective,1883.164392,1908.164392,Spoke Puzzle: Amount of Sunlight,True,False,"intervene,watch,probe",watch
 9,explicit,2178.164392,2178.164392,Spoke Puzzle: Amount of Sunlight,True,False,"intervene,watch,probe",watch
-9,reflective,2351.164392,2379.164392,Spoke Puzzle: Amount of Sunlight,False,False,watch,watch
-9,reflective,2395.164392,2448.164392,Spoke Puzzle: Amount of Sunlight,False,False,watch,watch
-9,reflective,2454.164392,2457.164392,Spoke Puzzle: Amount of Protein,False,False,watch,watch
+9,reflective,2351.164392,2379.164392,Spoke Puzzle: Amount of Sunlight,True,False,probe,watch
+9,reflective,2395.164392,2448.164392,Spoke Puzzle: Amount of Sunlight,True,False,probe,watch
+9,reflective,2454.164392,2457.164392,Spoke Puzzle: Amount of Protein,True,False,probe,watch
 9,reflective,2673.164392,2699.164392,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
-9,reflective,2958.164392,2982.164392,Spoke Puzzle: Amount of Protein,False,False,watch,watch
-9,reflective,3014.164392,3023.164392,Hub Puzzle: Cooking Pot,True,False,"watch,intervene",watch
+9,reflective,2958.164392,2982.164392,Spoke Puzzle: Amount of Protein,True,False,probe,watch
+9,reflective,3014.164392,3023.164392,Hub Puzzle: Cooking Pot,True,False,"probe,intervene",watch
 9,reflective,3135.164392,3158.164392,Hub Puzzle: Cooking Pot,True,True,"probe,watch","intervene,watch"

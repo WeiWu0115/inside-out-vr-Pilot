@@ -41,9 +41,54 @@ def _unpack_agent(df, col_prefix, agent_func, apply_args=None):
     return df
 
 
+def compute_puzzle_elapsed(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    For each window, compute how many seconds the player has spent on the
+    current puzzle so far (puzzle_elapsed_time) and the ratio vs the population
+    median for that puzzle (puzzle_elapsed_ratio).
+
+    A ratio > 1.0 means the player is taking longer than the median player.
+    """
+    # Population median duration per puzzle (from 18-participant data)
+    PUZZLE_MEDIAN_DURATION = {
+        "Spoke Puzzle: Amount of Protein": 135,
+        "Spoke Puzzle: Pasta in Sauce": 90,
+        "Spoke Puzzle: Water Amount": 230,
+        "Spoke Puzzle: Amount of Sunlight": 160,
+        "Hub Puzzle: Cooking Pot": 605,
+        "Transition": 600,  # not meaningful, just a fallback
+    }
+
+    elapsed = []
+    ratio = []
+
+    for pid in df["participant_id"].unique():
+        p_df = df[df["participant_id"] == pid].sort_values("window_start")
+
+        for puzzle in p_df["puzzle_id"].unique():
+            pz_df = p_df[p_df["puzzle_id"] == puzzle]
+            pz_start = pz_df["window_start"].min()
+            median_dur = PUZZLE_MEDIAN_DURATION.get(puzzle, 300)
+
+            for idx, row in pz_df.iterrows():
+                et = row["window_start"] - pz_start
+                elapsed.append((idx, et, et / median_dur if median_dur > 0 else 0))
+
+    elapsed_df = pd.DataFrame(elapsed, columns=["idx", "puzzle_elapsed_time", "puzzle_elapsed_ratio"])
+    elapsed_df = elapsed_df.set_index("idx")
+    df["puzzle_elapsed_time"] = elapsed_df["puzzle_elapsed_time"]
+    df["puzzle_elapsed_ratio"] = elapsed_df["puzzle_elapsed_ratio"]
+
+    return df
+
+
 def run_pipeline(input_path: str, output_dir: str):
     # ---- Step 1: Load data ----
     df = load_csv(input_path)
+
+    # ---- Step 1.5: Compute puzzle elapsed time ----
+    print("[INFO] Computing puzzle elapsed time...")
+    df = compute_puzzle_elapsed(df)
 
     # ---- Step 2: Run single-row agents ----
     print("[INFO] Running AttentionAgent...")

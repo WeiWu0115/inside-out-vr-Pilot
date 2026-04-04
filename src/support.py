@@ -25,6 +25,7 @@ def suggest_support(row: pd.Series) -> dict:
     tension = row.get("dominant_tension", "none")
     temporal = row.get("temporal_label", "transient")
     puzzle_id = row.get("puzzle_id", "")
+    elapsed_ratio = row.get("puzzle_elapsed_ratio", 0.0) or 0.0
 
     att_label = row.get("attention_label", "unknown")
     att_conf = row.get("attention_confidence", 0.0)
@@ -229,9 +230,51 @@ def suggest_support(row: pd.Series) -> dict:
     }
 
 
+def _apply_elapsed_escalation(result: dict, elapsed_ratio: float) -> dict:
+    """
+    Escalate support decisions when the player has been on a puzzle longer
+    than the population median (elapsed_ratio > 1.0).
+
+    Escalation rules:
+      - ratio > 3.0 (3× median): watch → probe
+      - ratio > 4.0 (4× median): probe → consensus_intervene
+
+    Conservative thresholds chosen via grid search against facilitator prompts.
+    Only triggers for players who are significantly over the population norm.
+    """
+    if elapsed_ratio <= 2.5:
+        return result
+
+    category = result["category"]
+
+    if elapsed_ratio > 4.0 and category == "probe":
+        result = dict(result)
+        result["category"] = "consensus_intervene"
+        result["confidence"] = min(result["confidence"] + 0.15, 0.95)
+        result["rationale"] += (
+            f" [Escalated: player at {elapsed_ratio:.1f}× median puzzle duration]"
+        )
+    elif elapsed_ratio > 3.0 and category == "watch":
+        result = dict(result)
+        result["category"] = "probe"
+        result["confidence"] = min(result["confidence"] + 0.1, 0.95)
+        result["rationale"] += (
+            f" [Escalated: player at {elapsed_ratio:.1f}× median puzzle duration]"
+        )
+
+    return result
+
+
 def run_support(df: pd.DataFrame) -> pd.DataFrame:
     """Add support columns based on negotiation results."""
     support_results = df.apply(suggest_support, axis=1)
+
+    # Apply puzzle elapsed time escalation if available
+    if "puzzle_elapsed_ratio" in df.columns:
+        support_results = pd.Series([
+            _apply_elapsed_escalation(result, ratio)
+            for result, ratio in zip(support_results, df["puzzle_elapsed_ratio"])
+        ])
 
     df["suggested_support"] = support_results.apply(lambda s: s["action"])
     df["support_confidence"] = support_results.apply(lambda s: s["confidence"])

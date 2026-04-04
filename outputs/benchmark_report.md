@@ -1,6 +1,6 @@
 # Facilitator Benchmark Report
 
-Generated: 2026-04-04 17:27
+Generated: 2026-04-04 17:43
 
 ## 1. Facilitator Prompt Overview (18 users)
 
@@ -32,9 +32,9 @@ Generated: 2026-04-04 17:27
 
 | Category | IO | Expert | Facilitator |
 |----------|-----|--------|-------------|
-| watch | 3648 (69.3%) | 4930 (93.6%) | 4172 (79.2%) |
-| probe | 1265 (24.0%) | 0 (0.0%) | 1027 (19.5%) |
-| intervene | 352 (6.7%) | 335 (6.4%) | 66 (1.3%) |
+| watch | 3164 (60.1%) | 4930 (93.6%) | 4172 (79.2%) |
+| probe | 1710 (32.5%) | 0 (0.0%) | 1027 (19.5%) |
+| intervene | 391 (7.4%) | 335 (6.4%) | 66 (1.3%) |
 
 ## 4. Intervention Detection (Facilitator as Ground Truth)
 
@@ -42,14 +42,14 @@ Binary task: facilitator != watch → positive (someone needed help)
 
 | Metric | IO | Expert |
 |--------|-----|--------|
-| precision | 0.257 | 0.227 |
-| recall | 0.381 | 0.07 |
-| f1 | 0.307 | 0.106 |
-| accuracy | 0.643 | 0.758 |
-| TP | 416 | 76 |
-| FP | 1201 | 259 |
-| FN | 677 | 1017 |
-| TN | 2971 | 3913 |
+| precision | 0.249 | 0.227 |
+| recall | 0.478 | 0.07 |
+| f1 | 0.327 | 0.106 |
+| accuracy | 0.592 | 0.758 |
+| TP | 523 | 76 |
+| FP | 1578 | 259 |
+| FN | 570 | 1017 |
+| TN | 2594 | 3913 |
 
 ## 5. Three-Class Evaluation (watch / probe / intervene)
 
@@ -57,11 +57,11 @@ Facilitator categories: watch=no prompt, probe=reflective, intervene=explicit
 
 | Class | IO Precision | IO Recall | IO F1 | Expert Precision | Expert Recall | Expert F1 |
 |-------|-------------|-----------|-------|-----------------|---------------|-----------|
-| watch | 0.814 | 0.712 | 0.76 | 0.794 | 0.938 | 0.86 |
-| probe | 0.238 | 0.293 | 0.263 | 0 | 0.0 | 0 |
-| intervene | 0.009 | 0.045 | 0.014 | 0.006 | 0.03 | 0.01 |
+| watch | 0.82 | 0.622 | 0.707 | 0.794 | 0.938 | 0.86 |
+| probe | 0.226 | 0.376 | 0.282 | 0 | 0.0 | 0 |
+| intervene | 0.02 | 0.121 | 0.035 | 0.006 | 0.03 | 0.01 |
 
-- IO overall accuracy: **0.622**
+- IO overall accuracy: **0.568**
 - Expert overall accuracy: **0.744**
 
 ## 6. Per-Puzzle Breakdown
@@ -69,13 +69,13 @@ Facilitator categories: watch=no prompt, probe=reflective, intervene=explicit
 ### Hub Puzzle: Cooking Pot
 - Windows: 1602
 - Facilitator intervention rate: 19.1%
-- IO intervention/probe rate: 45.1%
+- IO intervention/probe rate: 51.7%
 - Expert intervention rate: 7.7%
 
 ### Spoke Puzzle: Amount of Protein
 - Windows: 370
 - Facilitator intervention rate: 37.3%
-- IO intervention/probe rate: 53.5%
+- IO intervention/probe rate: 55.7%
 - Expert intervention rate: 0.0%
 
 ### Spoke Puzzle: Amount of Sunlight
@@ -87,7 +87,7 @@ Facilitator categories: watch=no prompt, probe=reflective, intervene=explicit
 ### Spoke Puzzle: Pasta in Sauce
 - Windows: 270
 - Facilitator intervention rate: 20.0%
-- IO intervention/probe rate: 58.5%
+- IO intervention/probe rate: 62.2%
 - Expert intervention rate: 9.6%
 
 ### Spoke Puzzle: Water Amount
@@ -123,9 +123,9 @@ When the facilitator gave a prompt (1093 windows), IO's tension patterns were:
 
 IO's decision at facilitator prompt moments:
 
-- **watch**: 677 (61.9%)
-- **probe**: 321 (29.4%)
-- **intervene**: 95 (8.7%)
+- **watch**: 570 (52.2%)
+- **probe**: 413 (37.8%)
+- **intervene**: 110 (10.1%)
 
 ## 9. Expert Decision When Facilitator Prompted
 
@@ -141,37 +141,37 @@ This is fairer because prompts are continuous blocks spanning multiple windows.
 
 | Tolerance | IO Recall | IO Precision | IO F1 | Expert Recall | Expert Precision | Expert F1 |
 |-----------|-----------|-------------|-------|--------------|-----------------|-----------|
-| ±0s | 0.74 | 0.226 | 0.346 | 0.4 | 0.203 | 0.269 |
-| ±5s | 0.689 | 0.281 | 0.4 | 0.331 | 0.251 | 0.285 |
-| ±10s | 0.795 | 0.335 | 0.472 | 0.384 | 0.287 | 0.328 |
-| ±15s | 0.795 | 0.373 | 0.508 | 0.45 | 0.316 | 0.372 |
-| ±20s | 0.815 | 0.408 | 0.543 | 0.47 | 0.352 | 0.403 |
-| ±30s | 0.854 | 0.472 | 0.608 | 0.47 | 0.397 | 0.431 |
+| ±0s | 0.83 | 0.216 | 0.343 | 0.4 | 0.203 | 0.269 |
+| ±5s | 0.775 | 0.274 | 0.405 | 0.331 | 0.251 | 0.285 |
+| ±10s | 0.854 | 0.327 | 0.472 | 0.384 | 0.287 | 0.328 |
+| ±15s | 0.861 | 0.366 | 0.514 | 0.45 | 0.316 | 0.372 |
+| ±20s | 0.874 | 0.399 | 0.548 | 0.47 | 0.352 | 0.403 |
+| ±30s | 0.901 | 0.461 | 0.61 | 0.47 | 0.397 | 0.431 |
 
 At **±15s tolerance** (recommended):
-- IO detects **79.5%** of facilitator prompts (F1=0.508)
+- IO detects **86.1%** of facilitator prompts (F1=0.514)
 - Expert detects **45.0%** of facilitator prompts (F1=0.372)
 
 ## 11. Per-Prompt Detection Detail (±15s tolerance)
 
 ### Reflective prompts (97 total)
-- IO detection rate: **82.5%**
+- IO detection rate: **89.7%**
 - Expert detection rate: **50.5%**
 
 ### Explicit prompts (54 total)
-- IO detection rate: **74.1%**
+- IO detection rate: **79.6%**
 - Expert detection rate: **35.2%**
 
 ### Detection rate by puzzle (±15s)
 
 | Puzzle | N prompts | IO hit rate | Expert hit rate |
 |--------|-----------|-------------|-----------------|
-| Hub Puzzle: Cooking Pot | 46 | 87.0% | 50.0% |
-| Spoke Puzzle: Amount of Protein | 36 | 77.8% | 0.0% |
-| Spoke Puzzle: Amount of Sunlight | 13 | 61.5% | 7.7% |
-| Spoke Puzzle: Pasta in Sauce | 26 | 73.1% | 73.1% |
+| Hub Puzzle: Cooking Pot | 46 | 91.3% | 50.0% |
+| Spoke Puzzle: Amount of Protein | 36 | 83.3% | 0.0% |
+| Spoke Puzzle: Amount of Sunlight | 13 | 92.3% | 7.7% |
+| Spoke Puzzle: Pasta in Sauce | 26 | 76.9% | 73.1% |
 | Spoke Puzzle: Water Amount | 25 | 96.0% | 84.0% |
-| none | 5 | 20.0% | 80.0% |
+| none | 5 | 40.0% | 80.0% |
 
 ### Detection rate by participant (±15s)
 
@@ -182,9 +182,9 @@ At **±15s tolerance** (recommended):
 | User-3 | 13 | 76.9% | 53.8% |
 | User-5 | 13 | 84.6% | 61.5% |
 | User-6 | 31 | 96.8% | 35.5% |
-| User-9 | 25 | 76.0% | 60.0% |
-| User-10 | 22 | 77.3% | 36.4% |
-| User-12 | 9 | 44.4% | 44.4% |
+| User-9 | 25 | 96.0% | 60.0% |
+| User-10 | 22 | 86.4% | 36.4% |
+| User-12 | 9 | 77.8% | 44.4% |
 | User-14 | 7 | 85.7% | 57.1% |
 | User-22 | 8 | 87.5% | 12.5% |
 | User-23 | 15 | 66.7% | 46.7% |
