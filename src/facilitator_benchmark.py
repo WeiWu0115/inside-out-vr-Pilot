@@ -317,7 +317,91 @@ def temporal_tolerance_analysis(prompts_df, merged, tolerances=(0, 5, 10, 15, 20
     return pd.DataFrame(results), detail_df
 
 
-def generate_report(merged, fac_windows, prompts_df, tol_results=None, tol_detail=None):
+def episode_level_evaluation(prompts_df, merged, tolerance=15):
+    """
+    Part 6: Group facilitator prompts into 'struggle episodes' (consecutive
+    prompts within 60s of each other) and evaluate at the episode level.
+
+    Returns a DataFrame with per-episode metrics:
+      - Was the episode detected by IO? (at least one probe/intervene within tolerance)
+      - Detection latency: how many seconds before/after the episode start did IO first react?
+      - Episode duration
+    """
+    io_users = set(merged["participant_id"].unique())
+    prompts_overlap = prompts_df[prompts_df["participant_id"].isin(io_users)].copy()
+
+    episodes = []
+    episode_gap = 60.0  # seconds between prompts to be same episode
+
+    for pid in prompts_overlap["participant_id"].unique():
+        p_prompts = prompts_overlap[prompts_overlap["participant_id"] == pid].sort_values("rel_start_sec")
+        if len(p_prompts) == 0:
+            continue
+
+        # Group into episodes
+        ep_start = None
+        ep_end = None
+        ep_prompts = 0
+        ep_types = []
+
+        for _, pr in p_prompts.iterrows():
+            if ep_start is None:
+                ep_start = pr["rel_start_sec"]
+                ep_end = pr["rel_end_sec"]
+                ep_prompts = 1
+                ep_types = [pr["prompt_type"]]
+            elif pr["rel_start_sec"] - ep_end <= episode_gap:
+                ep_end = max(ep_end, pr["rel_end_sec"])
+                ep_prompts += 1
+                ep_types.append(pr["prompt_type"])
+            else:
+                episodes.append(_eval_episode(pid, ep_start, ep_end, ep_prompts, ep_types,
+                                               merged, tolerance))
+                ep_start = pr["rel_start_sec"]
+                ep_end = pr["rel_end_sec"]
+                ep_prompts = 1
+                ep_types = [pr["prompt_type"]]
+
+        if ep_start is not None:
+            episodes.append(_eval_episode(pid, ep_start, ep_end, ep_prompts, ep_types,
+                                           merged, tolerance))
+
+    return pd.DataFrame(episodes)
+
+
+def _eval_episode(pid, ep_start, ep_end, n_prompts, prompt_types, merged, tolerance):
+    """Evaluate a single struggle episode."""
+    p_merged = merged[merged["participant_id"] == pid]
+
+    # Windows within the episode ± tolerance
+    nearby = p_merged[
+        (p_merged["window_start"] >= ep_start - tolerance) &
+        (p_merged["window_start"] <= ep_end + tolerance)
+    ]
+
+    io_detected = (nearby["io_cat"] != "watch").any() if len(nearby) > 0 else False
+    ex_detected = (nearby["expert_cat"] != "watch").any() if len(nearby) > 0 else False
+
+    # Detection latency: first IO non-watch window relative to episode start
+    io_latency = None
+    if io_detected:
+        first_io = nearby[nearby["io_cat"] != "watch"]["window_start"].min()
+        io_latency = first_io - ep_start  # negative = early detection
+
+    return {
+        "participant_id": pid,
+        "episode_start": ep_start,
+        "episode_end": ep_end,
+        "episode_duration": ep_end - ep_start,
+        "n_prompts": n_prompts,
+        "has_explicit": "explicit" in prompt_types,
+        "io_detected": io_detected,
+        "expert_detected": ex_detected,
+        "io_latency_sec": io_latency,
+    }
+
+
+def generate_report(merged, fac_windows, prompts_df, tol_results=None, tol_detail=None, episodes_df=None):
     """Generate markdown benchmark report."""
     lines = []
     lines.append("# Facilitator Benchmark Report")
@@ -488,6 +572,30 @@ def generate_report(merged, fac_windows, prompts_df, tol_results=None, tol_detai
             ex_r = sub["expert_hit"].mean()
             lines.append(f"| User-{pid} | {len(sub)} | {io_r:.1%} | {ex_r:.1%} |")
 
+    # --- Episode-level evaluation ---
+    if episodes_df is not None and len(episodes_df) > 0:
+        lines.append("\n## 12. Episode-Level Evaluation")
+        lines.append(f"\nStruggle episodes: consecutive facilitator prompts grouped within 60s.\n")
+        lines.append(f"- Total episodes: **{len(episodes_df)}**")
+        lines.append(f"- IO episode recall: **{episodes_df['io_detected'].mean():.1%}**")
+        lines.append(f"- Expert episode recall: **{episodes_df['expert_detected'].mean():.1%}**")
+        lines.append(f"- Mean episode duration: **{episodes_df['episode_duration'].mean():.0f}s**")
+
+        detected = episodes_df[episodes_df["io_detected"]]
+        if len(detected) > 0:
+            lines.append(f"- Mean IO detection latency: **{detected['io_latency_sec'].mean():.1f}s** "
+                          f"(negative = early detection)")
+            early = (detected["io_latency_sec"] < 0).sum()
+            lines.append(f"- IO detected **before** episode start: {early}/{len(detected)} ({early/len(detected):.0%})")
+
+        # By episode severity (has explicit prompt = more severe)
+        for severity, label in [(True, "Severe (has explicit prompt)"), (False, "Mild (reflective only)")]:
+            sub = episodes_df[episodes_df["has_explicit"] == severity]
+            if len(sub) > 0:
+                lines.append(f"\n### {label} ({len(sub)} episodes)")
+                lines.append(f"- IO recall: **{sub['io_detected'].mean():.1%}**")
+                lines.append(f"- Expert recall: **{sub['expert_detected'].mean():.1%}**")
+
     return "\n".join(lines)
 
 
@@ -578,9 +686,20 @@ def main():
         tol_detail.to_csv(os.path.join(OUTPUTS, "prompt_detection_detail.csv"), index=False)
     print(f"  Saved: tolerance_results.csv, prompt_detection_detail.csv")
 
-    # Step 8: Generate report
+    # Step 8: Episode-level evaluation
+    print("\nEpisode-level evaluation...")
+    episodes_df = episode_level_evaluation(prompts_df, merged)
+    if len(episodes_df) > 0:
+        episodes_df.to_csv(os.path.join(OUTPUTS, "episode_evaluation.csv"), index=False)
+        print(f"  {len(episodes_df)} episodes, IO recall={episodes_df['io_detected'].mean():.1%}, "
+              f"Expert recall={episodes_df['expert_detected'].mean():.1%}")
+        detected = episodes_df[episodes_df["io_detected"]]
+        if len(detected) > 0:
+            print(f"  Mean IO latency: {detected['io_latency_sec'].mean():.1f}s")
+
+    # Step 9: Generate report
     print("\nGenerating benchmark report...")
-    report = generate_report(merged, fac_windows, prompts_df, tol_results, tol_detail)
+    report = generate_report(merged, fac_windows, prompts_df, tol_results, tol_detail, episodes_df)
     report_path = os.path.join(OUTPUTS, "benchmark_report.md")
     with open(report_path, "w") as f:
         f.write(report)

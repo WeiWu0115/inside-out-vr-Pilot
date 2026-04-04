@@ -1,24 +1,57 @@
 """
-Support layer: maps disagreement structures to adaptive interventions.
+V3 Support layer: maps disagreement structures to adaptive interventions.
 
-The key insight: the TYPE of disagreement determines the TYPE of response,
-not just whether to respond.
+V3 changes:
+  - Transition subtypes (navigating_normally / searching / hesitant / looping)
+  - ineffective_progress tension handling
+  - puzzle_elapsed_ratio as first-class signal (no longer post-hoc escalation)
+  - Stateful prompt agent with cooldown, escalation, and recovery
 """
 
 import pandas as pd
+from config import ACTION
 
+
+# ---------------------------------------------------------------------------
+# Transition subtype classification
+# ---------------------------------------------------------------------------
+
+def classify_transition(row: pd.Series) -> str:
+    """
+    Classify Transition windows into subtypes using available features.
+    No head tracking → approximate from gaze + action patterns.
+    """
+    entropy = row.get("gaze_entropy", 0) or 0
+    switch_rate = row.get("switch_rate", 0) or 0
+    action_count = row.get("action_count", 0) or 0
+    idle_time = row.get("idle_time", 0) or 0
+    time_since = row.get("time_since_action", 0) or 0
+
+    # Looping: high entropy + high switch + long time since action
+    # Player has been in transition too long, likely lost
+    if time_since > 120 and entropy > 1.5:
+        return "looping_transition"
+
+    # Hesitant: low activity + pausing during navigation
+    if idle_time > 4.5 and action_count == 0 and time_since > 60:
+        return "hesitant_transition"
+
+    # Searching: high entropy + high switch rate = actively looking around
+    if entropy > 1.5 and switch_rate > 5.0:
+        return "searching_transition"
+
+    # Normal navigation: moderate movement with low entropy (going somewhere)
+    return "navigating_normally"
+
+
+# ---------------------------------------------------------------------------
+# Core support decision
+# ---------------------------------------------------------------------------
 
 def suggest_support(row: pd.Series) -> dict:
     """
-    Determine support based on disagreement structure, not just agent labels.
-
-    Returns:
-        {
-            "action": str,         # what to do
-            "confidence": float,   # how sure the system is about this action
-            "rationale": str,      # why this action
-            "category": str,       # consensus / probe / watch
-        }
+    Determine support based on disagreement structure.
+    V3: handles ineffective_progress + transition subtypes.
     """
     d_type = row.get("disagreement_type", "unstructured")
     d_intensity = row.get("disagreement_intensity", 0.0)
@@ -26,259 +59,286 @@ def suggest_support(row: pd.Series) -> dict:
     temporal = row.get("temporal_label", "transient")
     puzzle_id = row.get("puzzle_id", "")
     elapsed_ratio = row.get("puzzle_elapsed_ratio", 0.0) or 0.0
+    time_since = row.get("time_since_action", 0) or 0
 
     att_label = row.get("attention_label", "unknown")
-    att_conf = row.get("attention_confidence", 0.0)
     act_label = row.get("action_label", "unknown")
-    act_conf = row.get("action_confidence", 0.0)
     perf_label = row.get("performance_label", "unknown")
     perf_conf = row.get("performance_confidence", 0.0)
 
-    # Transition suppression: between puzzles, scanning/idle is normal navigation.
-    # Only intervene during Transition if agents show strong consensus on being stuck.
+    # ── TRANSITION: subtype-based handling ───────────────────────────────
     if puzzle_id == "Transition":
-        if tension == "passive_and_stuck" and temporal in ("looping", "persistent"):
-            return {
-                "action": "spatial_hint",
-                "confidence": 0.5,
-                "rationale": "Stuck during transition — player may be lost navigating.",
-                "category": "consensus_intervene",
-            }
-        return {
-            "action": "wait",
-            "confidence": 0.7,
-            "rationale": "Transition phase — scanning and idle behavior is normal navigation.",
-            "category": "watch",
-        }
+        subtype = classify_transition(row)
 
-    # ── CONSENSUS: agents largely agree ──────────────────────────────────
+        if subtype == "looping_transition":
+            if temporal in ("looping", "persistent"):
+                return _result("spatial_hint", 0.65,
+                               "Lost in transition: high entropy + long duration. Needs direction.",
+                               "consensus_intervene")
+            return _result("gentle_probe", 0.5,
+                           "Transition taking long with searching behavior. Probe.",
+                           "probe")
+
+        if subtype == "hesitant_transition":
+            return _result("monitor_closely", 0.45,
+                           "Hesitant during transition — pausing, may be unsure where to go.",
+                           "probe")
+
+        if subtype == "searching_transition":
+            return _result("wait", 0.5,
+                           "Actively searching during transition — likely exploring.",
+                           "watch")
+
+        # navigating_normally
+        return _result("wait", 0.7,
+                        "Normal navigation between puzzles.",
+                        "watch")
+
+    # ── CONSTRUCTIVE: agents largely agree ──────────────────────────────
     if d_type == "constructive":
 
-        # Frozen on clue: locked gaze + inactive → reorientation
         if tension == "frozen_on_clue":
             urgency = 0.8 if temporal == "looping" else 0.6
-            return {
-                "action": "reorientation_prompt",
-                "confidence": urgency,
-                "rationale": f"Agents agree: fixated on clue but not acting ({temporal})",
-                "category": "consensus_intervene",
-            }
+            return _result("reorientation_prompt", urgency,
+                           f"Agents agree: fixated on clue but not acting ({temporal})",
+                           "consensus_intervene")
 
-        # Passive and stuck: inactive + stalled
-        if tension == "passive_and_stuck":
+        if tension in ("passive_and_stuck", "passive_and_ineffective"):
             urgency = 0.85 if temporal in ("looping", "persistent") else 0.5
-            return {
-                "action": "spatial_hint",
-                "confidence": urgency,
-                "rationale": f"Agents agree: inactive and stalled ({temporal})",
-                "category": "consensus_intervene",
-            }
+            return _result("spatial_hint", urgency,
+                           f"Agents agree: inactive and stalled ({temporal})",
+                           "consensus_intervene")
 
-        # Positive consensus: focused + progressing
+        if tension == "hesitant_and_ineffective":
+            return _result("gentle_probe", 0.6,
+                           "Hesitant behavior + ineffective progress — probe to understand.",
+                           "probe")
+
         if tension in ("focused_progress", "engaged_and_active", "active_exploration"):
-            return {
-                "action": "wait",
-                "confidence": 0.8,
-                "rationale": f"Agents agree: productive engagement ({tension})",
-                "category": "watch",
-            }
+            return _result("wait", 0.8,
+                           f"Agents agree: productive engagement ({tension})",
+                           "watch")
 
-    # ── CONTRADICTORY: agents disagree on what's happening ───────────────
+    # ── CONTRADICTORY: agents disagree ──────────────────────────────────
     if d_type == "contradictory":
 
-        # Scanning but passive — is it exploration or disorientation?
+        # Scanning but passive
         if tension == "scanning_but_passive":
             if temporal == "looping":
-                return {
-                    "action": "gentle_probe",
-                    "confidence": 0.6,
-                    "rationale": "Attention says searching, Action says inactive — persistent. "
-                                 "Probe to distinguish exploration from disorientation.",
-                    "category": "probe",
-                }
-            return {
-                "action": "monitor_closely",
-                "confidence": 0.5,
-                "rationale": "Attention says searching, Action says inactive — transient. "
-                             "May resolve on its own.",
-                "category": "probe",
-            }
+                return _result("gentle_probe", 0.6,
+                               "Searching + inactive persistently. Probe: exploration or lost?",
+                               "probe")
+            return _result("monitor_closely", 0.5,
+                           "Searching + inactive — transient. May resolve.",
+                           "probe")
 
-        # Focused but failing — understands the goal but can't execute
+        # Focused but failing
         if tension == "focused_but_failing":
-            return {
-                "action": "procedural_hint",
-                "confidence": 0.7,
-                "rationale": "Attention is focused but errors are occurring. "
-                             "Player likely needs a how-to hint, not a what-to-do hint.",
-                "category": "consensus_intervene",
-            }
+            return _result("procedural_hint", 0.7,
+                           "Focused but errors occurring. Needs how-to hint.",
+                           "consensus_intervene")
 
-        # Focused but idle — thinking or stuck?
-        # Data shows facilitators prompt even during transient focused+idle.
-        # Being focused but doing nothing is itself a signal worth probing.
+        # Focused but idle
         if tension == "focused_but_idle":
-            time_since = row.get("time_since_action", 0) or 0
             if temporal in ("persistent", "looping") or time_since > 60:
-                return {
-                    "action": "gentle_probe",
-                    "confidence": 0.6,
-                    "rationale": f"Focused attention + no action "
-                                 f"({'persistent' if temporal != 'transient' else f'for {time_since:.0f}s'}). "
-                                 f"Could be deep thinking or paralysis. Probe gently.",
-                    "category": "probe",
-                }
-            return {
-                "action": "monitor_closely",
-                "confidence": 0.5,
-                "rationale": "Focused + idle — may be thinking. Monitor closely.",
-                "category": "probe",
-            }
+                return _result("gentle_probe", 0.6,
+                               f"Focused + no action ({'persistent' if temporal != 'transient' else f'{time_since:.0f}s'}). "
+                               "Probe gently.", "probe")
+            if elapsed_ratio > 2.0:
+                return _result("monitor_closely", 0.5,
+                               f"Focused + idle, puzzle at {elapsed_ratio:.1f}x median. Monitor.",
+                               "probe")
+            return _result("wait", 0.55,
+                           "Focused + briefly idle — likely thinking. Wait.",
+                           "watch")
 
-        # Scattered attention but progressing
-        # Nuance: if time_since_action is high, the "progressing" label may be
-        # misleading — player had sporadic actions after long inactivity.
+        # Scattered but progressing
         if tension == "scattered_but_progressing":
-            time_since = row.get("time_since_action", 0) or 0
             if temporal in ("looping", "persistent") or time_since > 90:
-                return {
-                    "action": "gentle_probe",
-                    "confidence": 0.55,
-                    "rationale": f"Scattered attention + nominally progressing but "
-                                 f"{'persistent pattern' if temporal != 'transient' else f'{time_since:.0f}s since last sustained action'}. "
-                                 f"Probe to check if player is genuinely making progress.",
-                    "category": "probe",
-                }
-            return {
-                "action": "wait",
-                "confidence": 0.75,
-                "rationale": "Attention looks scattered but player IS progressing. "
-                             "Don't interrupt what's working.",
-                "category": "watch",
-            }
+                return _result("gentle_probe", 0.55,
+                               f"Scattered + nominally progressing but "
+                               f"{'persistent' if temporal != 'transient' else f'{time_since:.0f}s since action'}. Probe.",
+                               "probe")
+            return _result("wait", 0.75,
+                           "Scattered but IS progressing. Don't interrupt.",
+                           "watch")
 
-        # Active but failing — trying hard but wrong approach
-        if tension == "active_but_failing":
+        # V3: Ineffective progress tensions
+        if tension in ("focused_but_ineffective", "scattered_and_ineffective"):
             if temporal in ("looping", "persistent"):
-                return {
-                    "action": "redirect_hint",
-                    "confidence": 0.7,
-                    "rationale": "High activity + repeated errors. "
-                                 "Player is trying but needs a new direction.",
-                    "category": "consensus_intervene",
-                }
-            return {
-                "action": "monitor_closely",
-                "confidence": 0.5,
-                "rationale": "Active + errors but may self-correct. Monitor.",
-                "category": "probe",
-            }
+                return _result("procedural_hint", 0.7,
+                               f"Activity detected but progress is ineffective ({temporal}). "
+                               "Player likely needs a new approach.",
+                               "consensus_intervene")
+            return _result("gentle_probe", 0.6,
+                           "Active but progress seems ineffective. Probe to check.",
+                           "probe")
 
         # Acting without progress
         if tension == "acting_without_progress":
-            return {
-                "action": "light_guidance",
-                "confidence": 0.55,
-                "rationale": "Actions occurring but no puzzle progress. "
-                             "Player may be interacting with wrong elements.",
-                "category": "probe",
-            }
+            return _result("light_guidance", 0.55,
+                           "Actions but no puzzle progress. May be interacting with wrong elements.",
+                           "probe")
 
-        # Idle but somehow progressing (rare)
+        # Active but failing
+        if tension == "active_but_failing":
+            if temporal in ("looping", "persistent"):
+                return _result("redirect_hint", 0.7,
+                               "High activity + repeated errors. Needs new direction.",
+                               "consensus_intervene")
+            return _result("monitor_closely", 0.5,
+                           "Active + errors but may self-correct.",
+                           "probe")
+
+        # Idle but progressing (rare)
         if tension == "idle_but_progressing":
-            return {
-                "action": "wait",
-                "confidence": 0.7,
-                "rationale": "Low activity but progress detected. "
-                             "Player may be using minimal, efficient actions.",
-                "category": "watch",
-            }
+            return _result("wait", 0.7,
+                           "Low activity but progress detected. Efficient player.",
+                           "watch")
 
         # Fixated but acting (rare)
         if tension == "fixated_but_acting":
-            return {
-                "action": "monitor_closely",
-                "confidence": 0.5,
-                "rationale": "Locked gaze but active interaction. Unusual pattern.",
-                "category": "probe",
-            }
+            return _result("monitor_closely", 0.5,
+                           "Locked gaze but active interaction. Unusual.",
+                           "probe")
 
-    # ── UNSTRUCTURED: no clear inter-agent pattern ───────────────────────
+    # ── UNSTRUCTURED: no clear pattern ──────────────────────────────────
 
-    # Fallback: use individual agent signals
-    if perf_label == "stalled" and perf_conf > 0.7 and temporal == "looping":
-        return {
-            "action": "spatial_hint",
-            "confidence": 0.5,
-            "rationale": "No clear agent pattern but persistent stalling detected.",
-            "category": "consensus_intervene",
-        }
+    # V3: ineffective_progress as standalone signal
+    if perf_label == "ineffective_progress" and perf_conf > 0.5:
+        if temporal in ("looping", "persistent"):
+            return _result("gentle_probe", 0.6,
+                           "No clear agent pattern but persistent ineffective progress.",
+                           "probe")
+        return _result("monitor_closely", 0.45,
+                       "Ineffective progress detected, monitoring.",
+                       "probe")
+
+    if perf_label in ("stalled",) and perf_conf > 0.7 and temporal == "looping":
+        return _result("spatial_hint", 0.5,
+                       "No clear pattern but persistent stalling detected.",
+                       "consensus_intervene")
 
     if perf_label == "progressing":
-        return {
-            "action": "wait",
-            "confidence": 0.6,
-            "rationale": "No clear pattern but player is progressing.",
-            "category": "watch",
-        }
+        return _result("wait", 0.6,
+                       "No clear pattern but player is progressing.",
+                       "watch")
 
+    return _result("monitor", 0.3,
+                   "No clear signal from agent negotiation.",
+                   "watch")
+
+
+def _result(action, confidence, rationale, category):
     return {
-        "action": "monitor",
-        "confidence": 0.3,
-        "rationale": "No clear signal from agent negotiation.",
-        "category": "watch",
+        "action": action,
+        "confidence": confidence,
+        "rationale": rationale,
+        "category": category,
     }
 
 
-def _apply_elapsed_escalation(result: dict, elapsed_ratio: float) -> dict:
-    """
-    Escalate support decisions when the player has been on a puzzle longer
-    than the population median (elapsed_ratio > 1.0).
+# ---------------------------------------------------------------------------
+# Stateful Prompt Agent (Part 5)
+# ---------------------------------------------------------------------------
 
-    Escalation rules:
-      - ratio > 3.0 (3× median): watch → probe
-      - ratio > 4.0 (4× median): probe → consensus_intervene
-
-    Conservative thresholds chosen via grid search against facilitator prompts.
-    Only triggers for players who are significantly over the population norm.
+class PromptAgent:
     """
-    if elapsed_ratio <= 2.5:
+    Stateful decision wrapper that adds:
+      - Cooldown: suppress new interventions within 20s of last prompt
+      - Escalation: consecutive struggle windows → escalate from probe to intervene
+      - Recovery: if player recovers, reset escalation state
+    """
+
+    def __init__(self, cooldown_sec=15.0, escalation_threshold=6, max_prompts_per_puzzle=8):
+        self.cooldown_sec = cooldown_sec
+        self.escalation_threshold = escalation_threshold
+        self.max_prompts_per_puzzle = max_prompts_per_puzzle
+        self.reset()
+
+    def reset(self):
+        self.last_prompt_time = -999.0
+        self.consecutive_struggle = 0
+        self.prompt_count = 0
+        self.last_category = "watch"
+        self.current_puzzle = None
+
+    def decide(self, base_result: dict, row: pd.Series) -> dict:
+        """Apply stateful policy on top of base support decision."""
+        window_start = row.get("window_start", 0) or 0
+        puzzle_id = row.get("puzzle_id", "")
+        category = base_result["category"]
+
+        # Reset state on puzzle change
+        if puzzle_id != self.current_puzzle:
+            self.current_puzzle = puzzle_id
+            self.consecutive_struggle = 0
+            self.prompt_count = 0
+            # Don't reset last_prompt_time — cooldown crosses puzzles
+
+        # Track consecutive struggle
+        if category in ("probe", "consensus_intervene"):
+            self.consecutive_struggle += 1
+        else:
+            # Recovery: player seems OK → reset escalation
+            if self.consecutive_struggle > 0 and category == "watch":
+                self.consecutive_struggle = max(0, self.consecutive_struggle - 2)
+
+        result = dict(base_result)
+
+        # Cooldown: only suppress consecutive INTERVENTIONS, not probes
+        # Probes are low-cost (just monitoring more closely), interventions are disruptive
+        time_since_prompt = window_start - self.last_prompt_time
+        if time_since_prompt < self.cooldown_sec and category == "consensus_intervene":
+            result["category"] = "probe"  # downgrade to probe, don't suppress entirely
+            result["rationale"] += f" [Downgraded: {time_since_prompt:.0f}s since last intervention]"
+
+        # Fatigue: only suppress interventions after many prompts, keep probes
+        if self.prompt_count >= self.max_prompts_per_puzzle and category == "consensus_intervene":
+            result["category"] = "probe"
+            result["rationale"] += f" [Downgraded: {self.prompt_count} prompts already on this puzzle]"
+
+        # Escalation: consecutive struggle → upgrade probe to intervene
+        if self.consecutive_struggle >= self.escalation_threshold and category == "probe":
+            result["category"] = "consensus_intervene"
+            result["confidence"] = min(result["confidence"] + 0.15, 0.95)
+            result["rationale"] += (
+                f" [Escalated: {self.consecutive_struggle} consecutive struggle windows]"
+            )
+
+        # Record prompt timing — only interventions trigger cooldown
+        if result["category"] == "consensus_intervene":
+            self.last_prompt_time = window_start
+            self.prompt_count += 1
+
+        self.last_category = result["category"]
         return result
-
-    category = result["category"]
-
-    if elapsed_ratio > 4.0 and category == "probe":
-        result = dict(result)
-        result["category"] = "consensus_intervene"
-        result["confidence"] = min(result["confidence"] + 0.15, 0.95)
-        result["rationale"] += (
-            f" [Escalated: player at {elapsed_ratio:.1f}× median puzzle duration]"
-        )
-    elif elapsed_ratio > 3.0 and category == "watch":
-        result = dict(result)
-        result["category"] = "probe"
-        result["confidence"] = min(result["confidence"] + 0.1, 0.95)
-        result["rationale"] += (
-            f" [Escalated: player at {elapsed_ratio:.1f}× median puzzle duration]"
-        )
-
-    return result
 
 
 def run_support(df: pd.DataFrame) -> pd.DataFrame:
-    """Add support columns based on negotiation results."""
-    support_results = df.apply(suggest_support, axis=1)
+    """Run support layer with stateful prompt agent per participant."""
+    # First pass: compute base decisions (stateless)
+    base_results = df.apply(suggest_support, axis=1)
 
-    # Apply puzzle elapsed time escalation if available
-    if "puzzle_elapsed_ratio" in df.columns:
-        support_results = pd.Series([
-            _apply_elapsed_escalation(result, ratio)
-            for result, ratio in zip(support_results, df["puzzle_elapsed_ratio"])
-        ])
+    # Second pass: apply stateful prompt agent per participant
+    final_results = []
+    prompt_agents = {}  # one per participant
 
-    df["suggested_support"] = support_results.apply(lambda s: s["action"])
-    df["support_confidence"] = support_results.apply(lambda s: s["confidence"])
-    df["support_rationale"] = support_results.apply(lambda s: s["rationale"])
-    df["support_category"] = support_results.apply(lambda s: s["category"])
+    for idx in df.index:
+        row = df.loc[idx]
+        pid = row.get("participant_id", 0)
+
+        if pid not in prompt_agents:
+            prompt_agents[pid] = PromptAgent()
+
+        base = base_results[idx]
+        final = prompt_agents[pid].decide(base, row)
+        final_results.append(final)
+
+    final_series = pd.Series(final_results)
+    df["suggested_support"] = final_series.apply(lambda s: s["action"])
+    df["support_confidence"] = final_series.apply(lambda s: s["confidence"])
+    df["support_rationale"] = final_series.apply(lambda s: s["rationale"])
+    df["support_category"] = final_series.apply(lambda s: s["category"])
 
     return df
