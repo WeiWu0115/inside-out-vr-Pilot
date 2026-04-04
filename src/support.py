@@ -64,8 +64,8 @@ def suggest_support(row: pd.Series) -> dict:
                 "category": "consensus_intervene",
             }
 
-        # Passive and stuck: inactive + stalled
-        if tension == "passive_and_stuck":
+        # Passive and stuck/struggling: inactive + stalled/struggling
+        if tension in ("passive_and_stuck", "passive_and_struggling"):
             urgency = 0.85 if temporal in ("looping", "persistent") else 0.5
             return {
                 "action": "spatial_hint",
@@ -203,10 +203,50 @@ def suggest_support(row: pd.Series) -> dict:
                 "category": "probe",
             }
 
+        # V2 Spatial tensions
+        if tension == "navigating_but_stalled":
+            return {
+                "action": "spatial_hint",
+                "confidence": 0.6,
+                "rationale": "Player is navigating but progress is stalled — may be lost.",
+                "category": "probe",
+            }
+
+        if tension == "stationed_and_struggling":
+            return {
+                "action": "procedural_hint",
+                "confidence": 0.7,
+                "rationale": "Player is at puzzle but struggling — needs guidance.",
+                "category": "consensus_intervene",
+            }
+
+        if tension == "navigating_but_idle":
+            return {
+                "action": "monitor_closely",
+                "confidence": 0.4,
+                "rationale": "Navigating but inactive — may be observing or lost.",
+                "category": "probe",
+            }
+
+        if tension == "active_but_struggling":
+            if temporal in ("looping", "persistent"):
+                return {
+                    "action": "redirect_hint",
+                    "confidence": 0.7,
+                    "rationale": "Active but struggling persistently — needs new direction.",
+                    "category": "consensus_intervene",
+                }
+            return {
+                "action": "gentle_probe",
+                "confidence": 0.55,
+                "rationale": "Active but struggling — probe to check approach.",
+                "category": "probe",
+            }
+
     # ── UNSTRUCTURED: no clear inter-agent pattern ───────────────────────
 
     # Fallback: use individual agent signals
-    if perf_label == "stalled" and perf_conf > 0.7 and temporal == "looping":
+    if perf_label in ("stalled", "struggling") and perf_conf > 0.7 and temporal == "looping":
         return {
             "action": "spatial_hint",
             "confidence": 0.5,

@@ -17,16 +17,25 @@ import numpy as np
 # ---------------------------------------------------------------------------
 
 CONTRADICTIONS = {
-    # (agent_a, label_a, agent_b, label_b) -> tension name
+    # V2: agent names reflect perceptual dimensions
+    # Perceptual × Behavioral
     ("attention", "searching", "action", "inactive"): "scanning_but_passive",
-    ("attention", "focused", "performance", "failing"): "focused_but_failing",
     ("attention", "focused", "action", "inactive"): "focused_but_idle",
-    ("attention", "searching", "performance", "progressing"): "scattered_but_progressing",
     ("attention", "locked", "action", "active"): "fixated_but_acting",
+    # Perceptual × Progress
+    ("attention", "focused", "performance", "failing"): "focused_but_failing",
+    ("attention", "searching", "performance", "progressing"): "scattered_but_progressing",
+    # Behavioral × Progress
     ("action", "active", "performance", "stalled"): "acting_without_progress",
     ("action", "active", "performance", "failing"): "active_but_failing",
     ("action", "inactive", "performance", "progressing"): "idle_but_progressing",
-    # Population agent conflicts with rule-based agents
+    ("action", "active", "performance", "struggling"): "active_but_struggling",
+    # Spatial × Progress (NEW in V2)
+    ("spatial", "navigating", "performance", "stalled"): "navigating_but_stalled",
+    ("spatial", "stationed", "performance", "struggling"): "stationed_and_struggling",
+    # Spatial × Behavioral
+    ("spatial", "navigating", "action", "inactive"): "navigating_but_idle",
+    # Population agent conflicts (kept for backward compat until Population removed)
     ("population", "exploring", "attention", "focused"): "pop_says_exploring_but_focused",
     ("population", "disoriented", "attention", "searching"): "pop_says_stuck_but_searching",
     ("population", "actively_solving", "performance", "stalled"): "pop_says_solving_but_stalled",
@@ -35,12 +44,18 @@ CONTRADICTIONS = {
 }
 
 CONSTRUCTIVE_PAIRS = {
+    # Perceptual × Behavioral
     ("attention", "focused", "action", "active"): "engaged_and_active",
-    ("attention", "focused", "performance", "progressing"): "focused_progress",
     ("attention", "searching", "action", "active"): "active_exploration",
-    ("action", "inactive", "performance", "stalled"): "passive_and_stuck",
     ("attention", "locked", "action", "inactive"): "frozen_on_clue",
-    # Population agent agreements
+    # Perceptual × Progress
+    ("attention", "focused", "performance", "progressing"): "focused_progress",
+    # Behavioral × Progress
+    ("action", "inactive", "performance", "stalled"): "passive_and_stuck",
+    ("action", "inactive", "performance", "struggling"): "passive_and_struggling",
+    # Spatial × Progress (NEW in V2)
+    ("spatial", "stationed", "performance", "progressing"): "stationed_and_progressing",
+    # Population agent agreements (kept for backward compat)
     ("population", "exploring", "attention", "searching"): "pop_confirms_exploration",
     ("population", "cognitively_stuck", "attention", "locked"): "pop_confirms_impasse",
     ("population", "disoriented", "action", "inactive"): "pop_confirms_disorientation",
@@ -59,7 +74,7 @@ def _get_agent_output(row, agent_name):
 def detect_tensions(row: pd.Series) -> list:
     """Find all pairwise tensions between agents."""
     agents = {}
-    for name in ["attention", "action", "performance", "population"]:
+    for name in ["attention", "action", "performance", "population", "spatial"]:
         agents[name] = _get_agent_output(row, name)
 
     tensions = []

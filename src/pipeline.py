@@ -15,7 +15,11 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import pandas as pd
 from config import INPUT_CSV, OUTPUT_DIR
 from load_data import load_csv
-from agents import attention_agent, action_agent, performance_agent, temporal_agent
+from agents import perceptual_agent, behavioral_agent, progress_agent, spatial_agent, temporal_agent
+# Backward compat aliases (column names stay attention_/action_/performance_ for app.py)
+attention_agent = perceptual_agent
+action_agent = behavioral_agent
+performance_agent = progress_agent
 from population_agent import population_agent
 from negotiation import run_negotiation
 from support import run_support
@@ -103,11 +107,14 @@ def run_pipeline(input_path: str, output_dir: str):
     print("[INFO] Running PopulationAgent...")
     _unpack_agent(df, "population", population_agent)
 
+    print("[INFO] Running SpatialAgent...")
+    _unpack_agent(df, "spatial", spatial_agent)
+
     # ---- Step 3: Run TemporalAgent (needs prior agent outputs) ----
     print("[INFO] Running TemporalAgent...")
     state_columns = {
-        "attention": "attention_label",
-        "performance": "performance_label",
+        "perceptual": "attention_label",
+        "progress": "performance_label",
     }
     temporal_results = pd.Series([
         temporal_agent(idx, df, state_columns) for idx in df.index
@@ -159,7 +166,7 @@ def run_pipeline(input_path: str, output_dir: str):
     # ---- Summary statistics ----
     print("\n--- Pipeline Summary ---")
     print(f"Total windows: {len(df)}")
-    for agent in ["attention", "action", "performance", "temporal", "population"]:
+    for agent in ["attention", "action", "performance", "temporal", "population", "spatial"]:
         print(f"\n{agent.title()} Agent:")
         print(f"  Labels: {df[f'{agent}_label'].value_counts().to_dict()}")
         print(f"  Avg confidence: {df[f'{agent}_confidence'].mean():.3f}")
