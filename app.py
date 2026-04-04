@@ -390,9 +390,9 @@ def make_disagreement_scatter(cdf):
 def make_agent_confidence_timeline(pdf):
     """Show agent confidence over time with color = label."""
     agents = [
-        ("attention", "Attention Agent"),
-        ("action", "Action Agent"),
-        ("performance", "Performance Agent"),
+        ("attention", "Perceptual Agent"),
+        ("action", "Behavioral Agent"),
+        ("performance", "Progress Agent"),
         ("temporal", "Temporal Agent"),
         ("population", "Population Agent"),
     ]
@@ -546,9 +546,9 @@ def make_cluster_vs_tension_heatmap(df):
 def render_negotiation_panel(current):
     """Render the negotiation transcript for a single time step."""
     agents = [
-        ("attention", "🔵 Attention"),
-        ("action", "🟢 Action"),
-        ("performance", "🟠 Performance"),
+        ("attention", "🔵 Perceptual"),
+        ("action", "🟢 Behavioral"),
+        ("performance", "🟠 Progress"),
         ("temporal", "⏱ Temporal"),
         ("population", "👥 Population"),
     ]
@@ -609,9 +609,9 @@ def make_dominance_chart(pdf):
     with the largest area is "winning the debate" at that moment.
     """
     agents = [
-        ("attention", "Attention", "#2196F3"),
-        ("action", "Action", "#4CAF50"),
-        ("performance", "Performance", "#FF9800"),
+        ("attention", "Perceptual", "#2196F3"),
+        ("action", "Behavioral", "#4CAF50"),
+        ("performance", "Progress", "#FF9800"),
         ("temporal", "Temporal", "#9C27B0"),
         ("population", "Population", "#795548"),
     ]
@@ -700,9 +700,9 @@ def make_dominance_line_chart(pdf):
     Crossover points = where negotiation shifts.
     """
     agents = [
-        ("attention", "Attention", "#2196F3"),
-        ("action", "Action", "#4CAF50"),
-        ("performance", "Performance", "#FF9800"),
+        ("attention", "Perceptual", "#2196F3"),
+        ("action", "Behavioral", "#4CAF50"),
+        ("performance", "Progress", "#FF9800"),
         ("temporal", "Temporal", "#9C27B0"),
         ("population", "Population", "#795548"),
     ]
@@ -817,7 +817,8 @@ def main():
     tw_df, tol_df, detail_df = load_three_way()
 
     # Tabs
-    tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab_arch, tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "🧩 Agent Architecture",
         "🏔 Agent Dominance",
         "📊 Agent Confidence",
         "⚡ Negotiation Timeline",
@@ -826,6 +827,128 @@ def main():
         "🆚 Rule-Based vs IO",
         "🎯 Facilitator Benchmark",
     ])
+
+    with tab_arch:
+        st.subheader("Inside Out V3: Agent Architecture")
+        st.markdown(
+            "Each agent reads an **exclusive** set of raw features and outputs a label + confidence. "
+            "No raw feature is shared between agents — this prevents **echo consensus** "
+            "(multiple agents agreeing because they read the same number, not because they see independent signals)."
+        )
+
+        st.markdown("---")
+
+        # Agent cards
+        agent_info = [
+            {
+                "icon": "🔵",
+                "name": "Perceptual Agent",
+                "question": "What is the player looking at?",
+                "features": ["gaze_entropy", "clue_ratio", "switch_rate"],
+                "labels": "focused / searching / locked",
+                "description": "Interprets gaze distribution from eye tracking. High entropy + high switch rate = searching. Low entropy + high clue ratio = focused. Very high clue fixation + low entropy = locked on one spot.",
+                "color": "#2196F3",
+            },
+            {
+                "icon": "🟢",
+                "name": "Behavioral Agent",
+                "question": "What is the player doing right now?",
+                "features": ["action_count", "idle_time", "error_count"],
+                "labels": "active / hesitant / inactive / failing",
+                "description": "Interprets instantaneous behavior within each 5-second window. Its output label is passed to the Progress Agent via **label flow** (not raw features).",
+                "color": "#4CAF50",
+            },
+            {
+                "icon": "🟠",
+                "name": "Progress Agent",
+                "question": "Is the player making real progress?",
+                "features": ["time_since_action", "puzzle_elapsed_ratio", "behavioral_label (from Behavioral Agent)"],
+                "labels": "progressing / ineffective_progress / stalled",
+                "description": "Combines macro-temporal signals with Behavioral Agent's pre-interpreted label. Key innovation: **ineffective_progress** detects players who are active but not making meaningful progress — the #1 source of missed detections in earlier versions.",
+                "color": "#FF9800",
+            },
+            {
+                "icon": "⏱",
+                "name": "Temporal Agent",
+                "question": "How long has this state been going on?",
+                "features": ["Perceptual + Progress labels (sliding window)", "puzzle_elapsed_ratio"],
+                "labels": "transient / persistent / looping",
+                "description": "Meta-agent that reads labels from Perceptual and Progress agents over the last 3 windows. Detects if a state is temporary or has been repeating. Boosted by puzzle_elapsed_ratio: if a player is 3x over median puzzle time, flags as persistent even without label consistency.",
+                "color": "#9C27B0",
+            },
+            {
+                "icon": "👥",
+                "name": "Population Agent",
+                "question": "How does this player compare to others?",
+                "features": ["All features (compared to K=5 cluster centroids)"],
+                "labels": "exploring / disoriented / actively_solving / cognitively_stuck / transitioning",
+                "description": "Data-driven agent that compares the current window against cluster centroids learned from the full participant corpus (FDG '26 paper). Provides a population-relative perspective that can confirm or challenge rule-based agents.",
+                "color": "#795548",
+            },
+        ]
+
+        for agent in agent_info:
+            with st.container():
+                st.markdown(
+                    f"### {agent['icon']} {agent['name']}\n"
+                    f"**Question:** *{agent['question']}*\n\n"
+                    f"**Exclusive features:** `{'`, `'.join(agent['features'])}`\n\n"
+                    f"**Output labels:** {agent['labels']}\n\n"
+                    f"{agent['description']}"
+                )
+                st.markdown("---")
+
+        # Data flow diagram
+        st.subheader("Data Flow: Label Flow Architecture")
+        st.markdown(
+            "```\n"
+            "Eye Tracker ──→ Perceptual Agent ──→ label ──┐\n"
+            "                                              │\n"
+            "Controller ───→ Behavioral Agent ──→ label ──┤──→ Negotiation ──→ Support\n"
+            "                      │                       │    (pairwise      (watch /\n"
+            "                      └─ label flow ─→ Progress Agent  tensions)   probe /\n"
+            "                                              │                  intervene)\n"
+            "Game Engine ──→ Progress Agent ────→ label ──┤\n"
+            "                                              │\n"
+            "History ──────→ Temporal Agent ────→ label ──┤\n"
+            "                                              │\n"
+            "Cluster Data ─→ Population Agent ──→ label ──┘\n"
+            "```"
+        )
+
+        st.markdown(
+            "**Key design principle:** The Behavioral Agent outputs a pre-interpreted label "
+            "(active/hesitant/inactive) which the Progress Agent consumes. The Progress Agent "
+            "never reads raw `action_count` — it only knows *whether* the player is active, "
+            "not *how many* actions they took. This ensures that when Behavioral and Progress "
+            "agents agree, their agreement reflects genuinely independent evidence."
+        )
+
+        # Negotiation explanation
+        st.subheader("Negotiation: How Agents Debate")
+        st.markdown(
+            "After all agents produce labels, the system checks every pair for **tensions**:\n\n"
+            "- **Contradictory tension:** Perceptual says *searching* + Behavioral says *inactive* "
+            "= `scanning_but_passive` (is the player exploring or lost?)\n"
+            "- **Constructive tension:** Perceptual says *focused* + Progress says *progressing* "
+            "= `focused_progress` (agents agree: player is doing well)\n\n"
+            "The **pattern of tensions** — not any single agent — determines the system's response:\n\n"
+            "| Pattern | Response | Meaning |\n"
+            "|---------|----------|--------|\n"
+            "| Agents agree: player is stuck | 🚨 **Intervene** | Give a hint |\n"
+            "| Agents disagree on what's happening | 🔍 **Probe** | Explore before guessing |\n"
+            "| Agents agree: player is OK | 👁 **Watch** | Don't interrupt |"
+        )
+
+        # Stateful prompt agent
+        st.subheader("Stateful Prompt Agent")
+        st.markdown(
+            "The final decision passes through a **stateful** layer that tracks history per player:\n\n"
+            "- **Cooldown:** No new intervention within 15s of the last one\n"
+            "- **Escalation:** 6+ consecutive struggle windows → upgrade probe to intervene\n"
+            "- **Recovery:** When player returns to normal → gradually reset escalation\n"
+            "- **Fatigue:** Max 8 interventions per puzzle to avoid over-prompting"
+        )
 
     with tab0:
         st.subheader("Who's Winning the Debate?")
