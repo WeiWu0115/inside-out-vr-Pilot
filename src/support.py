@@ -24,6 +24,7 @@ def suggest_support(row: pd.Series) -> dict:
     d_intensity = row.get("disagreement_intensity", 0.0)
     tension = row.get("dominant_tension", "none")
     temporal = row.get("temporal_label", "transient")
+    puzzle_id = row.get("puzzle_id", "")
 
     att_label = row.get("attention_label", "unknown")
     att_conf = row.get("attention_confidence", 0.0)
@@ -31,6 +32,23 @@ def suggest_support(row: pd.Series) -> dict:
     act_conf = row.get("action_confidence", 0.0)
     perf_label = row.get("performance_label", "unknown")
     perf_conf = row.get("performance_confidence", 0.0)
+
+    # Transition suppression: between puzzles, scanning/idle is normal navigation.
+    # Only intervene during Transition if agents show strong consensus on being stuck.
+    if puzzle_id == "Transition":
+        if tension == "passive_and_stuck" and temporal in ("looping", "persistent"):
+            return {
+                "action": "spatial_hint",
+                "confidence": 0.5,
+                "rationale": "Stuck during transition — player may be lost navigating.",
+                "category": "consensus_intervene",
+            }
+        return {
+            "action": "wait",
+            "confidence": 0.7,
+            "rationale": "Transition phase — scanning and idle behavior is normal navigation.",
+            "category": "watch",
+        }
 
     # ── CONSENSUS: agents largely agree ──────────────────────────────────
     if d_type == "constructive":
@@ -96,24 +114,40 @@ def suggest_support(row: pd.Series) -> dict:
             }
 
         # Focused but idle — thinking or stuck?
+        # Data shows facilitators prompt even during transient focused+idle.
+        # Being focused but doing nothing is itself a signal worth probing.
         if tension == "focused_but_idle":
-            if temporal == "persistent":
+            time_since = row.get("time_since_action", 0) or 0
+            if temporal in ("persistent", "looping") or time_since > 60:
                 return {
                     "action": "gentle_probe",
-                    "confidence": 0.55,
-                    "rationale": "Focused attention + no action for extended period. "
-                                 "Could be deep thinking or paralysis. Probe gently.",
+                    "confidence": 0.6,
+                    "rationale": f"Focused attention + no action "
+                                 f"({'persistent' if temporal != 'transient' else f'for {time_since:.0f}s'}). "
+                                 f"Could be deep thinking or paralysis. Probe gently.",
                     "category": "probe",
                 }
             return {
-                "action": "wait",
-                "confidence": 0.6,
-                "rationale": "Focused + briefly idle — likely thinking. Wait.",
-                "category": "watch",
+                "action": "monitor_closely",
+                "confidence": 0.5,
+                "rationale": "Focused + idle — may be thinking. Monitor closely.",
+                "category": "probe",
             }
 
         # Scattered attention but progressing
+        # Nuance: if time_since_action is high, the "progressing" label may be
+        # misleading — player had sporadic actions after long inactivity.
         if tension == "scattered_but_progressing":
+            time_since = row.get("time_since_action", 0) or 0
+            if temporal in ("looping", "persistent") or time_since > 90:
+                return {
+                    "action": "gentle_probe",
+                    "confidence": 0.55,
+                    "rationale": f"Scattered attention + nominally progressing but "
+                                 f"{'persistent pattern' if temporal != 'transient' else f'{time_since:.0f}s since last sustained action'}. "
+                                 f"Probe to check if player is genuinely making progress.",
+                    "category": "probe",
+                }
             return {
                 "action": "wait",
                 "confidence": 0.75,

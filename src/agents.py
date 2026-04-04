@@ -196,6 +196,7 @@ def performance_agent(row: pd.Series) -> dict:
     error_count = safe_get(row, "error_count")
     puzzle_active = safe_get(row, "puzzle_active")
     action_count = safe_get(row, "action_count")
+    time_since = safe_get(row, "time_since_action")
 
     if puzzle_active is None and error_count is None:
         return {
@@ -209,6 +210,7 @@ def performance_agent(row: pd.Series) -> dict:
         "error_count": error_count,
         "puzzle_active": puzzle_active,
         "action_count": action_count,
+        "time_since_action": time_since,
     }
 
     scores = {}
@@ -223,19 +225,34 @@ def performance_agent(row: pd.Series) -> dict:
         scores["failing"] = 0.05
 
     # Progressing: actions with no/few errors
+    # Key fix: penalize "progressing" when time_since_action is high.
+    # A few sporadic actions after 2+ minutes of inactivity is not real progress.
     prog_conf = 0.3
     if action_count is not None and action_count > 0:
         prog_conf += _linear_scale(action_count, 0, ACTION["action_count_high"]) * 0.4
     if error_count is not None and error_count == 0:
         prog_conf += 0.2
+    # Penalty: if player hasn't acted for a long time, current actions are
+    # likely exploratory attempts, not meaningful progress
+    if time_since is not None and time_since > ACTION["time_since_action_moderate"]:
+        penalty = _linear_scale(time_since,
+                                ACTION["time_since_action_moderate"],
+                                ACTION["time_since_action_moderate"] * 3) * 0.35
+        prog_conf -= penalty
     scores["progressing"] = _clamp(prog_conf, 0.1, 0.95)
 
-    # Stalled: no action
+    # Stalled: no action, OR sporadic action after long inactivity
     stall_conf = 0.3
     if action_count is not None and action_count == 0:
         stall_conf += 0.4
     elif action_count is not None and action_count <= PERFORMANCE["action_count_low"]:
         stall_conf += 0.2
+    # Boost stalled score when time_since_action is high even with some action
+    if time_since is not None and time_since > ACTION["time_since_action_moderate"]:
+        stall_boost = _linear_scale(time_since,
+                                    ACTION["time_since_action_moderate"],
+                                    ACTION["time_since_action_moderate"] * 3) * 0.25
+        stall_conf += stall_boost
     scores["stalled"] = _clamp(stall_conf, 0.1, 0.95)
 
     best_label = max(scores, key=scores.get)
@@ -252,6 +269,17 @@ def performance_agent(row: pd.Series) -> dict:
         "progressing": f"Active ({action_count} actions) with few/no errors",
         "stalled": f"No meaningful actions in this window",
     }
+    # Add context about long inactivity
+    if time_since is not None and time_since > ACTION["time_since_action_moderate"]:
+        if best_label == "progressing":
+            reasons["progressing"] = (
+                f"Some actions ({action_count}) but {time_since:.0f}s since last sustained activity"
+            )
+        elif best_label == "stalled":
+            reasons["stalled"] = (
+                f"Stalled: {time_since:.0f}s since last action"
+                + (f", only {action_count} sporadic actions" if action_count and action_count > 0 else "")
+            )
 
     return {
         "label": best_label,
