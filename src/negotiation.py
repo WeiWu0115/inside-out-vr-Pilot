@@ -26,11 +26,8 @@ CONTRADICTIONS = {
     ("attention", "searching", "performance", "progressing"): "scattered_but_progressing",
     ("attention", "focused", "performance", "ineffective_progress"): "focused_but_ineffective",
     ("attention", "searching", "performance", "ineffective_progress"): "scattered_and_ineffective",
-    ("attention", "focused", "performance", "degrading"): "focused_but_degrading",
-    ("attention", "searching", "performance", "degrading"): "scattered_and_degrading",
     # Behavioral × Progress
     ("action", "active", "performance", "stalled"): "acting_without_progress",
-    ("action", "active", "performance", "degrading"): "active_but_degrading",
     ("action", "active", "performance", "failing"): "active_but_failing",
     ("action", "inactive", "performance", "progressing"): "idle_but_progressing",
     # Population agent conflicts (kept for backward compat)
@@ -48,7 +45,6 @@ CONSTRUCTIVE_PAIRS = {
     ("action", "inactive", "performance", "stalled"): "passive_and_stuck",
     ("action", "inactive", "performance", "ineffective_progress"): "passive_and_ineffective",
     ("action", "hesitant", "performance", "ineffective_progress"): "hesitant_and_ineffective",
-    ("action", "inactive", "performance", "degrading"): "passive_and_degrading",
     ("attention", "locked", "action", "inactive"): "frozen_on_clue",
     # Population agent agreements
     ("population", "exploring", "attention", "searching"): "pop_confirms_exploration",

@@ -1,6 +1,6 @@
 # Facilitator Benchmark Report
 
-Generated: 2026-04-04 18:39
+Generated: 2026-04-04 18:48
 
 ## 1. Facilitator Prompt Overview (18 users)
 
@@ -32,9 +32,9 @@ Generated: 2026-04-04 18:39
 
 | Category | IO | Expert | Facilitator |
 |----------|-----|--------|-------------|
-| watch | 2826 (53.7%) | 4930 (93.6%) | 4172 (79.2%) |
-| probe | 1391 (26.4%) | 0 (0.0%) | 1027 (19.5%) |
-| intervene | 1048 (19.9%) | 335 (6.4%) | 66 (1.3%) |
+| watch | 3028 (57.5%) | 4930 (93.6%) | 4172 (79.2%) |
+| probe | 1272 (24.2%) | 0 (0.0%) | 1027 (19.5%) |
+| intervene | 965 (18.3%) | 335 (6.4%) | 66 (1.3%) |
 
 ## 4. Intervention Detection (Facilitator as Ground Truth)
 
@@ -42,14 +42,14 @@ Binary task: facilitator != watch → positive (someone needed help)
 
 | Metric | IO | Expert |
 |--------|-----|--------|
-| precision | 0.266 | 0.227 |
-| recall | 0.593 | 0.07 |
-| f1 | 0.367 | 0.106 |
-| accuracy | 0.575 | 0.758 |
-| TP | 648 | 76 |
-| FP | 1791 | 259 |
-| FN | 445 | 1017 |
-| TN | 2381 | 3913 |
+| precision | 0.26 | 0.227 |
+| recall | 0.532 | 0.07 |
+| f1 | 0.349 | 0.106 |
+| accuracy | 0.588 | 0.758 |
+| TP | 581 | 76 |
+| FP | 1656 | 259 |
+| FN | 512 | 1017 |
+| TN | 2516 | 3913 |
 
 ## 5. Three-Class Evaluation (watch / probe / intervene)
 
@@ -57,11 +57,11 @@ Facilitator categories: watch=no prompt, probe=reflective, intervene=explicit
 
 | Class | IO Precision | IO Recall | IO F1 | Expert Precision | Expert Recall | Expert F1 |
 |-------|-------------|-----------|-------|-----------------|---------------|-----------|
-| watch | 0.843 | 0.571 | 0.68 | 0.794 | 0.938 | 0.86 |
-| probe | 0.237 | 0.32 | 0.272 | 0 | 0.0 | 0 |
-| intervene | 0.013 | 0.212 | 0.025 | 0.006 | 0.03 | 0.01 |
+| watch | 0.831 | 0.603 | 0.699 | 0.794 | 0.938 | 0.86 |
+| probe | 0.211 | 0.262 | 0.234 | 0 | 0.0 | 0 |
+| intervene | 0.032 | 0.47 | 0.06 | 0.006 | 0.03 | 0.01 |
 
-- IO overall accuracy: **0.517**
+- IO overall accuracy: **0.535**
 - Expert overall accuracy: **0.744**
 
 ## 6. Per-Puzzle Breakdown
@@ -69,65 +69,65 @@ Facilitator categories: watch=no prompt, probe=reflective, intervene=explicit
 ### Hub Puzzle: Cooking Pot
 - Windows: 1602
 - Facilitator intervention rate: 19.1%
-- IO intervention/probe rate: 53.7%
+- IO intervention/probe rate: 42.1%
 - Expert intervention rate: 7.7%
 
 ### Spoke Puzzle: Amount of Protein
 - Windows: 370
 - Facilitator intervention rate: 37.3%
-- IO intervention/probe rate: 68.6%
+- IO intervention/probe rate: 46.5%
 - Expert intervention rate: 0.0%
 
 ### Spoke Puzzle: Amount of Sunlight
 - Windows: 330
 - Facilitator intervention rate: 24.5%
-- IO intervention/probe rate: 53.6%
+- IO intervention/probe rate: 56.7%
 - Expert intervention rate: 0.0%
 
 ### Spoke Puzzle: Pasta in Sauce
 - Windows: 270
 - Facilitator intervention rate: 20.0%
-- IO intervention/probe rate: 68.5%
+- IO intervention/probe rate: 47.8%
 - Expert intervention rate: 9.6%
 
 ### Spoke Puzzle: Water Amount
 - Windows: 472
 - Facilitator intervention rate: 38.1%
-- IO intervention/probe rate: 57.2%
+- IO intervention/probe rate: 60.6%
 - Expert intervention rate: 11.0%
 
 ## 7. IO Tension Patterns During Facilitator Interventions
 
 When the facilitator gave a prompt (1093 windows), IO's tension patterns were:
 
-- **focused_but_idle**: 326 (29.8%)
-- **scattered_and_ineffective**: 169 (15.5%)
-- **scanning_but_passive**: 161 (14.7%)
-- **scattered_but_progressing**: 158 (14.5%)
-- **focused_but_ineffective**: 125 (11.4%)
-- **focused_progress**: 43 (3.9%)
-- **engaged_and_active**: 23 (2.1%)
-- **passive_and_stuck**: 23 (2.1%)
-- **pop_confirms_progress**: 13 (1.2%)
-- **pop_says_solving_but_stalled**: 12 (1.1%)
-- **pop_says_stuck_but_active**: 7 (0.6%)
-- **pop_says_exploring_but_focused**: 7 (0.6%)
-- **frozen_on_clue**: 6 (0.5%)
+- **focused_but_idle**: 311 (28.5%)
+- **scattered_but_progressing**: 284 (26.0%)
+- **scanning_but_passive**: 146 (13.4%)
+- **focused_progress**: 109 (10.0%)
+- **idle_but_progressing**: 32 (2.9%)
+- **none**: 31 (2.8%)
+- **scattered_and_ineffective**: 23 (2.1%)
+- **pop_confirms_progress**: 23 (2.1%)
+- **engaged_and_active**: 22 (2.0%)
+- **passive_and_stuck**: 21 (1.9%)
+- **pop_says_solving_but_stalled**: 17 (1.6%)
+- **focused_but_ineffective**: 14 (1.3%)
+- **pop_says_stuck_but_active**: 12 (1.1%)
+- **pop_says_exploring_but_focused**: 12 (1.1%)
+- **pop_confirms_exploration**: 11 (1.0%)
+- **frozen_on_clue**: 7 (0.6%)
+- **pop_says_stuck_but_searching**: 6 (0.5%)
 - **pop_confirms_impasse**: 5 (0.5%)
 - **pop_says_exploring_but_inactive**: 5 (0.5%)
-- **pop_says_stuck_but_searching**: 3 (0.3%)
-- **idle_but_progressing**: 2 (0.2%)
-- **hesitant_and_ineffective**: 2 (0.2%)
-- **none**: 2 (0.2%)
-- **acting_without_progress**: 1 (0.1%)
+- **acting_without_progress**: 2 (0.2%)
 
 ## 8. IO Decision When Facilitator Prompted
 
 IO's decision at facilitator prompt moments:
 
-- **watch**: 445 (40.7%)
-- **probe**: 364 (33.3%)
-- **intervene**: 284 (26.0%)
+- **watch**: 512 (46.8%)
+- **intervene**: 307 (28.1%)
+- **probe**: 274 (25.1%)
 
 ## 9. Expert Decision When Facilitator Prompted
 
@@ -143,21 +143,21 @@ This is fairer because prompts are continuous blocks spanning multiple windows.
 
 | Tolerance | IO Recall | IO Precision | IO F1 | Expert Recall | Expert Precision | Expert F1 |
 |-----------|-----------|-------------|-------|--------------|-----------------|-----------|
-| ±0s | 0.83 | 0.232 | 0.363 | 0.4 | 0.203 | 0.269 |
-| ±5s | 0.828 | 0.294 | 0.434 | 0.331 | 0.251 | 0.285 |
-| ±10s | 0.861 | 0.344 | 0.492 | 0.384 | 0.287 | 0.328 |
-| ±15s | 0.887 | 0.383 | 0.535 | 0.45 | 0.316 | 0.372 |
-| ±20s | 0.901 | 0.42 | 0.573 | 0.47 | 0.352 | 0.403 |
-| ±30s | 0.94 | 0.482 | 0.637 | 0.47 | 0.397 | 0.431 |
+| ±0s | 0.86 | 0.226 | 0.358 | 0.4 | 0.203 | 0.269 |
+| ±5s | 0.821 | 0.286 | 0.424 | 0.331 | 0.251 | 0.285 |
+| ±10s | 0.887 | 0.336 | 0.488 | 0.384 | 0.287 | 0.328 |
+| ±15s | 0.921 | 0.371 | 0.529 | 0.45 | 0.316 | 0.372 |
+| ±20s | 0.94 | 0.407 | 0.568 | 0.47 | 0.352 | 0.403 |
+| ±30s | 0.96 | 0.467 | 0.628 | 0.47 | 0.397 | 0.431 |
 
 At **±15s tolerance** (recommended):
-- IO detects **88.7%** of facilitator prompts (F1=0.535)
+- IO detects **92.1%** of facilitator prompts (F1=0.529)
 - Expert detects **45.0%** of facilitator prompts (F1=0.372)
 
 ## 11. Per-Prompt Detection Detail (±15s tolerance)
 
 ### Reflective prompts (97 total)
-- IO detection rate: **87.6%**
+- IO detection rate: **92.8%**
 - Expert detection rate: **50.5%**
 
 ### Explicit prompts (54 total)
@@ -168,28 +168,28 @@ At **±15s tolerance** (recommended):
 
 | Puzzle | N prompts | IO hit rate | Expert hit rate |
 |--------|-----------|-------------|-----------------|
-| Hub Puzzle: Cooking Pot | 46 | 89.1% | 50.0% |
-| Spoke Puzzle: Amount of Protein | 36 | 94.4% | 0.0% |
-| Spoke Puzzle: Amount of Sunlight | 13 | 76.9% | 7.7% |
-| Spoke Puzzle: Pasta in Sauce | 26 | 92.3% | 73.1% |
-| Spoke Puzzle: Water Amount | 25 | 92.0% | 84.0% |
+| Hub Puzzle: Cooking Pot | 46 | 93.5% | 50.0% |
+| Spoke Puzzle: Amount of Protein | 36 | 91.7% | 0.0% |
+| Spoke Puzzle: Amount of Sunlight | 13 | 100.0% | 7.7% |
+| Spoke Puzzle: Pasta in Sauce | 26 | 88.5% | 73.1% |
+| Spoke Puzzle: Water Amount | 25 | 100.0% | 84.0% |
 | none | 5 | 40.0% | 80.0% |
 
 ### Detection rate by participant (±15s)
 
 | Participant | N prompts | IO hit rate | Expert hit rate |
 |-------------|-----------|-------------|-----------------|
-| User-1 | 2 | 50.0% | 0.0% |
+| User-1 | 2 | 100.0% | 0.0% |
 | User-2 | 6 | 100.0% | 50.0% |
-| User-3 | 13 | 61.5% | 53.8% |
+| User-3 | 13 | 84.6% | 53.8% |
 | User-5 | 13 | 92.3% | 61.5% |
 | User-6 | 31 | 96.8% | 35.5% |
-| User-9 | 25 | 88.0% | 60.0% |
+| User-9 | 25 | 96.0% | 60.0% |
 | User-10 | 22 | 100.0% | 36.4% |
 | User-12 | 9 | 77.8% | 44.4% |
 | User-14 | 7 | 100.0% | 57.1% |
 | User-22 | 8 | 62.5% | 12.5% |
-| User-23 | 15 | 93.3% | 46.7% |
+| User-23 | 15 | 86.7% | 46.7% |
 
 ## 12. Episode-Level Evaluation
 
@@ -199,8 +199,8 @@ Struggle episodes: consecutive facilitator prompts grouped within 60s.
 - IO episode recall: **85.0%**
 - Expert episode recall: **45.0%**
 - Mean episode duration: **103s**
-- Mean IO detection latency: **0.1s** (negative = early detection)
-- IO detected **before** episode start: 50/68 (74%)
+- Mean IO detection latency: **-5.2s** (negative = early detection)
+- IO detected **before** episode start: 53/68 (78%)
 
 ### Severe (has explicit prompt) (28 episodes)
 - IO recall: **85.7%**

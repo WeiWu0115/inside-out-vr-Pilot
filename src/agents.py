@@ -204,83 +204,75 @@ action_agent = behavioral_agent
 # ---------------------------------------------------------------------------
 
 def progress_agent(row: pd.Series) -> dict:
-    """
-    V3.1: Momentum-aware Progress Agent.
-    Uses progress_momentum (smoothed trend over 3-5 windows) as primary signal,
-    with behavioral_label, time_since_action, and elapsed_ratio as context.
-
-    Labels:
-      - progressing:          momentum > 0.3 OR (active + recent action + under time)
-      - ineffective_progress: active but momentum near 0 (doing things, no real progress)
-      - degrading:            momentum < -0.3 (getting worse over time)
-      - stalled:              inactive + low momentum
-    """
-    # Label flow
+    # Label flow: read Behavioral Agent's pre-interpreted label
     behavioral_label = row.get("action_label", "unknown")
     behavioral_conf = row.get("action_confidence", 0.5)
 
-    # Own features
+    # Own exclusive raw features
     time_since = safe_get(row, "time_since_action") or 0.0
     elapsed_ratio = safe_get(row, "puzzle_elapsed_ratio") or 0.0
-    momentum = safe_get(row, "progress_momentum") or 0.0
+    puzzle_active = safe_get(row, "puzzle_active")
 
     evidence = {
         "behavioral_label": behavioral_label,
+        "behavioral_confidence": behavioral_conf,
         "time_since_action": time_since,
         "puzzle_elapsed_ratio": elapsed_ratio,
-        "progress_momentum": momentum,
     }
 
     scores = {}
-    is_active = behavioral_label in ("active", "hesitant")
 
-    # --- Progressing: positive momentum + active ---
-    prog_conf = 0.2
-    if momentum > 0.3:
-        prog_conf += 0.4
-    elif momentum > 0.1:
-        prog_conf += 0.2
-    if is_active and time_since < ACTION["time_since_action_moderate"] * 0.5:
-        prog_conf += 0.2
+    # --- Progressing: recent action + not over time ---
+    prog_conf = 0.3
+    if behavioral_label in ("active", "hesitant"):
+        prog_conf += 0.25
+    if time_since < ACTION["time_since_action_moderate"] * 0.5:
+        prog_conf += 0.25
+    elif time_since < ACTION["time_since_action_moderate"]:
+        prog_conf += 0.1
     if elapsed_ratio < 1.0:
         prog_conf += 0.1
+    # Penalize if over time even with activity
     if elapsed_ratio > 2.0:
+        prog_conf -= 0.15
+    if elapsed_ratio > 3.0:
         prog_conf -= 0.15
     scores["progressing"] = _clamp(prog_conf, 0.1, 0.95)
 
-    # --- Ineffective Progress: active but momentum near zero ---
+    # --- Ineffective Progress (NEW): active but not making real progress ---
+    # Player is doing things but has been at this puzzle too long / too long since
+    # meaningful action — the actions are likely exploratory or repetitive
     ineff_conf = 0.1
-    if is_active and -0.3 <= momentum <= 0.3:
-        ineff_conf += 0.25
-        if elapsed_ratio > 1.5:
-            ineff_conf += _linear_scale(elapsed_ratio, 1.5, 3.0) * 0.25
+    if behavioral_label in ("active", "hesitant"):
+        # Active but time_since_action is high → sporadic actions after long gap
         if time_since > ACTION["time_since_action_moderate"]:
+            ineff_conf += _linear_scale(time_since,
+                                         ACTION["time_since_action_moderate"],
+                                         ACTION["time_since_action_moderate"] * 3) * 0.3
+        # Active but over median puzzle time → struggling despite activity
+        if elapsed_ratio > 1.5:
+            ineff_conf += _linear_scale(elapsed_ratio, 1.5, 3.0) * 0.3
+        # Failing behavior boosts ineffective
+        if behavioral_label == "failing":
+            ineff_conf += 0.2
+        # Combined: high elapsed + high time_since = strong signal
+        if elapsed_ratio > 2.0 and time_since > ACTION["time_since_action_moderate"]:
             ineff_conf += 0.15
-    if is_active and momentum < 0 and elapsed_ratio > 2.0:
-        ineff_conf += 0.15  # active + negative trend + over time
     scores["ineffective_progress"] = _clamp(ineff_conf, 0.05, 0.95)
 
-    # --- Degrading (NEW): momentum strongly negative ---
-    degrade_conf = 0.1
-    if momentum < -0.3:
-        degrade_conf += _linear_scale(-momentum, 0.3, 0.8) * 0.5
-    if momentum < -0.3 and elapsed_ratio > 1.5:
-        degrade_conf += 0.2
-    if behavioral_label == "failing":
-        degrade_conf += 0.2
-    scores["degrading"] = _clamp(degrade_conf, 0.05, 0.95)
-
-    # --- Stalled: inactive + low/negative momentum ---
+    # --- Stalled: behavioral inactive + macro signals ---
     stall_conf = 0.2
     if behavioral_label == "inactive":
-        stall_conf += 0.3
-    if momentum < 0:
-        stall_conf += _linear_scale(-momentum, 0, 0.5) * 0.2
+        stall_conf += 0.35
+    elif behavioral_label == "hesitant":
+        stall_conf += 0.1
     if time_since > ACTION["time_since_action_moderate"]:
         stall_conf += _linear_scale(time_since,
                                      ACTION["time_since_action_moderate"],
-                                     ACTION["time_since_action_moderate"] * 3) * 0.2
-    if elapsed_ratio > 2.0:
+                                     ACTION["time_since_action_moderate"] * 3) * 0.3
+    if elapsed_ratio > 1.5:
+        stall_conf += _linear_scale(elapsed_ratio, 1.5, 3.0) * 0.15
+    if elapsed_ratio > 3.0:
         stall_conf += 0.1
     scores["stalled"] = _clamp(stall_conf, 0.1, 0.95)
 
@@ -294,13 +286,12 @@ def progress_agent(row: pd.Series) -> dict:
             best_conf *= 0.75
 
     reasons = {
-        "progressing": f"Momentum={momentum:+.2f}, behavioral={behavioral_label}, {elapsed_ratio:.1f}x median",
+        "progressing": f"Behavioral={behavioral_label}, recent activity ({time_since:.0f}s ago), {elapsed_ratio:.1f}x median",
         "ineffective_progress": (
-            f"Active but momentum≈{momentum:+.2f}: actions not producing progress "
-            f"({time_since:.0f}s since sustained action, {elapsed_ratio:.1f}x median)"
+            f"Behavioral={behavioral_label} but progress doubtful: "
+            f"{time_since:.0f}s since sustained action, {elapsed_ratio:.1f}x median puzzle time"
         ),
-        "degrading": f"Momentum={momentum:+.2f}, situation worsening ({elapsed_ratio:.1f}x median)",
-        "stalled": f"Behavioral={behavioral_label}, momentum={momentum:+.2f}, {time_since:.0f}s since action",
+        "stalled": f"Behavioral={behavioral_label}, {time_since:.0f}s since action, {elapsed_ratio:.1f}x median",
     }
 
     return {

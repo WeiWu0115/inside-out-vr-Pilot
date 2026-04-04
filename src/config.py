@@ -45,7 +45,7 @@ PERFORMANCE = {
 # --- TemporalAgent thresholds ---
 TEMPORAL = {
     "persistence_window": 3,     # consecutive windows for "persistent"
-    "looping_keywords": ["failing", "stalled", "ineffective_progress", "degrading"],
+    "looping_keywords": ["failing", "stalled", "ineffective_progress"],
 }
 
 # --- File paths ---
