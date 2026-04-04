@@ -1130,6 +1130,40 @@ def main():
                 })
             st.dataframe(pd.DataFrame(player_rows), use_container_width=True, hide_index=True)
 
+            # --- Trigger frequency analysis ---
+            st.markdown("---")
+            st.subheader("Trigger Frequency Analysis: IO vs Facilitator")
+
+            io_total = (tw_df["io_cat"] != "watch").sum()
+            fac_total = (tw_df["facilitator_cat"] != "watch").sum()
+            io_probe = (tw_df["io_cat"] == "probe").sum()
+            io_intervene = (tw_df["io_cat"] == "intervene").sum()
+            fac_probe = (tw_df["facilitator_cat"] == "probe").sum()
+            fac_intervene = (tw_df["facilitator_cat"] == "intervene").sum()
+            n = len(tw_df)
+
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Facilitator Active", f"{fac_total} ({fac_total/n:.1%})")
+            col2.metric("IO Active", f"{io_total} ({io_total/n:.1%})",
+                         f"{io_total/fac_total:.1f}x facilitator")
+            col3.metric("Rule-Based Active", f"{(tw_df['expert_cat'] != 'watch').sum()} ({(tw_df['expert_cat'] != 'watch').mean():.1%})")
+
+            st.markdown(
+                f"**Probe (low-cost monitoring):** Facilitator reflective = {fac_probe} ({fac_probe/n:.1%}), "
+                f"IO probe = {io_probe} ({io_probe/n:.1%}) — comparable.\n\n"
+                f"**Intervene (disruptive):** Facilitator explicit = {fac_intervene} ({fac_intervene/n:.1%}), "
+                f"IO intervene = {io_intervene} ({io_intervene/n:.1%}) — "
+                f"IO triggers **{io_intervene/fac_intervene:.0f}x** more interventions than the facilitator."
+            )
+
+            st.warning(
+                "**Interpretation:** IO's high recall (92.1%) comes with over-triggering on interventions. "
+                "The facilitator is very restrained with explicit prompts (only 1.3% of windows), preferring "
+                "reflective guidance. IO's probe rate is close to the facilitator's reflective rate, but its "
+                "intervene threshold is much more aggressive. This is the primary target for future calibration: "
+                "reducing intervene decisions while preserving detection sensitivity."
+            )
+
 
 if __name__ == "__main__":
     main()
