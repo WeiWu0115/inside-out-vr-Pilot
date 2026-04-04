@@ -17,16 +17,20 @@ import numpy as np
 # ---------------------------------------------------------------------------
 
 CONTRADICTIONS = {
-    # (agent_a, label_a, agent_b, label_b) -> tension name
+    # Attention × Behavioral
     ("attention", "searching", "action", "inactive"): "scanning_but_passive",
-    ("attention", "focused", "performance", "failing"): "focused_but_failing",
     ("attention", "focused", "action", "inactive"): "focused_but_idle",
-    ("attention", "searching", "performance", "progressing"): "scattered_but_progressing",
     ("attention", "locked", "action", "active"): "fixated_but_acting",
+    # Attention × Progress
+    ("attention", "focused", "performance", "failing"): "focused_but_failing",
+    ("attention", "searching", "performance", "progressing"): "scattered_but_progressing",
+    ("attention", "focused", "performance", "ineffective_progress"): "focused_but_ineffective",
+    ("attention", "searching", "performance", "ineffective_progress"): "scattered_and_ineffective",
+    # Behavioral × Progress
     ("action", "active", "performance", "stalled"): "acting_without_progress",
     ("action", "active", "performance", "failing"): "active_but_failing",
     ("action", "inactive", "performance", "progressing"): "idle_but_progressing",
-    # Population agent conflicts with rule-based agents
+    # Population agent conflicts (kept for backward compat)
     ("population", "exploring", "attention", "focused"): "pop_says_exploring_but_focused",
     ("population", "disoriented", "attention", "searching"): "pop_says_stuck_but_searching",
     ("population", "actively_solving", "performance", "stalled"): "pop_says_solving_but_stalled",
@@ -39,6 +43,8 @@ CONSTRUCTIVE_PAIRS = {
     ("attention", "focused", "performance", "progressing"): "focused_progress",
     ("attention", "searching", "action", "active"): "active_exploration",
     ("action", "inactive", "performance", "stalled"): "passive_and_stuck",
+    ("action", "inactive", "performance", "ineffective_progress"): "passive_and_ineffective",
+    ("action", "hesitant", "performance", "ineffective_progress"): "hesitant_and_ineffective",
     ("attention", "locked", "action", "inactive"): "frozen_on_clue",
     # Population agent agreements
     ("population", "exploring", "attention", "searching"): "pop_confirms_exploration",

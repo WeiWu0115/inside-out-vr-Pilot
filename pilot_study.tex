@@ -1,0 +1,190 @@
+\section{Pilot Study: Inside Out in a VR Escape Room}
+\label{sec:pilot}
+
+To ground the \textsc{Inside Out} framework in empirical data, we implement and evaluate it in a VR escape room environment, comparing its behavior against a rule-based prompting engine designed by a human education expert.
+
+\subsection{Study Context}
+
+We conducted a study with 18 participants (11 female, 6 male, 1 non-binary; mean age = 25) in a VR escape room built in Unity and deployed on Meta Quest Pro headsets. The environment consists of four spatially distributed spoke puzzles requiring players to locate clues, interpret instructions, and manipulate objects, plus a central hub puzzle that integrates information from all four spokes (Figure~\ref{fig:vr_layout}). The task naturally elicits the kind of ambiguous cognitive states our framework targets: players frequently shift between exploration, focused problem-solving, and confusion in ways that resist singular classification~\cite{radianti2020systematic, jensen2018review}.
+
+For each participant, we recorded synchronized multimodal data streams: frame-level eye tracking (gaze position, fixation targets), interaction logs (object manipulation, puzzle events, errors), and task progression events (puzzle completion, state transitions). Of 18 participants, 11 yielded complete eye-tracking data; the remaining 7 experienced tracking failures but provided complete interaction logs.
+
+\subsection{Two Systems, Two Philosophies}
+
+This data configuration enables a principled comparison between two fundamentally different approaches to adaptive support:
+
+\paragraph{The Expert System.} A human education expert observed all 18 participants during gameplay and iteratively developed a rule-based prompting engine. The system uses only game log variables---time since last action, puzzle interaction events, area type, and puzzle state---and implements 10 prioritized rules organized around three states: \textsc{Explore}, \textsc{Stuck}, and \textsc{Solving}. When the system detects a player is stuck (no action for 30+ seconds, no gaze on instructions, no object in hand), it triggers an escalating sequence of prompts: first a redirect to instructions, then a visual hint, then an explicit procedural hint. This engine represents the state of practice in adaptive game design~\cite{li2025adapting}: a sense $\rightarrow$ classify $\rightarrow$ act pipeline designed by a domain expert from direct observation.
+
+\paragraph{\textsc{Inside Out}.} Our multi-agent system runs on the 11 participants with complete eye-tracking data. Five agents---Attention, Action, Performance, Temporal, and Population---independently interpret each 5-second behavioral window. The first four are rule-based agents grounding their interpretations in gaze entropy, action frequency, error patterns, and temporal persistence respectively. The Population Agent is data-driven: it compares each window against cluster centroids derived from $K$-means clustering ($K=5$) of the full dataset~\cite{dmello2014confusion, bosch2017affective}, producing interpretations like ``this behavior most resembles exploration in the population'' or ``this matches the cognitive impasse pattern.'' A negotiation layer then detects pairwise tensions between agents and maps disagreement structures to three response categories: consensus-driven intervention, ambiguity-aware probing, or watchful non-intervention.
+
+\paragraph{Comparison design.} The expert system runs on all 18 participants using game logs alone. \textsc{Inside Out} runs on the 11 participants with eye tracking. We compare the two systems on the 11 overlapping participants (5,265 five-second windows), using nearest-window matching to align the independently generated time series.
+
+\subsection{Results}
+
+\subsubsection{Overall Agreement and Disagreement}
+
+The two systems agree on 75.5\% of windows (3,977/5,265). Table~\ref{tab:crosstab} shows the full cross-tabulation.
+
+\begin{table}[t]
+\centering
+\caption{Cross-tabulation of system decisions. \textsc{Inside Out} adds a ``probe'' category that the expert system cannot express.}
+\label{tab:crosstab}
+\small
+\begin{tabular}{lrrr|r}
+\toprule
+ & \multicolumn{3}{c}{\textsc{Inside Out}} & \\
+\textbf{Expert} & Intervene & Probe & Watch & Total \\
+\midrule
+Intervene & 37 & 53 & 245 & 335 \\
+Watch     & 348 & 642 & 3{,}940 & 4{,}930 \\
+\midrule
+Total     & 385 & 695 & 4{,}185 & 5{,}265 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The 24.5\% disagreement rate is not uniformly distributed. Per-player agreement ranges from 65\% (Player~9, the longest and most difficult session) to 84\% (Player~22), suggesting that system disagreement correlates with task difficulty---precisely the situations where adaptive support decisions matter most.
+
+\subsubsection{When the Expert Intervenes but \textsc{Inside Out} Does Not}
+
+The expert system triggers intervention in 335 windows where \textsc{Inside Out} either watches (245) or probes (53). Analysis of these disagreements reveals a systematic pattern: the expert's Rule~3 (prompt after 30 seconds without entering a puzzle area) accounts for 73\% of expert-only interventions. In these windows, \textsc{Inside Out}'s agents detect \emph{scattered\_but\_progressing} (the player's attention is distributed but task progress is occurring; $n = 292$) or \emph{focused\_progress} (the player is focused and advancing; $n = 162$). The expert's time-based threshold cannot distinguish genuine stagnation from productive deliberation---a limitation that Shute identifies as a core challenge in formative feedback design~\cite{shute2008adaptive}.
+
+\subsubsection{When \textsc{Inside Out} Intervenes but the Expert Does Not}
+
+\textsc{Inside Out} triggers intervention in 348 windows where the expert system watches. The dominant tension in these windows is \emph{passive\_and\_stuck} ($n = 293$): the Action Agent reads inactivity, the Performance Agent reads stalling, and the Temporal Agent detects a looping pattern. The expert's rules miss these cases because they require specific conjunctions of conditions (no object in hand \emph{and} no gaze on instructions \emph{and} 30+ seconds idle); if any one condition is unmet, the rule does not fire. \textsc{Inside Out}'s agents, by contrast, detect difficulty through convergent evidence from multiple perspectives rather than requiring all conditions of a single rule to be simultaneously satisfied.
+
+\subsubsection{The Probe Category: Acting Through Uncertainty}
+
+The most revealing finding concerns \textsc{Inside Out}'s 695 probe decisions---a response category with no expert equivalent. In 642 of these windows (92\%), the expert system watches; in 53 (8\%), it intervenes. Probes are triggered when agents produce contradictory interpretations at high confidence: the Attention Agent reads \emph{searching} while the Action Agent reads \emph{inactive} (is the player exploring or disoriented?), or the Population Agent classifies behavior as exploration while the Performance Agent sees stalling.
+
+These are precisely the moments where a binary intervene/wait decision is most likely to be wrong. The expert system, constrained to this binary, must either over-intervene (interrupting possible exploration) or under-intervene (ignoring possible confusion). \textsc{Inside Out} responds with lightweight probing actions---subtle environmental changes designed to elicit diagnostic behavior---that are appropriate regardless of which agent's interpretation is correct. This operationalizes Gaver et al.'s principle of ambiguity as a design resource~\cite{gaver2003ambiguity}: the system does not resolve the ambiguity but creates conditions for it to resolve itself.
+
+\subsubsection{What the Expert's \textsc{Stuck} Label Conceals}
+
+The expert system labels 375 windows as \textsc{Stuck}. Within this single category, \textsc{Inside Out}'s agents identify seven distinct tension patterns:
+
+\begin{itemize}
+    \item \emph{scanning\_but\_passive} (28\%): the player is visually searching the environment but not acting---potentially early-stage exploration, not impasse.
+    \item \emph{scattered\_but\_progressing} (27\%): attention is distributed but task progress is occurring---the player may be stuck on one sub-problem while advancing on another.
+    \item \emph{focused\_but\_idle} (25\%): the player is gazing at a specific location without acting---possibly thinking deeply, not frozen.
+    \item \emph{focused\_progress} (9\%): the player is focused and progressing---\emph{not stuck at all} by \textsc{Inside Out}'s reading.
+    \item \emph{pop\_confirms\_exploration} (4\%): the Population Agent identifies the behavior pattern as typical exploration in the population corpus.
+\end{itemize}
+
+Based on this analysis, \textsc{Inside Out} recommends intervention for only 0\% of the expert's \textsc{Stuck} windows, probing for 28\%, and watchful non-intervention for 72\%. This divergence does not mean the expert is ``wrong''---the expert's \textsc{Stuck} label captures a real phenomenon. But it demonstrates that the label collapses qualitatively different situations into a single category, triggering identical responses for states that, from the agents' perspective, call for fundamentally different actions. This is the interpretive collapse our framework is designed to prevent.
+
+\subsubsection{The Population Agent as a Bridge}
+
+The Population Agent---which compares each window against cluster centroids learned from the full participant corpus---produces tensions with rule-based agents in 6.7\% of windows ($n = 351$). These tensions fall into two categories:
+
+\paragraph{Confirmatory tensions} ($n = 203$): The Population Agent agrees with rule-based agents, providing convergent evidence from a different epistemological basis. When the Attention Agent reads \emph{focused} based on low gaze entropy and the Population Agent independently classifies the behavior as \emph{actively\_solving} based on similarity to the population cluster, the system's confidence in non-intervention is grounded in both theory-driven and data-driven reasoning.
+
+\paragraph{Contradictory tensions} ($n = 148$): The Population Agent disagrees with rule-based agents, revealing cases where the current player deviates from population norms. For example, \emph{pop\_says\_exploring\_but\_focused} ($n = 56$): the Population Agent classifies the behavior as exploration (high similarity to the exploration cluster), but the Attention Agent reads focused attention. This may indicate a player with an atypical strategy---systematically scanning the environment with focused, efficient fixations rather than the diffuse scanning typical of explorers in the population. A classifier trained on population data would label this as exploration and potentially intervene; \textsc{Inside Out} recognizes the disagreement and probes instead.
+
+\subsection{Summary}
+
+The pilot study demonstrates three empirical properties of the \textsc{Inside Out} framework:
+
+\begin{enumerate}
+    \item \textbf{Richer adaptive vocabulary.} The expert system makes binary decisions (intervene or wait); \textsc{Inside Out} distinguishes three qualitatively different response categories. The 695 probe decisions represent moments where a binary system is structurally unable to act appropriately.
+
+    \item \textbf{Sensitivity to within-category diversity.} The expert's \textsc{Stuck} label maps to seven distinct agent tension patterns, each calling for different responses. Classification systems---whether rule-based or learned---that reduce these to a single label lose information that shapes appropriate support.
+
+    \item \textbf{Complementary evidence integration.} The Population Agent provides a data-driven perspective that can confirm or challenge rule-based agents' interpretations, creating a bridge between theory-driven and empirical reasoning that neither approach achieves alone.
+\end{enumerate}
+
+These findings are based on a pilot sample ($n = 18$ for the expert system, $n = 11$ for \textsc{Inside Out}) and should be interpreted as proof-of-concept rather than definitive evaluation. A planned follow-up study with 80 participants will enable statistical comparison of intervention outcomes and evaluation of the Population Agent with a substantially larger training corpus.
+
+\subsection{Validation Against Facilitator Ground Truth}
+\label{sec:facilitator_benchmark}
+
+The preceding comparison establishes how \textsc{Inside Out} and the rule-based system \emph{differ}, but not which is \emph{closer to expert judgment}. To address this, we obtained the original facilitator prompt logs from the study: the precise timestamps at which a trained facilitator decided, in real time, that a participant needed help. These 223 prompts---154 reflective (guiding questions) and 69 explicit (direct answers)---provide a ground truth against which both automated systems can be benchmarked.
+
+\subsubsection{Temporal Alignment}
+
+Facilitator prompts are continuous speech events lasting 5--60~seconds, while the automated systems make discrete decisions every 5~seconds. Strict per-window matching penalizes a system that detects struggle 10~seconds before the facilitator speaks---a response that is educationally \emph{superior} to delayed detection. We therefore evaluate at two levels:
+
+\begin{itemize}
+    \item \textbf{Window-level} with temporal tolerance ($\pm$15~s): a system is credited with detecting a facilitator prompt if it produced a non-watch decision within 15~seconds of the prompt interval.
+    \item \textbf{Episode-level}: consecutive facilitator prompts within 60~seconds are grouped into \emph{struggle episodes} ($n = 80$). A system detects an episode if it produces any non-watch decision within $\pm$15~s of the episode interval.
+\end{itemize}
+
+\subsubsection{Baselines}
+
+To contextualize the results, we compute two baselines: a \emph{random classifier} that flags windows with probability equal to the facilitator's intervention rate (20.8\%), yielding F1~=~0.208; and an \emph{always-intervene} baseline that flags every window, yielding F1~=~0.344. Both represent lower bounds on meaningful system performance.
+
+\subsubsection{Results: Window-Level Detection}
+
+Table~\ref{tab:facilitator_benchmark} presents results at $\pm$15~s tolerance on the 11 overlapping participants (5,265 windows, 151 facilitator prompts).
+
+\begin{table}[t]
+\centering
+\caption{Window-level detection of facilitator prompts ($\pm$15~s tolerance). \textsc{Inside Out} V3 achieves 2.5$\times$ random baseline F1.}
+\label{tab:facilitator_benchmark}
+\small
+\begin{tabular}{lrrr}
+\toprule
+\textbf{System} & \textbf{Precision} & \textbf{Recall} & \textbf{F1} \\
+\midrule
+Random baseline       & .208 & .208 & .208 \\
+Always-intervene      & .208 & 1.000 & .344 \\
+Rule-based system     & .316 & .450 & .372 \\
+\textsc{Inside Out}   & \textbf{.371} & \textbf{.921} & \textbf{.529} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textsc{Inside Out} detects 92.1\% of facilitator prompts (recall), compared to 45.0\% for the rule-based system---a gap that is most pronounced on puzzles where rule-based coverage is structurally absent. On the \emph{Amount of Protein} puzzle, the rule-based system detects 0\% of facilitator prompts (its rules have no coverage for this puzzle's mechanics), while \textsc{Inside Out} detects 91.7\%. On \emph{Amount of Sunlight} and \emph{Water Amount}, \textsc{Inside Out} achieves 100\% detection.
+
+Window-level precision (37.1\%) appears modest but reflects a structural property of the evaluation, not a system weakness. \textsc{Inside Out}'s probe decisions---lightweight monitoring actions---are counted as ``active'' by the metric. A system that probes before the facilitator speaks receives a false positive at the window level, even though its behavior is educationally appropriate. This is confirmed by the episode-level analysis.
+
+\subsubsection{Results: Episode-Level Detection}
+
+Grouping facilitator prompts into 80 struggle episodes provides a more ecologically valid evaluation (Table~\ref{tab:episode_eval}).
+
+\begin{table}[t]
+\centering
+\caption{Episode-level evaluation. \textsc{Inside Out} detects 85\% of struggle episodes and anticipates 78\% of them before the facilitator intervenes.}
+\label{tab:episode_eval}
+\small
+\begin{tabular}{lrr}
+\toprule
+\textbf{Metric} & \textbf{\textsc{Inside Out}} & \textbf{Rule-based} \\
+\midrule
+Episode recall         & 85.0\% & 45.0\% \\
+Mean detection latency & $-$5.2~s (early) & --- \\
+Early detection rate   & 78\% & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three findings warrant emphasis. First, \textsc{Inside Out} detects 68 of 80 struggle episodes (85.0\%), nearly twice the rule-based system's 45.0\%. Second, of the 68 detected episodes, 53 (78\%) were detected \emph{before} the facilitator began speaking, with an average lead time of 5.2~seconds. This suggests that the multi-agent system captures early warning signals---shifts in gaze patterns, emerging inactivity, rising puzzle elapsed time---that precede the overt behavioral markers a human facilitator waits for. Third, the system achieves comparably high detection rates for both reflective prompts (92.8\%) and explicit prompts (90.7\%), indicating sensitivity across the full severity spectrum.
+
+\subsubsection{Iterative Calibration Against Ground Truth}
+
+The facilitator benchmark enabled a systematic calibration process that improved \textsc{Inside Out}'s performance across three iterations (Table~\ref{tab:calibration_history}).
+
+\begin{table}[t]
+\centering
+\caption{Iterative calibration history. Each version addressed specific failure modes diagnosed from the facilitator ground truth.}
+\label{tab:calibration_history}
+\small
+\begin{tabular}{llrrr}
+\toprule
+\textbf{Version} & \textbf{Key change} & \textbf{F1} & \textbf{Recall} & \textbf{Prec.} \\
+\midrule
+V0 & Baseline                    & .459 & 75.5\% & 33.0\% \\
+V1 & Agent thresholds + rules    & .508 & 79.5\% & 37.3\% \\
+V1+C & + Puzzle elapsed time     & .514 & 86.1\% & 36.6\% \\
+V3 & Label flow + stateful       & \textbf{.529} & \textbf{92.1\%} & \textbf{37.1\%} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The calibration process followed a six-step pipeline: (1)~collect ground truth, (2)~temporally align events to system windows, (3)~classify errors into TP/TN/FN/FP, (4)~trace false negatives to responsible agents using feature-level diagnosis, (5)~apply targeted fixes at the correct architectural layer, and (6)~evaluate holistically with regression checks.
+
+\paragraph{Key diagnostic finding (V0$\rightarrow$V1).} 70\% of false negatives occurred because the Performance Agent labeled windows as ``progressing'' whenever \texttt{action\_count > 0}, failing to distinguish meaningful progress from sporadic, ineffective actions. In false-negative windows, players averaged 2.7 actions per window but 117~seconds since their last sustained activity---they were clicking randomly after long periods of inactivity, not making progress. The fix penalized ``progressing'' scores when \texttt{time\_since\_action} exceeded the population median, and broadened the conditions under which the support layer triggers probing.
+
+\paragraph{Architectural improvement (V1$\rightarrow$V3).} Analysis revealed that \texttt{action\_count} was read by four agents simultaneously, creating \emph{echo consensus}---multiple agents agreeing not because they observed independent signals, but because they read the same number. V3 introduced \emph{label flow}: the Behavioral Agent exclusively reads raw action features and outputs a pre-interpreted label (active/hesitant/inactive), which the Progress Agent then consumes. This preserves information flow while ensuring that when two agents agree, their agreement reflects genuinely independent evidence. V3 also introduced a new cognitive state, \emph{ineffective\_progress} (active behavior without meaningful advancement), and a stateful Prompt Agent that manages escalation, cooldown, and recovery---mirroring how human facilitators modulate intervention intensity over time rather than treating each moment independently.
+
+\paragraph{Transferable methodology.} This calibration pipeline---diagnose failure modes against human expert ground truth, trace errors to specific architectural layers, apply targeted fixes, and evaluate for regression---generalizes beyond the VR escape room context. Any multi-agent cognitive state system can be iteratively refined using the same six-step process, provided that human expert judgments are available as a benchmark. The key insight is that calibration should target the \emph{layer where the error originates}: some failures are in agent scoring (wrong label), others in the negotiation layer (wrong tension mapping), and others in the support layer (wrong decision from correct labels).

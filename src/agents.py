@@ -1,13 +1,17 @@
 """
-Four interpretive agents, each reading a different slice of the feature space.
+V3 Agents: Label-flow architecture with stateful awareness.
 
-Each agent returns a dict:
-    {
-        "label": str,           # interpreted state
-        "confidence": float,    # 0.0 to 1.0
-        "evidence": dict,       # feature values that drove the interpretation
-        "reasoning": str,       # human-readable explanation
-    }
+Design principles:
+  1. Each raw feature is owned by ONE primary agent
+  2. Downstream agents read pre-interpreted LABELS, not raw features
+  3. puzzle_elapsed_ratio integrated at agent level, not post-hoc
+  4. New state: ineffective_progress (active but not making real progress)
+
+Data flow:
+  Raw features → Attention Agent  (gaze_entropy, clue_ratio, switch_rate)
+  Raw features → Behavioral Agent (action_count, idle_time, error_count)
+  Labels      → Progress Agent    (behavioral_label + time_since_action + puzzle_elapsed_ratio)
+  Labels      → Temporal Agent    (attention_label + progress_label history)
 """
 
 import pandas as pd
@@ -29,13 +33,13 @@ def _linear_scale(value, low, high):
 
 # ---------------------------------------------------------------------------
 # 1. AttentionAgent — interprets gaze distribution
+#    Exclusive raw features: gaze_entropy, clue_ratio, switch_rate
 # ---------------------------------------------------------------------------
 
 def attention_agent(row: pd.Series) -> dict:
     entropy = safe_get(row, "gaze_entropy")
     clue_ratio = safe_get(row, "clue_ratio")
     switch_rate = safe_get(row, "switch_rate")
-    action_count = safe_get(row, "action_count")
 
     if entropy is None or clue_ratio is None:
         return {
@@ -51,20 +55,17 @@ def attention_agent(row: pd.Series) -> dict:
         "switch_rate": switch_rate,
     }
 
-    # Score each possible interpretation
     scores = {}
 
-    # Locked: very high clue fixation with almost no action
-    if (clue_ratio >= ATTENTION["clue_ratio_very_high"]
-            and action_count is not None
-            and action_count <= ATTENTION["action_count_low"]):
+    # Locked: very high clue fixation + low entropy (pure visual fixation)
+    if clue_ratio >= ATTENTION["clue_ratio_very_high"] and entropy <= ATTENTION["entropy_low"]:
         locked_conf = (
             _linear_scale(clue_ratio, ATTENTION["clue_ratio_high"], 1.0) * 0.6
-            + (1.0 - _linear_scale(action_count, 0, ATTENTION["action_count_low"] + 2)) * 0.4
+            + (1.0 - _linear_scale(entropy, 0, ATTENTION["entropy_low"])) * 0.4
         )
         scores["locked"] = _clamp(locked_conf, 0.3, 0.95)
 
-    # Focused: low entropy + high clue ratio
+    # Focused: low entropy + meaningful clue engagement
     focused_conf = (
         (1.0 - _linear_scale(entropy, 0, ATTENTION["entropy_high"])) * 0.5
         + _linear_scale(clue_ratio, 0, ATTENTION["clue_ratio_high"]) * 0.5
@@ -89,19 +90,17 @@ def attention_agent(row: pd.Series) -> dict:
             "reasoning": f"Entropy={entropy:.2f} in middle range, no clear pattern",
         }
 
-    # Winner takes label, but we keep the full score distribution
     best_label = max(scores, key=scores.get)
     best_conf = scores[best_label]
 
-    # Reduce confidence if second-best is close (genuine ambiguity)
     sorted_scores = sorted(scores.values(), reverse=True)
     if len(sorted_scores) > 1:
         gap = sorted_scores[0] - sorted_scores[1]
         if gap < 0.15:
-            best_conf *= 0.7  # ambiguity penalty
+            best_conf *= 0.7
 
     reasons = {
-        "locked": f"High clue fixation ({clue_ratio:.2f}) with minimal action",
+        "locked": f"High clue fixation ({clue_ratio:.2f}) + low entropy ({entropy:.2f})",
         "focused": f"Low entropy ({entropy:.2f}) with clue engagement ({clue_ratio:.2f})",
         "searching": f"High entropy ({entropy:.2f}), scanning environment",
     }
@@ -116,26 +115,28 @@ def attention_agent(row: pd.Series) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# 2. ActionAgent — interprets behavioral engagement
+# 2. BehavioralAgent (was ActionAgent)
+#    Exclusive raw features: action_count, idle_time, error_count
+#    Outputs label consumed by Progress Agent via label flow.
 # ---------------------------------------------------------------------------
 
-def action_agent(row: pd.Series) -> dict:
+def behavioral_agent(row: pd.Series) -> dict:
     action_count = safe_get(row, "action_count")
     idle_time = safe_get(row, "idle_time")
-    time_since = safe_get(row, "time_since_action")
+    error_count = safe_get(row, "error_count")
 
     if action_count is None:
         return {
             "label": "unknown",
             "confidence": 0.0,
             "evidence": {},
-            "reasoning": "Missing action data",
+            "reasoning": "Missing behavioral data",
         }
 
     evidence = {
         "action_count": action_count,
         "idle_time": idle_time,
-        "time_since_action": time_since,
+        "error_count": error_count,
     }
 
     scores = {}
@@ -147,22 +148,24 @@ def action_agent(row: pd.Series) -> dict:
     scores["active"] = _clamp(active_conf, 0.1, 0.95)
 
     # Inactive: no actions + high idle
-    inactive_conf = (1.0 - _linear_scale(action_count, 0, ACTION["action_count_high"])) * 0.4
+    inactive_conf = (1.0 - _linear_scale(action_count, 0, ACTION["action_count_high"])) * 0.5
     if idle_time is not None:
-        inactive_conf += _linear_scale(idle_time, ACTION["idle_time_low"], 5.0) * 0.3
-    if time_since is not None:
-        inactive_conf += _linear_scale(time_since, 0, ACTION["time_since_action_moderate"] * 2) * 0.3
+        inactive_conf += _linear_scale(idle_time, ACTION["idle_time_low"], 5.0) * 0.5
     scores["inactive"] = _clamp(inactive_conf, 0.1, 0.95)
 
     # Hesitant: moderate activity with delays
     hesitant_conf = 0.3
     if action_count > 0 and action_count < ACTION["action_count_high"]:
-        hesitant_conf += 0.2
-    if time_since is not None and time_since > ACTION["time_since_action_moderate"] * 0.5:
-        hesitant_conf += 0.2
+        hesitant_conf += 0.25
     if idle_time is not None and idle_time > ACTION["idle_time_low"]:
-        hesitant_conf += 0.15
+        hesitant_conf += 0.2
     scores["hesitant"] = _clamp(hesitant_conf, 0.1, 0.90)
+
+    # Failing: errors during interaction
+    if error_count is not None and error_count >= PERFORMANCE["error_count_high"]:
+        fail_conf = _linear_scale(error_count, 0, 3) * 0.7
+        fail_conf = max(fail_conf, 0.5)
+        scores["failing"] = _clamp(fail_conf, 0.3, 0.95)
 
     best_label = max(scores, key=scores.get)
     best_conf = scores[best_label]
@@ -175,8 +178,9 @@ def action_agent(row: pd.Series) -> dict:
 
     reasons = {
         "active": f"High action count ({action_count}) with engagement",
-        "inactive": f"Low/no actions, idle_time={idle_time:.1f}s" if idle_time else f"No actions detected",
-        "hesitant": f"Some actions ({action_count}) but with delays",
+        "inactive": f"Low/no actions, idle_time={idle_time:.1f}s" if idle_time else "No actions detected",
+        "hesitant": f"Some actions ({action_count}) but with idle periods",
+        "failing": f"Errors detected ({error_count}) during interaction",
     }
 
     return {
@@ -188,71 +192,88 @@ def action_agent(row: pd.Series) -> dict:
     }
 
 
+# Backward compat alias — column names stay "action_*" for app.py
+action_agent = behavioral_agent
+
+
 # ---------------------------------------------------------------------------
-# 3. PerformanceAgent — interprets task progress
+# 3. ProgressAgent (was PerformanceAgent)
+#    LABEL FLOW: reads behavioral_label (not raw action_count)
+#    Own raw features: time_since_action, puzzle_elapsed_ratio
+#    Key addition: "ineffective_progress" state
 # ---------------------------------------------------------------------------
 
-def performance_agent(row: pd.Series) -> dict:
-    error_count = safe_get(row, "error_count")
+def progress_agent(row: pd.Series) -> dict:
+    # Label flow: read Behavioral Agent's pre-interpreted label
+    behavioral_label = row.get("action_label", "unknown")
+    behavioral_conf = row.get("action_confidence", 0.5)
+
+    # Own exclusive raw features
+    time_since = safe_get(row, "time_since_action") or 0.0
+    elapsed_ratio = safe_get(row, "puzzle_elapsed_ratio") or 0.0
     puzzle_active = safe_get(row, "puzzle_active")
-    action_count = safe_get(row, "action_count")
-    time_since = safe_get(row, "time_since_action")
-
-    if puzzle_active is None and error_count is None:
-        return {
-            "label": "unknown",
-            "confidence": 0.0,
-            "evidence": {},
-            "reasoning": "Missing performance data",
-        }
 
     evidence = {
-        "error_count": error_count,
-        "puzzle_active": puzzle_active,
-        "action_count": action_count,
+        "behavioral_label": behavioral_label,
+        "behavioral_confidence": behavioral_conf,
         "time_since_action": time_since,
+        "puzzle_elapsed_ratio": elapsed_ratio,
     }
 
     scores = {}
 
-    # Failing: errors present
-    if error_count is not None:
-        fail_conf = _linear_scale(error_count, 0, 3) * 0.8
-        if error_count >= PERFORMANCE["error_count_high"]:
-            fail_conf = max(fail_conf, 0.6)
-        scores["failing"] = _clamp(fail_conf, 0.05, 0.95)
-    else:
-        scores["failing"] = 0.05
-
-    # Progressing: actions with no/few errors
-    # Key fix: penalize "progressing" when time_since_action is high.
-    # A few sporadic actions after 2+ minutes of inactivity is not real progress.
+    # --- Progressing: recent action + not over time ---
     prog_conf = 0.3
-    if action_count is not None and action_count > 0:
-        prog_conf += _linear_scale(action_count, 0, ACTION["action_count_high"]) * 0.4
-    if error_count is not None and error_count == 0:
-        prog_conf += 0.2
-    # Penalty: if player hasn't acted for a long time, current actions are
-    # likely exploratory attempts, not meaningful progress
-    if time_since is not None and time_since > ACTION["time_since_action_moderate"]:
-        penalty = _linear_scale(time_since,
-                                ACTION["time_since_action_moderate"],
-                                ACTION["time_since_action_moderate"] * 3) * 0.35
-        prog_conf -= penalty
+    if behavioral_label in ("active", "hesitant"):
+        prog_conf += 0.25
+    if time_since < ACTION["time_since_action_moderate"] * 0.5:
+        prog_conf += 0.25
+    elif time_since < ACTION["time_since_action_moderate"]:
+        prog_conf += 0.1
+    if elapsed_ratio < 1.0:
+        prog_conf += 0.1
+    # Penalize if over time even with activity
+    if elapsed_ratio > 2.0:
+        prog_conf -= 0.15
+    if elapsed_ratio > 3.0:
+        prog_conf -= 0.15
     scores["progressing"] = _clamp(prog_conf, 0.1, 0.95)
 
-    # Stalled: no action, OR sporadic action after long inactivity
-    stall_conf = 0.3
-    if action_count is not None and action_count == 0:
-        stall_conf += 0.4
-    elif action_count is not None and action_count <= PERFORMANCE["action_count_low"]:
-        stall_conf += 0.2
-    # Boost stalled score when time_since_action is high even with some action
-    if time_since is not None and time_since > ACTION["time_since_action_moderate"]:
-        stall_boost = _linear_scale(time_since,
-                                    ACTION["time_since_action_moderate"],
-                                    ACTION["time_since_action_moderate"] * 3) * 0.25
-        stall_conf += stall_boost
+    # --- Ineffective Progress (NEW): active but not making real progress ---
+    # Player is doing things but has been at this puzzle too long / too long since
+    # meaningful action — the actions are likely exploratory or repetitive
+    ineff_conf = 0.1
+    if behavioral_label in ("active", "hesitant"):
+        # Active but time_since_action is high → sporadic actions after long gap
+        if time_since > ACTION["time_since_action_moderate"]:
+            ineff_conf += _linear_scale(time_since,
+                                         ACTION["time_since_action_moderate"],
+                                         ACTION["time_since_action_moderate"] * 3) * 0.3
+        # Active but over median puzzle time → struggling despite activity
+        if elapsed_ratio > 1.5:
+            ineff_conf += _linear_scale(elapsed_ratio, 1.5, 3.0) * 0.3
+        # Failing behavior boosts ineffective
+        if behavioral_label == "failing":
+            ineff_conf += 0.2
+        # Combined: high elapsed + high time_since = strong signal
+        if elapsed_ratio > 2.0 and time_since > ACTION["time_since_action_moderate"]:
+            ineff_conf += 0.15
+    scores["ineffective_progress"] = _clamp(ineff_conf, 0.05, 0.95)
+
+    # --- Stalled: behavioral inactive + macro signals ---
+    stall_conf = 0.2
+    if behavioral_label == "inactive":
+        stall_conf += 0.35
+    elif behavioral_label == "hesitant":
+        stall_conf += 0.1
+    if time_since > ACTION["time_since_action_moderate"]:
+        stall_conf += _linear_scale(time_since,
+                                     ACTION["time_since_action_moderate"],
+                                     ACTION["time_since_action_moderate"] * 3) * 0.3
+    if elapsed_ratio > 1.5:
+        stall_conf += _linear_scale(elapsed_ratio, 1.5, 3.0) * 0.15
+    if elapsed_ratio > 3.0:
+        stall_conf += 0.1
     scores["stalled"] = _clamp(stall_conf, 0.1, 0.95)
 
     best_label = max(scores, key=scores.get)
@@ -265,21 +286,13 @@ def performance_agent(row: pd.Series) -> dict:
             best_conf *= 0.75
 
     reasons = {
-        "failing": f"Errors detected ({error_count})",
-        "progressing": f"Active ({action_count} actions) with few/no errors",
-        "stalled": f"No meaningful actions in this window",
+        "progressing": f"Behavioral={behavioral_label}, recent activity ({time_since:.0f}s ago), {elapsed_ratio:.1f}x median",
+        "ineffective_progress": (
+            f"Behavioral={behavioral_label} but progress doubtful: "
+            f"{time_since:.0f}s since sustained action, {elapsed_ratio:.1f}x median puzzle time"
+        ),
+        "stalled": f"Behavioral={behavioral_label}, {time_since:.0f}s since action, {elapsed_ratio:.1f}x median",
     }
-    # Add context about long inactivity
-    if time_since is not None and time_since > ACTION["time_since_action_moderate"]:
-        if best_label == "progressing":
-            reasons["progressing"] = (
-                f"Some actions ({action_count}) but {time_since:.0f}s since last sustained activity"
-            )
-        elif best_label == "stalled":
-            reasons["stalled"] = (
-                f"Stalled: {time_since:.0f}s since last action"
-                + (f", only {action_count} sporadic actions" if action_count and action_count > 0 else "")
-            )
 
     return {
         "label": best_label,
@@ -290,8 +303,13 @@ def performance_agent(row: pd.Series) -> dict:
     }
 
 
+# Backward compat alias
+performance_agent = progress_agent
+
+
 # ---------------------------------------------------------------------------
 # 4. TemporalAgent — interprets patterns over time
+#    V3: uses puzzle_elapsed_ratio to boost looping detection
 # ---------------------------------------------------------------------------
 
 def temporal_agent(current_idx: int, df: pd.DataFrame, state_columns: dict) -> dict:
@@ -318,8 +336,17 @@ def temporal_agent(current_idx: int, df: pd.DataFrame, state_columns: dict) -> d
 
     pos = indices.index(current_idx)
     window = TEMPORAL["persistence_window"]
+    elapsed_ratio = safe_get(row, "puzzle_elapsed_ratio") or 0.0
 
     if pos < 1:
+        # Even first window: if elapsed_ratio is very high, flag it
+        if elapsed_ratio > 3.0:
+            return {
+                "label": "persistent",
+                "confidence": 0.6,
+                "evidence": {"history_length": 0, "puzzle_elapsed_ratio": elapsed_ratio},
+                "reasoning": f"First window but puzzle already at {elapsed_ratio:.1f}x median",
+            }
         return {
             "label": "transient",
             "confidence": 0.5,
@@ -333,7 +360,7 @@ def temporal_agent(current_idx: int, df: pd.DataFrame, state_columns: dict) -> d
     att_col = state_columns.get("attention", "attention_label")
     perf_col = state_columns.get("performance", "performance_label")
 
-    evidence = {"history_length": len(recent)}
+    evidence = {"history_length": len(recent), "puzzle_elapsed_ratio": elapsed_ratio}
 
     # Check persistence
     if len(recent) >= window and att_col in recent.columns and perf_col in recent.columns:
@@ -343,11 +370,15 @@ def temporal_agent(current_idx: int, df: pd.DataFrame, state_columns: dict) -> d
         if att_stable and perf_stable:
             perf_val = recent[perf_col].iloc[-1]
             if perf_val in TEMPORAL["looping_keywords"]:
+                conf = 0.85
+                # V3: boost if also over time on puzzle
+                if elapsed_ratio > 2.0:
+                    conf = min(conf + 0.1, 0.95)
                 return {
                     "label": "looping",
-                    "confidence": 0.85,
+                    "confidence": conf,
                     "evidence": {**evidence, "repeated_state": perf_val, "streak": len(recent)},
-                    "reasoning": f"Stuck in '{perf_val}' for {len(recent)} consecutive windows",
+                    "reasoning": f"Stuck in '{perf_val}' for {len(recent)} windows (puzzle at {elapsed_ratio:.1f}x median)",
                 }
             return {
                 "label": "persistent",
@@ -360,12 +391,24 @@ def temporal_agent(current_idx: int, df: pd.DataFrame, state_columns: dict) -> d
     if len(recent) >= 2 and perf_col in recent.columns:
         perf_vals = recent[perf_col].tolist()
         if all(v in TEMPORAL["looping_keywords"] for v in perf_vals):
+            conf = 0.65
+            if elapsed_ratio > 2.0:
+                conf = min(conf + 0.15, 0.85)
             return {
                 "label": "looping",
-                "confidence": 0.65,
+                "confidence": conf,
                 "evidence": {**evidence, "pattern": perf_vals},
-                "reasoning": f"Repeated difficulty states: {perf_vals}",
+                "reasoning": f"Repeated difficulty states: {perf_vals} (puzzle at {elapsed_ratio:.1f}x median)",
             }
+
+    # V3: if no temporal pattern but elapsed_ratio is very high, flag as persistent
+    if elapsed_ratio > 3.0:
+        return {
+            "label": "persistent",
+            "confidence": 0.6,
+            "evidence": evidence,
+            "reasoning": f"No pattern but puzzle at {elapsed_ratio:.1f}x median — prolonged engagement",
+        }
 
     return {
         "label": "transient",
