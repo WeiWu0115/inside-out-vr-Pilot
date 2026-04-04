@@ -368,11 +368,171 @@ V2 branch (太极端):
 - Progress Agent 知道"玩家是否在动"，但通过 Behavioral Agent 的 **解读** 获知，而非直接读数字
 - 如果 Behavioral 和 Progress 都说"有问题"，这是真正的两个独立信号，不是 echo
 
-这个方案等 80 人数据来了在 branch 上继续实验。
+---
+
+## 第九章：V3 — Label Flow + Stateful Prompt Agent
+
+V2 的实验证明了完全隔离 feature 的方向是对的（precision 提升），但走得太极端（recall 暴跌）。V3 取中间路线：**单向 label flow + 新认知状态 + 有状态决策**。
+
+### 9.1 六个改动
+
+#### 改动 1：Label Flow 架构（解决 echo consensus）
+
+```
+V1:  action_count → Action Agent
+     action_count → Performance Agent  ← 读同一个数字，虚假共识
+     action_count → Attention Agent
+
+V3:  action_count → Behavioral Agent → "inactive" label → Progress Agent
+                                                           ↑
+                                        Progress 读的是 Behavioral 的解读，
+                                        不是原始数字
+```
+
+**效果**：当 Behavioral 说 "active" 而 Progress 说 "ineffective_progress" 时，这是两个独立信号的真正分歧，不是同一个 `action_count` 产生的 echo。
+
+#### 改动 2：新状态 — `ineffective_progress`（解决最大的 FN 来源）
+
+V1 的 Performance Agent 只有三个状态：progressing / stalled / failing。问题是很多卡住的玩家被标成了 "progressing"（因为有零星操作）。V3 加了第四个状态：
+
+| 状态 | 含义 | 检测条件 |
+|------|------|---------|
+| **progressing** | 真正有进展 | behavioral=active + 近期有动作 + 没超时 |
+| **ineffective_progress** | 在动但没进展 | behavioral=active/hesitant + time_since 高 + elapsed_ratio > 1.5 |
+| **stalled** | 完全停滞 | behavioral=inactive + time_since 高 |
+| failing | 在犯错 | behavioral=failing |
+
+这直接解决了 V0 诊断中发现的核心问题："70% 的 FN 被错误标记为 progressing"。
+
+对应的新 negotiation tension：
+- `focused_but_ineffective`：玩家盯着谜题在操作但没进展 → probe
+- `scattered_and_ineffective`：乱看乱点但没进展 → probe（persistent 时 → intervene）
+- `passive_and_ineffective`：半动不动，也没进展 → intervene
+- `hesitant_and_ineffective`：犹豫且无效 → probe
+
+#### 改动 3：puzzle_elapsed_ratio 提前到 Agent 层
+
+V1 中 `puzzle_elapsed_ratio` 只在最后一步作为 post-hoc 安全网。V3 把它整合进 agent 内部：
+
+**Progress Agent**：
+```
+如果 elapsed_ratio < 1.0 → progressing 加分（还在正常时间内）
+如果 elapsed_ratio > 2.0 → progressing 减分，stalled/ineffective 加分
+如果 elapsed_ratio > 3.0 → 进一步减分
+```
+
+**Temporal Agent**：
+```
+如果没有时间模式但 elapsed_ratio > 3.0 → 标记为 persistent（即使窗口历史不一致）
+如果有 looping 且 elapsed_ratio > 2.0 → 提升 looping confidence
+```
+
+#### 改动 4：Transition 子类型（解决 FP + Pasta 下降）
+
+V1 的问题：Transition 阶段一刀切 → watch。这消除了 389 个 FP，但也导致 Pasta 的 5 个 miss（facilitator 在玩家走向 Pasta 的路上给了提示）。
+
+V3 把 Transition 分成四种子类型：
+
+| 子类型 | 检测方式 | 决策 |
+|--------|---------|------|
+| `navigating_normally` | 默认 | watch |
+| `searching_transition` | 高 entropy + 高 switch_rate | watch（正常探索） |
+| `hesitant_transition` | 高 idle + 无动作 + time_since > 60s | probe |
+| `looping_transition` | time_since > 120s + 高 entropy | probe/intervene |
+
+**效果**：Pasta puzzle 检测率从 V1 的 76.9% 恢复到 **88.5%**（回到 V0 水平），同时 Transition FP 仍然被有效抑制。
+
+#### 改动 5：Stateful Prompt Agent（解决重复触发）
+
+V1 的 support layer 是无状态的 — 每个 5 秒窗口独立决策。这导致：
+- 连续 10 个窗口都说 probe → 实际上应该逐渐升级到 intervene
+- 刚给了提示 → 5 秒后又说要给 → 不合理
+- 玩家恢复了 → 系统不知道，还在高警戒
+
+V3 的 PromptAgent 是一个有状态的类：
+
+```python
+class PromptAgent:
+    last_prompt_time     # 上次干预时间 → cooldown
+    consecutive_struggle # 连续困难窗口数 → escalation  
+    prompt_count         # 本 puzzle 已给提示数 → fatigue
+    current_puzzle       # 换 puzzle 时重置状态
+```
+
+决策策略：
+- **Cooldown**：上次 intervene 后 15 秒内，新的 intervene → 降级为 probe
+- **Escalation**：连续 6 个 struggle 窗口 → 把 probe 升级为 intervene
+- **Recovery**：玩家变成 watch → 逐步降低 consecutive_struggle
+- **Fatigue**：同一 puzzle 超过 8 次 intervene → 降级为 probe
+
+**关键设计选择**：cooldown 和 fatigue 只限制 intervene，不限制 probe。因为 probe 是低成本的（只是更仔细地观察），intervene 才是打断玩家的。
+
+#### 改动 6：Episode-Level 评估
+
+传统的 per-window 评估（每个 5 秒窗口独立判对错）有一个问题：一次 facilitator 提示可能跨越 6 个窗口（30 秒），如果 IO 在前 2 个窗口检测到了但后 4 个没有，per-window 会报 4 个 FN。这不公平。
+
+Episode-level 评估把**连续的 facilitator 提示**（间隔 < 60 秒）归为一个 "struggle episode"，然后问：
+
+- 这个 episode 被检测到了吗？（至少有一个 probe/intervene 在 ±15s 内）
+- 检测延迟是多少？（IO 第一次反应 vs episode 开始的时间差）
+
+### 9.2 V3 结果
+
+#### 核心指标（±15s tolerance）
+
+| 指标 | V0 原始 | V1 (A+B+C) | **V3** | V0→V3 变化 |
+|------|---------|------------|--------|-----------|
+| **F1** | 0.459 | 0.514 | **0.529** | **+15.3%** |
+| **Recall** | 75.5% | 86.1% | **92.1%** | **+16.6pp** |
+| **Precision** | 33.0% | 36.6% | **37.1%** | **+4.1pp** |
+
+#### Per-Puzzle 检测率
+
+| Puzzle | V0 | V1 | **V3** | Rule-Based |
+|--------|-----|-----|--------|-----------|
+| Hub Puzzle | 58.7% | 91.3% | **93.5%** | 50.0% |
+| Protein | 80.6% | 83.3% | **91.7%** | 0.0% |
+| Sunlight | 61.5% | 92.3% | **100%** | 7.7% |
+| Pasta | 88.5% | 76.9% | **88.5%** | 73.1% |
+| Water | 92.0% | 96.0% | **100%** | 84.0% |
+
+Pasta 的 V1 下降完全恢复。Sunlight 和 Water 达到 100%。
+
+#### Episode-Level 评估（V3 独有）
+
+| 指标 | IO (V3) | Rule-Based |
+|------|---------|-----------|
+| Episode recall | **85.0%** | 45.0% |
+| Mean detection latency | **-5.2s**（提前 5.2 秒） | N/A |
+| Early detection rate | **78%** | N/A |
+
+80 个 struggle episode 中，IO 检测到 68 个。其中 53 个（78%）在 facilitator 开口**之前**就被检测到了，平均提前 5.2 秒。这意味着 IO 不仅能检测到困难，还能比真人更早发现。
+
+#### Prompt Type 检测率
+
+| 类型 | V0 | V1 | V3 |
+|------|-----|-----|-----|
+| Reflective | — | 82.5% | **92.8%** |
+| Explicit | — | 74.1% | **90.7%** |
+
+V3 对 explicit prompt（最严重的困难）的检测率提升最大，从 74.1% → 90.7%。
+
+### 9.3 Label Flow 为什么解决了 V2 的问题
+
+V2（完全隔离 feature）的 recall 暴跌到 73.5%，因为 Progress Agent 不知道玩家在不在动。V3 的 label flow 解决了这个矛盾：
+
+| | V1 | V2 | V3 |
+|---|---|---|---|
+| Progress Agent 知道玩家行为？ | 是（读 raw action_count） | **否** | 是（读 behavioral label） |
+| 信号独立性？ | **否**（echo consensus） | 是 | 是（label 是预解读的） |
+| Precision | 36.6% | **38.2%** | **37.1%** |
+| Recall | **86.1%** | 73.5% | **92.1%** |
+
+V3 同时继承了 V1 的高 recall（因为 Progress Agent 有行为信息）和 V2 的高 precision（因为信号是独立的）。
 
 ---
 
-## 第九章：可迁移的方法论
+## 第十章：可迁移的方法论
 
 整个过程形成了一个 6 步 pipeline，适用于任何 multi-agent 认知状态系统：
 
@@ -404,19 +564,42 @@ V2 branch (太极端):
 
 ---
 
-## 第十章：当前状态和下一步
+## 第十一章：当前状态和下一步
 
 ### 当前状态
 
-| Branch | 内容 | F1 | Recall | 状态 |
-|--------|------|-----|--------|------|
-| `main` | V1 + A+B+C calibration | **0.514** | **86.1%** | 稳定版，Streamlit app 用这个 |
-| `refactor/clean-agent-boundaries` | V2 clean boundaries 实验 | 0.503 | 73.5% | 实验版，记录了发现 |
+| Branch | 内容 | F1 | Recall | Precision | 状态 |
+|--------|------|-----|--------|-----------|------|
+| `main` | V1 + A+B+C calibration | 0.514 | 86.1% | 36.6% | 稳定版，Streamlit app 用这个 |
+| `refactor/clean-agent-boundaries` | V2 clean boundaries 实验 | 0.503 | 73.5% | 38.2% | 实验版，记录了发现 |
+| **`v3/label-flow-stateful`** | **V3 完整版** | **0.529** | **92.1%** | **37.1%** | **最新最优版** |
+
+### 版本演进总结
+
+```
+V0 (Original)     F1=0.459  R=75.5%  P=33.0%
+ │ 诊断：Performance Agent 的 "progressing" 太乐观
+ │ 修复：time_since_action 惩罚 + support 规则调整
+ ▼
+V1 (A+B+C)        F1=0.514  R=86.1%  P=36.6%    (+12.0%)
+ │ 问题：feature overlap 导致 echo consensus
+ │ 实验 V2：完全隔离 → precision 升但 recall 崩
+ │ 发现：Progress Agent 必须知道玩家行为，但不能读 raw data
+ ▼
+V3 (Label Flow)   F1=0.529  R=92.1%  P=37.1%    (+15.3% from V0)
+   解决方案：
+   ✓ Label flow（单向信号，不共享 raw feature）
+   ✓ ineffective_progress（新认知状态）
+   ✓ Transition 子类型（恢复 Pasta 检测）
+   ✓ Stateful PromptAgent（cooldown + escalation）
+   ✓ Episode-level evaluation（85% episode recall，78% 提前检测）
+```
 
 ### 下一步
 
-1. **80 人数据收集后**：重跑 pipeline + benchmark，验证校准是否泛化
-2. **V3 label flow 架构**：在 branch 上实现 Behavioral → Progress 的单向 label flow
-3. **Spatial Agent 完整版**：接入 head tracking 数据（Path/*.csv），替换 puzzle_id 的粗糙近似
-4. **Stateful Prompt Agent**：加入 escalation（reflective 没效果 → explicit）、cooldown（刚提示过 → 等 20 秒）、fatigue（提示太多 → 降低频率）
-5. **Unity 实时集成**：WebSocket server 接收实时数据流
+1. **合并 V3 到 main**：验证 Streamlit app 兼容性后合并
+2. **80 人数据收集后**：重跑 pipeline + benchmark，验证 V3 校准是否泛化到更大样本
+3. **Spatial Agent 完整版**：接入 head tracking 数据（Path/*.csv），替换 puzzle_id 的 area heuristic。这将进一步改善 Transition 阶段的检测
+4. **Prompt 内容生成**：当前系统只决定 "什么时候给提示" 和 "什么类型"，下一步是生成具体的提示内容（接入 LLM）
+5. **Unity 实时集成**：WebSocket server 接收实时数据流，完成从离线分析到在线系统的转换
+6. **个性化校准**：用玩家在前几个 puzzle 的表现来个性化 `puzzle_elapsed_ratio` 的基线，而不是用群体中位数
