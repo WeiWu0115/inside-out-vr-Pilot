@@ -817,7 +817,8 @@ def main():
     tw_df, tol_df, detail_df = load_three_way()
 
     # Tabs
-    tab_arch, tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab_study, tab_arch, tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+        "🏠 Study Overview",
         "🧩 Agent Architecture",
         "🏔 Agent Dominance",
         "📊 Agent Confidence",
@@ -827,6 +828,90 @@ def main():
         "🆚 Rule-Based vs IO",
         "🎯 Facilitator Benchmark",
     ])
+
+    with tab_study:
+        st.subheader("Study Overview: VR Escape Room Pilot")
+        st.markdown(
+            "**18 participants** played a VR escape room (Meta Quest Pro) with eye tracking, "
+            "interaction logging, and a human facilitator observing in real time. "
+            "The game consists of **4 spoke puzzles** and **1 hub puzzle** that integrates them all."
+        )
+
+        # Room layout + heatmap side by side
+        st.markdown("---")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("#### VR Escape Room Layout")
+            st.image("assets/EscapeRoom_HeattMapBG_20250813.png", use_container_width=True)
+        with col2:
+            st.markdown("#### Player Position Heatmap (All 18 Players)")
+            st.image("assets/aggregate_heatmap_overlaid.png", use_container_width=True)
+
+        st.caption("Left: top-down view of the VR escape room. Right: aggregate heatmap showing where players spent the most time (yellow = high density).")
+
+        # Movement paths
+        st.markdown("---")
+        st.markdown("#### Player Movement Paths")
+        st.image("assets/All_User_Paths.png", use_container_width=True)
+        st.caption("Smoothed head-tracking trajectories for all players. Each color = one player. Dense areas indicate puzzle locations; long traversals indicate navigation between puzzles.")
+
+        # Time distribution
+        st.markdown("---")
+        st.markdown("#### How Players Spent Their Time")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image("assets/average_timeshare_composition.png", use_container_width=True)
+        with col2:
+            st.image("assets/average_timeshare_by_puzzle_bar.png", use_container_width=True)
+
+        st.markdown(
+            "Players spent **37.5%** of their time in the environment (navigating between puzzles) "
+            "and **32.9%** on the Hub Puzzle (Cooking Pot) — the most complex puzzle requiring integration "
+            "of all four spoke solutions. Each spoke puzzle took 6-10% of total time."
+        )
+
+        # Puzzle difficulty
+        st.markdown("---")
+        st.markdown("#### Puzzle Difficulty (Average Solve Time)")
+        puzzle_times = {
+            "Protein": "3:11", "Pasta": "2:46", "Water": "2:54",
+            "Sunlight": "3:04", "Hub (Cooking Pot)": "8:18", "Overall": "20:13"
+        }
+        time_cols = st.columns(6)
+        for col, (puzzle, time) in zip(time_cols, puzzle_times.items()):
+            col.metric(puzzle, time)
+
+        # Facilitator prompts
+        st.markdown("---")
+        st.markdown("#### Facilitator Prompts: When Did Players Need Help?")
+        st.markdown(
+            "A trained facilitator observed each session and gave **two types of prompts**:\n"
+            "- **Reflective** (blue): guiding questions — *\"What do you think this does?\"*\n"
+            "- **Explicit** (red): direct answers — *\"Set the protein to 3\"*\n\n"
+            "Average per player: **8.1 reflective** + **3.6 explicit** = 11.7 total prompts per session."
+        )
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image("assets/avg_reflective_prompts_per_puzzle.png", use_container_width=True)
+        with col2:
+            st.image("assets/avg_explicit_prompts_per_puzzle.png", use_container_width=True)
+
+        st.markdown(
+            "**Key observations:**\n"
+            "- Hub Puzzle needed the most help of both types (most complex puzzle)\n"
+            "- Sunlight puzzle rarely needed explicit prompts (easiest puzzle)\n"
+            "- Protein puzzle had high explicit prompts but moderate reflective — players understood the goal but couldn't execute\n"
+            "- These facilitator prompts serve as **ground truth** for benchmarking the Inside Out system"
+        )
+
+        # Data summary
+        st.markdown("---")
+        st.markdown("#### Data Summary")
+        col1, col2, col3, col4 = st.columns(4)
+        col1.metric("Participants", "18")
+        col2.metric("With Eye Tracking", "11")
+        col3.metric("5s Windows", "5,265")
+        col4.metric("Facilitator Prompts", "223")
 
     with tab_arch:
         st.subheader("Inside Out V3: Agent Architecture")
