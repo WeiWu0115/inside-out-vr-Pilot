@@ -817,7 +817,7 @@ def main():
     tw_df, tol_df, detail_df = load_three_way()
 
     # Tabs
-    tab_study, tab_arch, tab0, tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
+    tab_study, tab_arch, tab0, tab1, tab2, tab3, tab4, tab5, tab6, tab_fw = st.tabs([
         "🏠 Study Overview",
         "🧩 Agent Architecture",
         "🏔 Agent Dominance",
@@ -827,6 +827,7 @@ def main():
         "▶️ Playback",
         "🆚 Rule-Based vs IO",
         "🎯 Facilitator Benchmark",
+        "🔮 Future Work",
     ])
 
     with tab_study:
@@ -1371,6 +1372,119 @@ def main():
                 "intervene threshold is much more aggressive. This is the primary target for future calibration: "
                 "reducing intervene decisions while preserving detection sensitivity."
             )
+
+
+    with tab_fw:
+        st.subheader("🔮 Future Work: Theory-Partitioned Agents")
+
+        st.markdown(
+            "We explored an alternative architecture where agents share **all data** "
+            "but interpret through different **cognitive theories** — more faithful to the "
+            "Inside Out metaphor (Joy and Sadness see the same memory, but interpret differently)."
+        )
+
+        # Theory agents table
+        st.markdown("### Four Theory Agents")
+        theory_data = [
+            {"Agent": "Attention Theory", "Theory": "Posner, Lavie",
+             "Question": "Is attention appropriately allocated?",
+             "States": "engaged / overloaded / fixated / decoupled"},
+            {"Agent": "Self-Regulation", "Theory": "Zimmerman, Pintrich",
+             "Question": "Is the player adjusting their strategy?",
+             "States": "self_regulated / impulsive / disengaged / reflective"},
+            {"Agent": "Flow Theory", "Theory": "Csikszentmihalyi",
+             "Question": "Is the challenge-skill balance right?",
+             "States": "flow / anxiety / frustration / boredom"},
+            {"Agent": "Cognitive Load", "Theory": "Sweller",
+             "Question": "Is working memory capacity exceeded?",
+             "States": "manageable / overloaded / fragmented / automated"},
+        ]
+        st.dataframe(pd.DataFrame(theory_data), use_container_width=True, hide_index=True)
+
+        # Same data, different interpretation example
+        st.markdown("### Same Data, Different Interpretation")
+        st.markdown("**Example window:** `action_count=3, time_since=90s, gaze_entropy=1.2`")
+        interp_data = [
+            {"Agent": "Attention Theory", "Label": "engaged",
+             "Reasoning": "Moderate entropy, player is looking at relevant areas"},
+            {"Agent": "Self-Regulation", "Label": "impulsive",
+             "Reasoning": "3 actions after 90s gap = reactive trial-and-error, not strategic"},
+            {"Agent": "Flow Theory", "Label": "anxiety",
+             "Reasoning": "Active but time_since is high = challenge exceeding skill"},
+            {"Agent": "Cognitive Load", "Label": "manageable",
+             "Reasoning": "Low entropy + some actions + no errors = within capacity"},
+        ]
+        st.dataframe(pd.DataFrame(interp_data), use_container_width=True, hide_index=True)
+        st.markdown(
+            "Result: 2 agents say OK, 2 say problem → **contradictory tension** → "
+            "system probes instead of guessing. This is genuine disagreement from "
+            "independent theoretical frameworks, not echo consensus."
+        )
+
+        # Results comparison
+        st.markdown("---")
+        st.markdown("### Experiment Results (±15s tolerance)")
+
+        col1, col2 = st.columns(2)
+        col1.markdown("**V3 (Data-Partitioned, current)**")
+        col1.metric("F1", "0.529")
+        col1.metric("Recall", "92.1%")
+        col1.metric("Precision", "37.1%")
+
+        col2.markdown("**Theory-Partitioned (experiment)**")
+        col2.metric("F1", "0.531", "+0.002")
+        col2.metric("Recall", "88.7%", "-3.4pp")
+        col2.metric("Precision", "37.9%", "+0.8pp")
+
+        # Two ceilings
+        st.markdown("---")
+        st.subheader("Why Not a Bigger Improvement? Two Performance Ceilings")
+
+        st.error(
+            "**Ceiling 1: Feature Granularity**\n\n"
+            "In 90%+ of missed windows, ALL four theory agents agreed the player was OK "
+            "(engaged + self_regulated + flow + manageable). The features showed: "
+            "`action_count=2.78` (active), `time_since=86s` (moderate), "
+            "`elapsed_ratio=1.15` (near median).\n\n"
+            "**The problem is not the theories — it's the data.** "
+            "All features capture *how much* the player acts, not *whether those actions are meaningful*. "
+            "`action_count=3` could be 3 correct puzzle interactions or 3 random clicks. "
+            "No cognitive theory can distinguish these without richer signals:\n"
+            "- Semantic action labels (correct vs. wrong object)\n"
+            "- Gaze-action coupling (looked at clue then acted on it?)\n"
+            "- Spatial trajectory (moving toward solution vs. wandering)"
+        )
+
+        st.warning(
+            "**Ceiling 2: Ground Truth Noise**\n\n"
+            "The facilitator's prompts include two types:\n"
+            "1. **Reactive** — responding to observed struggle (detectable)\n"
+            "2. **Proactive** — guiding a functioning player toward deeper understanding (undetectable)\n\n"
+            "Example: Player 22 had `action_count=5.8, time_since=24s, elapsed_ratio=0.8` — "
+            "performing well by every measure — but received 4 facilitator prompts. "
+            "These were likely pedagogical guidance, not confusion detection. "
+            "No automated system should be expected to detect proactive prompts."
+        )
+
+        # Recommendations
+        st.markdown("---")
+        st.subheader("Recommendations for 80-Person Study")
+        st.markdown(
+            "1. **Richer features**: Add semantic action labels, gaze-action coupling, "
+            "and spatial trajectory to break through the feature granularity ceiling\n"
+            "2. **Ground truth refinement**: Tag facilitator prompts as reactive vs. proactive "
+            "to eliminate noise ceiling\n"
+            "3. **Dual architecture evaluation**: Run both V3 and theory-partitioned on same data "
+            "to determine which generalizes better\n"
+            "4. **Per-theory calibration**: With more data, identify which cognitive theory "
+            "best predicts each *type* of confusion"
+        )
+
+        st.info(
+            "**Branch:** `experiment/theory-partitioned-agents` — "
+            "full implementation available for comparison. "
+            "See `docs/future_work_theory_agents.md` for detailed analysis."
+        )
 
 
 if __name__ == "__main__":
