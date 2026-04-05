@@ -1,152 +1,152 @@
 participant_id,prompt_type,prompt_start_sec,prompt_end_sec,puzzle,io_hit,expert_hit,io_cats_nearby,expert_cats_nearby
-10,reflective,333.870753,395.870753,Spoke Puzzle: Pasta in Sauce,True,True,"probe,watch,intervene","watch,intervene"
+10,reflective,333.870753,395.870753,Spoke Puzzle: Pasta in Sauce,True,True,"probe,watch","watch,intervene"
 10,reflective,530.870753,537.870753,Spoke Puzzle: Pasta in Sauce,True,True,"watch,probe","watch,intervene"
-10,reflective,625.870753,708.870753,Spoke Puzzle: Pasta in Sauce,True,True,"watch,intervene,probe","watch,intervene"
+10,reflective,625.870753,708.870753,Spoke Puzzle: Pasta in Sauce,True,True,"watch,probe,intervene","watch,intervene"
 10,reflective,815.870753,845.870753,Spoke Puzzle: Pasta in Sauce,True,False,"watch,probe",watch
 10,explicit,1049.870753,1049.870753,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
 10,explicit,1055.870753,1055.870753,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
-10,reflective,1171.870753,1274.870753,Spoke Puzzle: Amount of Protein,True,False,"probe,watch,intervene",watch
-10,explicit,1279.870753,1279.870753,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch",watch
-10,explicit,1283.870753,1283.870753,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch",watch
-10,explicit,1286.870753,1286.870753,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene",watch
-10,reflective,1309.870753,1351.870753,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch",watch
-10,explicit,1464.870753,1464.870753,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
-10,reflective,1932.870753,2046.870753,Spoke Puzzle: Water Amount,True,True,"watch,probe,intervene","watch,intervene"
+10,reflective,1171.870753,1274.870753,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch,probe",watch
+10,explicit,1279.870753,1279.870753,Spoke Puzzle: Amount of Protein,True,False,"probe,intervene,watch",watch
+10,explicit,1283.870753,1283.870753,Spoke Puzzle: Amount of Protein,True,False,"probe,intervene,watch",watch
+10,explicit,1286.870753,1286.870753,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch",watch
+10,reflective,1309.870753,1351.870753,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+10,explicit,1464.870753,1464.870753,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+10,reflective,1932.870753,2046.870753,Spoke Puzzle: Water Amount,True,True,"probe,watch","watch,intervene"
 10,reflective,2676.870753,2689.870753,Spoke Puzzle: Amount of Sunlight,True,False,"watch,probe",watch
 10,explicit,2689.870753,2689.870753,Spoke Puzzle: Amount of Sunlight,True,False,"probe,watch",watch
 10,reflective,2710.870753,2744.870753,Hub Puzzle: Cooking Pot,True,False,"watch,intervene,probe",watch
 10,explicit,2756.870753,2756.870753,Hub Puzzle: Cooking Pot,True,False,intervene,watch
 10,reflective,3090.870753,3117.870753,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
-10,explicit,3188.870753,3188.870753,Hub Puzzle: Cooking Pot,True,True,"watch,probe,intervene","watch,intervene"
-10,explicit,3208.870753,3208.870753,Hub Puzzle: Cooking Pot,True,True,"probe,intervene,watch","watch,intervene"
-10,explicit,3211.870753,3211.870753,Hub Puzzle: Cooking Pot,True,True,"intervene,watch,probe","watch,intervene"
-10,explicit,3506.870753,3506.870753,Hub Puzzle: Cooking Pot,True,False,"intervene,watch,probe",watch
-12,reflective,267.117705,331.117705,Spoke Puzzle: Pasta in Sauce,True,True,"probe,watch,intervene","watch,intervene"
+10,explicit,3188.870753,3188.870753,Hub Puzzle: Cooking Pot,False,True,watch,"watch,intervene"
+10,explicit,3208.870753,3208.870753,Hub Puzzle: Cooking Pot,False,True,watch,"watch,intervene"
+10,explicit,3211.870753,3211.870753,Hub Puzzle: Cooking Pot,False,True,watch,"watch,intervene"
+10,explicit,3506.870753,3506.870753,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
+12,reflective,267.117705,331.117705,Spoke Puzzle: Pasta in Sauce,True,True,"probe,intervene,watch","watch,intervene"
 12,explicit,503.117705,503.117705,Spoke Puzzle: Pasta in Sauce,False,False,watch,watch
-12,reflective,775.117705,834.117705,Spoke Puzzle: Water Amount,True,True,"probe,intervene,watch","watch,intervene"
-12,reflective,848.117705,863.117705,Spoke Puzzle: Water Amount,True,True,"intervene,watch,probe","watch,intervene"
-12,reflective,863.117705,927.117705,Spoke Puzzle: Water Amount,True,True,"intervene,watch,probe","intervene,watch"
-12,reflective,1497.117705,1515.117705,Spoke Puzzle: Amount of Sunlight,True,False,"probe,intervene,watch",watch
+12,reflective,775.117705,834.117705,Spoke Puzzle: Water Amount,True,True,"probe,watch,intervene","watch,intervene"
+12,reflective,848.117705,863.117705,Spoke Puzzle: Water Amount,True,True,"watch,probe,intervene","watch,intervene"
+12,reflective,863.117705,927.117705,Spoke Puzzle: Water Amount,True,True,"intervene,watch","intervene,watch"
+12,reflective,1497.117705,1515.117705,Spoke Puzzle: Amount of Sunlight,True,False,"probe,watch",watch
 12,reflective,1985.117705,2047.117705,Hub Puzzle: Cooking Pot,True,False,"intervene,probe,watch",watch
 12,explicit,2070.117705,2070.117705,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
 12,reflective,2254.117705,2255.117705,none,False,False,watch,watch
 14,explicit,316.431349,316.431349,none,True,True,intervene,"watch,intervene"
-14,reflective,482.431349,638.431349,Spoke Puzzle: Pasta in Sauce,True,True,"probe,intervene,watch","watch,intervene"
+14,reflective,482.431349,638.431349,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,probe,watch","watch,intervene"
 14,reflective,643.431349,753.431349,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch,probe","intervene,watch"
-14,reflective,863.431349,992.431349,Spoke Puzzle: Amount of Protein,True,False,"probe,watch,intervene",watch
-14,reflective,1053.431349,1091.431349,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
+14,reflective,863.431349,992.431349,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
+14,reflective,1053.431349,1091.431349,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch,probe",watch
 14,reflective,1169.431349,1237.431349,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
-14,reflective,1368.431349,1435.431349,Spoke Puzzle: Water Amount,True,True,"watch,probe,intervene","watch,intervene"
-1,reflective,659.5399,722.5399,Spoke Puzzle: Amount of Sunlight,True,False,"intervene,watch",watch
+14,reflective,1368.431349,1435.431349,Spoke Puzzle: Water Amount,True,True,"watch,probe","watch,intervene"
+1,reflective,659.5399,722.5399,Spoke Puzzle: Amount of Sunlight,True,False,"probe,watch",watch
 1,reflective,843.5399,883.5399,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
-22,reflective,284.275625,313.275625,Spoke Puzzle: Pasta in Sauce,True,True,"watch,probe","intervene,watch"
-22,reflective,564.275625,594.275625,Spoke Puzzle: Amount of Protein,True,False,"probe,intervene",watch
+22,reflective,284.275625,313.275625,Spoke Puzzle: Pasta in Sauce,True,True,"watch,intervene,probe","intervene,watch"
+22,reflective,564.275625,594.275625,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
 22,reflective,694.275625,749.275625,Spoke Puzzle: Amount of Protein,False,False,watch,watch
-22,explicit,1608.275625,1608.275625,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
+22,explicit,1608.275625,1608.275625,Hub Puzzle: Cooking Pot,False,False,watch,watch
 22,reflective,1651.275625,1663.275625,Hub Puzzle: Cooking Pot,False,False,watch,watch
 22,reflective,1690.275625,1775.275625,Hub Puzzle: Cooking Pot,False,False,watch,watch
-22,explicit,1916.275625,1916.275625,Hub Puzzle: Cooking Pot,True,False,"probe,watch",watch
+22,explicit,1916.275625,1916.275625,Hub Puzzle: Cooking Pot,False,False,watch,watch
 22,explicit,2080.275625,2080.275625,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
 23,explicit,43.439063,43.439063,none,False,True,watch,"intervene,watch"
 23,reflective,233.439063,437.439063,Spoke Puzzle: Amount of Sunlight,True,True,"probe,intervene,watch","watch,intervene"
-23,reflective,465.439063,582.439063,Spoke Puzzle: Amount of Sunlight,True,False,"probe,watch,intervene",watch
-23,reflective,733.439063,823.439063,Spoke Puzzle: Water Amount,True,True,"watch,probe,intervene","watch,intervene"
+23,reflective,465.439063,582.439063,Spoke Puzzle: Amount of Sunlight,True,False,"probe,watch",watch
+23,reflective,733.439063,823.439063,Spoke Puzzle: Water Amount,True,True,"probe,watch","watch,intervene"
 23,reflective,1015.439063,1056.439063,Spoke Puzzle: Pasta in Sauce,True,False,"probe,intervene,watch",watch
-23,explicit,1391.439063,1391.439063,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
+23,explicit,1391.439063,1391.439063,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
 23,reflective,1419.439063,1477.439063,Spoke Puzzle: Amount of Protein,True,False,"probe,intervene,watch",watch
 23,explicit,1478.439063,1478.439063,Spoke Puzzle: Amount of Protein,False,False,watch,watch
 23,explicit,1650.439063,1650.439063,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
-23,explicit,1771.439063,1771.439063,Hub Puzzle: Cooking Pot,True,False,"probe,watch",watch
+23,explicit,1771.439063,1771.439063,Hub Puzzle: Cooking Pot,True,False,"intervene,watch,probe",watch
 23,reflective,1794.439063,1833.439063,Hub Puzzle: Cooking Pot,True,False,"watch,probe,intervene",watch
 23,reflective,1870.439063,1896.439063,Hub Puzzle: Cooking Pot,True,True,"intervene,watch,probe","watch,intervene"
-23,reflective,1969.439063,2007.439063,Hub Puzzle: Cooking Pot,True,True,"probe,watch","watch,intervene"
+23,reflective,1969.439063,2007.439063,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
 23,reflective,2008.439063,2012.439063,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
-23,reflective,2042.439063,2130.439063,Hub Puzzle: Cooking Pot,True,True,"watch,probe,intervene","watch,intervene"
-2,reflective,441.934533,467.934533,Spoke Puzzle: Water Amount,True,True,"probe,intervene,watch","watch,intervene"
-2,reflective,674.934533,764.934533,Spoke Puzzle: Water Amount,True,False,"intervene,watch,probe",watch
-2,reflective,867.934533,897.934533,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
+23,reflective,2042.439063,2130.439063,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
+2,reflective,441.934533,467.934533,Spoke Puzzle: Water Amount,True,True,"probe,watch","watch,intervene"
+2,reflective,674.934533,764.934533,Spoke Puzzle: Water Amount,True,False,"watch,probe",watch
+2,reflective,867.934533,897.934533,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene,probe",watch
 2,reflective,1039.934533,1063.934533,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
 2,reflective,1164.934533,1251.934533,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
-2,reflective,1308.934533,1370.934533,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
+2,reflective,1308.934533,1370.934533,Hub Puzzle: Cooking Pot,False,False,watch,watch
 3,reflective,147.301054,150.301054,none,True,True,"watch,probe","watch,intervene"
 3,reflective,410.301054,417.301054,Spoke Puzzle: Water Amount,True,True,"watch,probe","watch,intervene"
 3,reflective,417.301054,428.301054,Spoke Puzzle: Water Amount,True,True,"probe,watch","watch,intervene"
-3,reflective,429.301054,515.301054,Spoke Puzzle: Water Amount,True,True,"probe,watch,intervene","watch,intervene"
-3,reflective,528.301054,582.301054,Spoke Puzzle: Water Amount,True,True,"watch,probe,intervene","watch,intervene"
-3,reflective,585.301054,629.301054,Spoke Puzzle: Water Amount,True,False,"probe,intervene,watch",watch
+3,reflective,429.301054,515.301054,Spoke Puzzle: Water Amount,True,True,"watch,probe","watch,intervene"
+3,reflective,528.301054,582.301054,Spoke Puzzle: Water Amount,True,True,"probe,watch","watch,intervene"
+3,reflective,585.301054,629.301054,Spoke Puzzle: Water Amount,True,False,"probe,watch",watch
 3,reflective,977.301054,979.301054,Spoke Puzzle: Amount of Protein,False,False,watch,watch
 3,reflective,988.301054,1002.301054,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
-3,reflective,1023.301054,1204.301054,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
+3,reflective,1023.301054,1204.301054,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
 3,reflective,1434.301054,1497.301054,Spoke Puzzle: Pasta in Sauce,True,False,"watch,probe,intervene",watch
 3,reflective,1498.301054,1562.301054,Hub Puzzle: Cooking Pot,True,True,"intervene,watch,probe","watch,intervene"
 3,explicit,1575.301054,1575.301054,Hub Puzzle: Cooking Pot,False,True,watch,"watch,intervene"
 3,reflective,1751.301054,1810.301054,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
-5,reflective,225.515915,235.515915,Spoke Puzzle: Water Amount,True,False,"probe,watch",watch
+5,reflective,225.515915,235.515915,Spoke Puzzle: Water Amount,True,False,"intervene,watch,probe",watch
 5,reflective,269.515915,305.515915,Spoke Puzzle: Water Amount,True,True,"probe,watch","intervene,watch"
 5,reflective,309.515915,324.515915,Spoke Puzzle: Water Amount,True,True,"watch,probe","watch,intervene"
-5,reflective,342.515915,346.515915,Spoke Puzzle: Water Amount,True,True,"probe,intervene","watch,intervene"
+5,reflective,342.515915,346.515915,Spoke Puzzle: Water Amount,True,True,"probe,intervene,watch","watch,intervene"
 5,reflective,356.515915,440.515915,Spoke Puzzle: Water Amount,True,True,"intervene,watch","intervene,watch"
-5,reflective,633.515915,675.515915,Spoke Puzzle: Amount of Sunlight,True,False,"watch,probe,intervene",watch
-5,reflective,693.515915,789.515915,Spoke Puzzle: Amount of Sunlight,True,False,"intervene,watch,probe",watch
+5,reflective,633.515915,675.515915,Spoke Puzzle: Amount of Sunlight,True,False,"probe,watch,intervene",watch
+5,reflective,693.515915,789.515915,Spoke Puzzle: Amount of Sunlight,True,False,"intervene,watch",watch
 5,reflective,1069.515915,1111.515915,Spoke Puzzle: Pasta in Sauce,True,False,"watch,probe",watch
-5,reflective,1115.515915,1116.515915,Spoke Puzzle: Pasta in Sauce,False,False,watch,watch
+5,reflective,1115.515915,1116.515915,Spoke Puzzle: Pasta in Sauce,True,False,"probe,watch",watch
 5,reflective,1346.515915,1472.515915,Hub Puzzle: Cooking Pot,True,True,"watch,probe","intervene,watch"
-5,reflective,1482.515915,1510.515915,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
-5,reflective,1524.515915,1586.515915,Hub Puzzle: Cooking Pot,True,True,"watch,probe,intervene","watch,intervene"
-5,explicit,1591.515915,1591.515915,Hub Puzzle: Cooking Pot,True,True,"intervene,watch","watch,intervene"
+5,reflective,1482.515915,1510.515915,Hub Puzzle: Cooking Pot,True,True,"probe,watch,intervene","watch,intervene"
+5,reflective,1524.515915,1586.515915,Hub Puzzle: Cooking Pot,True,True,"probe,intervene,watch","watch,intervene"
+5,explicit,1591.515915,1591.515915,Hub Puzzle: Cooking Pot,False,True,watch,"watch,intervene"
 6,reflective,64.5203,103.5203,none,False,True,watch,"watch,intervene"
-6,reflective,552.5203,604.5203,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch","watch,intervene"
-6,reflective,606.5203,667.5203,Spoke Puzzle: Pasta in Sauce,True,True,"watch,intervene","watch,intervene"
+6,reflective,552.5203,604.5203,Spoke Puzzle: Pasta in Sauce,True,True,"watch,probe","watch,intervene"
+6,reflective,606.5203,667.5203,Spoke Puzzle: Pasta in Sauce,True,True,"watch,probe,intervene","watch,intervene"
 6,reflective,834.5203,857.5203,Spoke Puzzle: Water Amount,True,True,"watch,probe","watch,intervene"
 6,reflective,984.5203,1010.5203,Spoke Puzzle: Water Amount,True,True,"probe,watch,intervene","watch,intervene"
-6,reflective,1624.5203,1650.5203,Spoke Puzzle: Amount of Sunlight,True,False,"probe,intervene",watch
+6,reflective,1624.5203,1650.5203,Spoke Puzzle: Amount of Sunlight,True,False,"probe,watch",watch
 6,explicit,1847.5203,1847.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene",watch
-6,explicit,1886.5203,1904.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene,probe",watch
-6,explicit,1912.5203,1912.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,intervene",watch
-6,explicit,1950.5203,1950.5203,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch",watch
-6,reflective,1958.5203,1965.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene",watch
-6,explicit,1975.5203,1979.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene",watch
-6,explicit,1988.5203,1988.5203,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch",watch
-6,explicit,1996.5203,2002.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene,probe",watch
-6,reflective,2025.5203,2100.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,intervene,watch",watch
-6,explicit,2104.5203,2104.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,intervene",watch
-6,explicit,2154.5203,2154.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
-6,explicit,2206.5203,2206.5203,Spoke Puzzle: Amount of Protein,True,False,"intervene,watch",watch
-6,reflective,2403.5203,2433.5203,Hub Puzzle: Cooking Pot,True,True,"intervene,watch","watch,intervene"
-6,explicit,2453.5203,2465.5203,Hub Puzzle: Cooking Pot,True,True,"intervene,watch","watch,intervene"
+6,explicit,1886.5203,1904.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
+6,explicit,1912.5203,1912.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+6,explicit,1950.5203,1950.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+6,reflective,1958.5203,1965.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+6,explicit,1975.5203,1979.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+6,explicit,1988.5203,1988.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+6,explicit,1996.5203,2002.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
+6,reflective,2025.5203,2100.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
+6,explicit,2104.5203,2104.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+6,explicit,2154.5203,2154.5203,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
+6,explicit,2206.5203,2206.5203,Spoke Puzzle: Amount of Protein,True,False,"probe,watch",watch
+6,reflective,2403.5203,2433.5203,Hub Puzzle: Cooking Pot,True,True,"probe,intervene","watch,intervene"
+6,explicit,2453.5203,2465.5203,Hub Puzzle: Cooking Pot,True,True,"probe,watch,intervene","watch,intervene"
 6,explicit,2488.5203,2488.5203,Hub Puzzle: Cooking Pot,True,True,"intervene,watch","intervene,watch"
-6,explicit,2534.5203,2534.5203,Hub Puzzle: Cooking Pot,True,True,"watch,intervene","watch,intervene"
-6,explicit,2546.5203,2546.5203,Hub Puzzle: Cooking Pot,True,True,"watch,intervene,probe","intervene,watch"
-6,explicit,2605.5203,2607.5203,Hub Puzzle: Cooking Pot,True,True,"intervene,watch,probe","intervene,watch"
-6,reflective,2630.5203,2783.5203,Hub Puzzle: Cooking Pot,True,False,"probe,watch,intervene",watch
+6,explicit,2534.5203,2534.5203,Hub Puzzle: Cooking Pot,True,True,"watch,probe","watch,intervene"
+6,explicit,2546.5203,2546.5203,Hub Puzzle: Cooking Pot,True,True,"watch,probe","intervene,watch"
+6,explicit,2605.5203,2607.5203,Hub Puzzle: Cooking Pot,True,True,"watch,probe","intervene,watch"
+6,reflective,2630.5203,2783.5203,Hub Puzzle: Cooking Pot,True,False,"probe,watch",watch
 6,reflective,2788.5203,2792.5203,Hub Puzzle: Cooking Pot,True,False,"watch,probe,intervene",watch
 6,explicit,2794.5203,2796.5203,Hub Puzzle: Cooking Pot,True,False,"probe,intervene",watch
-6,explicit,2797.5203,2797.5203,Hub Puzzle: Cooking Pot,True,False,intervene,watch
-6,explicit,2943.5203,2955.5203,Hub Puzzle: Cooking Pot,True,False,"intervene,watch",watch
-6,explicit,2960.5203,2960.5203,Hub Puzzle: Cooking Pot,True,False,"intervene,watch",watch
-6,explicit,2968.5203,2968.5203,Hub Puzzle: Cooking Pot,True,False,"watch,intervene",watch
+6,explicit,2797.5203,2797.5203,Hub Puzzle: Cooking Pot,True,False,"probe,intervene",watch
+6,explicit,2943.5203,2955.5203,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
+6,explicit,2960.5203,2960.5203,Hub Puzzle: Cooking Pot,True,False,"probe,watch",watch
+6,explicit,2968.5203,2968.5203,Hub Puzzle: Cooking Pot,True,False,"watch,probe",watch
 9,reflective,512.164392,562.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,probe,watch","watch,intervene"
 9,reflective,565.164392,579.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch","watch,intervene"
 9,explicit,583.164392,590.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch","intervene,watch"
 9,explicit,619.164392,619.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch","watch,intervene"
 9,explicit,626.164392,626.164392,Spoke Puzzle: Pasta in Sauce,True,True,"watch,intervene,probe","watch,intervene"
 9,reflective,697.164392,716.164392,Spoke Puzzle: Pasta in Sauce,True,True,"probe,intervene,watch","watch,intervene"
-9,reflective,748.164392,763.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch,probe","watch,intervene"
-9,reflective,765.164392,769.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,probe","intervene,watch"
-9,reflective,807.164392,832.164392,Spoke Puzzle: Pasta in Sauce,True,True,"watch,probe,intervene","watch,intervene"
+9,reflective,748.164392,763.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch","watch,intervene"
+9,reflective,765.164392,769.164392,Spoke Puzzle: Pasta in Sauce,True,True,intervene,"intervene,watch"
+9,reflective,807.164392,832.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,watch,probe","watch,intervene"
 9,explicit,840.164392,840.164392,Spoke Puzzle: Pasta in Sauce,True,True,"intervene,probe","watch,intervene"
 9,explicit,989.164392,989.164392,Spoke Puzzle: Pasta in Sauce,False,False,watch,watch
-9,reflective,1083.164392,1101.164392,Spoke Puzzle: Water Amount,True,False,"probe,watch",watch
+9,reflective,1083.164392,1101.164392,Spoke Puzzle: Water Amount,True,False,"probe,watch,intervene",watch
 9,explicit,1121.164392,1121.164392,Spoke Puzzle: Water Amount,True,True,"probe,intervene,watch","watch,intervene"
 9,explicit,1324.164392,1324.164392,Spoke Puzzle: Water Amount,True,True,"intervene,watch","watch,intervene"
-9,explicit,1339.164392,1339.164392,Spoke Puzzle: Water Amount,True,True,"watch,intervene","watch,intervene"
-9,reflective,1593.164392,1595.164392,Spoke Puzzle: Water Amount,True,True,"probe,intervene","watch,intervene"
-9,reflective,1883.164392,1908.164392,Spoke Puzzle: Amount of Sunlight,True,False,"watch,probe,intervene",watch
-9,explicit,2178.164392,2178.164392,Spoke Puzzle: Amount of Sunlight,True,False,"probe,intervene",watch
+9,explicit,1339.164392,1339.164392,Spoke Puzzle: Water Amount,True,True,"intervene,watch","watch,intervene"
+9,reflective,1593.164392,1595.164392,Spoke Puzzle: Water Amount,True,True,"intervene,watch","watch,intervene"
+9,reflective,1883.164392,1908.164392,Spoke Puzzle: Amount of Sunlight,True,False,"probe,watch,intervene",watch
+9,explicit,2178.164392,2178.164392,Spoke Puzzle: Amount of Sunlight,True,False,"intervene,watch",watch
 9,reflective,2351.164392,2379.164392,Spoke Puzzle: Amount of Sunlight,True,False,"probe,intervene",watch
 9,reflective,2395.164392,2448.164392,Spoke Puzzle: Amount of Sunlight,True,False,intervene,watch
 9,reflective,2454.164392,2457.164392,Spoke Puzzle: Amount of Protein,True,False,"intervene,probe",watch
-9,reflective,2673.164392,2699.164392,Spoke Puzzle: Amount of Protein,True,False,"probe,watch,intervene",watch
+9,reflective,2673.164392,2699.164392,Spoke Puzzle: Amount of Protein,True,False,"watch,probe",watch
 9,reflective,2958.164392,2982.164392,Spoke Puzzle: Amount of Protein,True,False,"watch,probe,intervene",watch
 9,reflective,3014.164392,3023.164392,Hub Puzzle: Cooking Pot,True,False,intervene,watch
-9,reflective,3135.164392,3158.164392,Hub Puzzle: Cooking Pot,True,True,"watch,probe","intervene,watch"
+9,reflective,3135.164392,3158.164392,Hub Puzzle: Cooking Pot,False,True,watch,"intervene,watch"

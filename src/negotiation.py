@@ -17,40 +17,55 @@ import numpy as np
 # ---------------------------------------------------------------------------
 
 CONTRADICTIONS = {
-    # Attention × Behavioral
-    ("attention", "searching", "action", "inactive"): "scanning_but_passive",
-    ("attention", "focused", "action", "inactive"): "focused_but_idle",
-    ("attention", "locked", "action", "active"): "fixated_but_acting",
-    # Attention × Progress
-    ("attention", "focused", "performance", "failing"): "focused_but_failing",
-    ("attention", "searching", "performance", "progressing"): "scattered_but_progressing",
-    ("attention", "focused", "performance", "ineffective_progress"): "focused_but_ineffective",
-    ("attention", "searching", "performance", "ineffective_progress"): "scattered_and_ineffective",
-    # Behavioral × Progress
-    ("action", "active", "performance", "stalled"): "acting_without_progress",
-    ("action", "active", "performance", "failing"): "active_but_failing",
-    ("action", "inactive", "performance", "progressing"): "idle_but_progressing",
-    # Population agent conflicts (kept for backward compat)
-    ("population", "exploring", "attention", "focused"): "pop_says_exploring_but_focused",
-    ("population", "disoriented", "attention", "searching"): "pop_says_stuck_but_searching",
-    ("population", "actively_solving", "performance", "stalled"): "pop_says_solving_but_stalled",
-    ("population", "cognitively_stuck", "action", "active"): "pop_says_stuck_but_active",
-    ("population", "exploring", "action", "inactive"): "pop_says_exploring_but_inactive",
+    # Attention Theory × Self-Regulation Theory
+    # "Attention says engaged but regulation says impulsive"
+    ("attention", "engaged", "action", "impulsive"): "engaged_but_impulsive",
+    ("attention", "engaged", "action", "disengaged"): "attending_but_disengaged",
+    ("attention", "overloaded", "action", "self_regulated"): "overloaded_but_regulated",
+    ("attention", "fixated", "action", "impulsive"): "fixated_and_impulsive",
+    ("attention", "decoupled", "action", "self_regulated"): "decoupled_but_regulated",
+
+    # Attention Theory × Flow Theory
+    ("attention", "engaged", "performance", "anxiety"): "engaged_but_anxious",
+    ("attention", "engaged", "performance", "frustration"): "engaged_but_frustrated",
+    ("attention", "overloaded", "performance", "flow"): "overloaded_in_flow",
+    ("attention", "decoupled", "performance", "flow"): "decoupled_in_flow",
+
+    # Self-Regulation × Flow Theory
+    ("action", "self_regulated", "performance", "anxiety"): "regulated_but_anxious",
+    ("action", "self_regulated", "performance", "frustration"): "regulated_but_frustrated",
+    ("action", "impulsive", "performance", "flow"): "impulsive_in_flow",
+    ("action", "disengaged", "performance", "flow"): "disengaged_from_flow",
+
+    # Population agent conflicts
+    ("population", "exploring", "attention", "engaged"): "pop_exploring_but_engaged",
+    ("population", "cognitively_stuck", "action", "self_regulated"): "pop_stuck_but_regulated",
+    ("population", "actively_solving", "performance", "anxiety"): "pop_solving_but_anxious",
 }
 
 CONSTRUCTIVE_PAIRS = {
-    ("attention", "focused", "action", "active"): "engaged_and_active",
-    ("attention", "focused", "performance", "progressing"): "focused_progress",
-    ("attention", "searching", "action", "active"): "active_exploration",
-    ("action", "inactive", "performance", "stalled"): "passive_and_stuck",
-    ("action", "inactive", "performance", "ineffective_progress"): "passive_and_ineffective",
-    ("action", "hesitant", "performance", "ineffective_progress"): "hesitant_and_ineffective",
-    ("attention", "locked", "action", "inactive"): "frozen_on_clue",
-    # Population agent agreements
-    ("population", "exploring", "attention", "searching"): "pop_confirms_exploration",
-    ("population", "cognitively_stuck", "attention", "locked"): "pop_confirms_impasse",
-    ("population", "disoriented", "action", "inactive"): "pop_confirms_disorientation",
-    ("population", "actively_solving", "performance", "progressing"): "pop_confirms_progress",
+    # Attention Theory × Self-Regulation: both see positive
+    ("attention", "engaged", "action", "self_regulated"): "engaged_and_regulated",
+    ("attention", "engaged", "action", "reflective"): "engaged_and_reflective",
+
+    # Attention Theory × Flow: aligned
+    ("attention", "engaged", "performance", "flow"): "engaged_in_flow",
+
+    # Self-Regulation × Flow: aligned
+    ("action", "self_regulated", "performance", "flow"): "regulated_flow",
+
+    # Converging struggle signals
+    ("attention", "overloaded", "action", "disengaged"): "overloaded_and_disengaged",
+    ("attention", "overloaded", "performance", "anxiety"): "overloaded_with_anxiety",
+    ("attention", "fixated", "action", "disengaged"): "fixated_and_disengaged",
+    ("action", "disengaged", "performance", "anxiety"): "disengaged_with_anxiety",
+    ("action", "impulsive", "performance", "frustration"): "impulsive_frustration",
+
+    # Population agreements
+    ("population", "exploring", "attention", "overloaded"): "pop_confirms_exploration_overload",
+    ("population", "cognitively_stuck", "attention", "fixated"): "pop_confirms_impasse",
+    ("population", "actively_solving", "performance", "flow"): "pop_confirms_flow",
+    ("population", "disoriented", "action", "disengaged"): "pop_confirms_disorientation",
 }
 
 
