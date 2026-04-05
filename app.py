@@ -1486,6 +1486,70 @@ def main():
             "See `docs/future_work_theory_agents.md` for detailed analysis."
         )
 
+        # --- Learnable Integration Weights ---
+        st.markdown("---")
+        st.subheader("Learnable Integration Weights: Neural Network Layer Analogy")
+
+        st.markdown(
+            "The current system already has a **layered structure** analogous to a neural network — "
+            "but all weights between layers are hand-tuned, not learned from data."
+        )
+
+        st.markdown(
+            "```\n"
+            "Layer 1 (Input):       Raw features (8 values per 5s window)\n"
+            "    ↓  rule-based, interpretable\n"
+            "Layer 2 (Agents):      5 interpretations (label + confidence)\n"
+            "    ↓  rule-based, interpretable\n"
+            "Layer 3 (Negotiation): Tension type, intensity, confidence spread\n"
+            "    ↓  LEARNABLE weights ← this is the only layer that changes\n"
+            "Layer 4 (Decision):    P(watch), P(probe), P(intervene)\n"
+            "```"
+        )
+
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("**Current (Hand-Tuned)**")
+            st.code(
+                "score = 0.30 * struggle\n"
+                "      + 0.20 * temporal\n"
+                "      + 0.15 * elapsed\n"
+                "      + 0.15 * momentum\n"
+                "      + 0.10 * pre_collapse\n"
+                "# weights chosen by trial-and-error",
+                language="python"
+            )
+        with col2:
+            st.markdown("**Proposed (Learned)**")
+            st.code(
+                "score = W[0] * struggle\n"
+                "      + W[1] * temporal\n"
+                "      + W[2] * elapsed\n"
+                "      + W[3] * momentum\n"
+                "      + W[4] * pre_collapse\n"
+                "# W learned from facilitator data",
+                language="python"
+            )
+
+        st.success(
+            "**Why this is NOT just an MLP:**\n\n"
+            "A standard neural network takes raw features and outputs a decision — "
+            "the intermediate representations are opaque. Our approach keeps **Layers 1-3 "
+            "fully interpretable**: you can always trace a decision back to named agent labels "
+            "and identified tensions. Only the **final weighting** (how to combine these "
+            "interpretable signals) is learned from data.\n\n"
+            "This preserves the core contribution — multi-agent negotiation with interpretable "
+            "disagreement — while allowing data-driven optimization of how disagreements are resolved."
+        )
+
+        st.markdown(
+            "**Requirements for implementation:**\n"
+            "- 80-person study data (~25,000+ windows) for sufficient training examples\n"
+            "- Leave-one-participant-out cross-validation\n"
+            "- Comparison: hand-tuned vs learned vs end-to-end MLP baseline\n"
+            "- This isolates the contribution of the multi-agent structure vs learned integration"
+        )
+
 
 if __name__ == "__main__":
     main()

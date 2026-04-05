@@ -91,6 +91,7 @@ Based on this session's findings, the discussion should address:
 ### 5.7 Future Work
 - 80-person study with refined ground truth
 - Theory-partitioned agents with richer features
+- **Learnable integration weights**: keep agent layer interpretable (rule-based), learn only the final integration layer weights from facilitator ground truth. Hybrid of neural network efficiency + multi-agent interpretability. Requires 80-person data (~25k windows) for training. Compare: hand-tuned vs learned vs end-to-end MLP baseline.
 - Unity real-time integration via WebSocket
 - LLM-generated prompt content (not just when to prompt, but what to say)
 - Per-player calibration using early puzzle performance as baseline

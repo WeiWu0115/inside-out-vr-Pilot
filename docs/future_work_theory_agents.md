@@ -106,3 +106,71 @@ Neither architecture is strictly superior:
 - **Theory-partitioned**: Maximizes precision and F1. Best for research contexts where false positives waste analysis time, and where theoretical interpretability matters for publication.
 
 The 80-person study should evaluate both architectures on the same data with refined ground truth.
+
+---
+
+## Learnable Integration Weights: Neural Network Layer Analogy
+
+### Observation
+
+The current system already has a layered structure analogous to a neural network:
+
+```
+Layer 1 (Input):       Raw features (8 values per 5s window)
+Layer 2 (Agents):      5 independent interpretations (label + confidence)
+Layer 3 (Negotiation): Pairwise tension detection (contradictory/constructive)
+Layer 4 (Decision):    watch / probe / intervene
+```
+
+However, all transformations between layers use **hand-written rules and manually tuned weights**. For example, the V3.1 Intervention Necessity Score:
+
+```python
+score = 0.30 * struggle_signal     # ← manually chosen
+      + 0.20 * temporal_signal     # ← manually chosen
+      + 0.15 * elapsed_signal      # ← manually chosen
+      + 0.15 * momentum_signal     # ← manually chosen
+      + 0.10 * pre_collapse        # ← manually chosen
+```
+
+These weights were calibrated by iterative experimentation against facilitator ground truth. A natural next step is to **learn these weights from data**.
+
+### Proposed Hybrid Architecture
+
+Keep the agent layer interpretable (rule-based, theory-grounded), but replace the final integration layer with **learnable weights**:
+
+```
+Layer 1: Raw Features
+    ↓ (rule-based, interpretable)
+Layer 2: Agent Outputs
+    Each agent produces: label (categorical) + confidence (0-1)
+    → 5 agents × 2 values = 10-dimensional representation
+    ↓ (rule-based, interpretable)
+Layer 3: Negotiation Features
+    Tension type, intensity, n_contradictions, confidence_spread
+    → ~6-dimensional representation
+    ↓ (LEARNABLE weights W)
+Layer 4: Decision
+    P(watch), P(probe), P(intervene) = softmax(W · [agent_outputs, negotiation_features])
+```
+
+The key constraint: **only the last layer has learnable weights**. Layers 1-3 remain fully interpretable — you can always explain *why* each agent produced its label and *why* a tension was detected. The learned weights only determine how to *combine* these interpretable signals into a final decision.
+
+### Why This Is Not "Just an MLP"
+
+A standard MLP would take raw features and output a decision, making the intermediate representations opaque. Our approach:
+
+1. **Agent labels are human-readable** — "Attention Theory says overloaded because entropy=2.3 and switch_rate=8.1"
+2. **Tensions are named and interpretable** — "engaged_but_anxious: Attention and Flow disagree"
+3. **Only the final weighting is learned** — "the system learned that Flow Theory's anxiety signal should be weighted 2× higher than Attention Theory's engagement signal when elapsed_ratio > 2.0"
+
+This preserves the core contribution (multi-agent negotiation with interpretable disagreement) while allowing data-driven optimization of how disagreements are resolved.
+
+### Requirements
+
+- **Training data**: Need facilitator ground truth labels for supervised learning. Current 11-player dataset (5,265 windows) is too small — risk of overfitting. The 80-person study (~25,000+ windows) would provide sufficient data.
+- **Validation strategy**: Leave-one-participant-out cross-validation to ensure weights generalize across players.
+- **Comparison**: Train the same architecture with (a) hand-tuned weights, (b) learned weights, (c) end-to-end MLP baseline. This isolates the contribution of the multi-agent structure vs. the learned integration.
+
+### What This Would Add to the Paper
+
+> "We demonstrate that the multi-agent negotiation structure provides an interpretable intermediate representation that a shallow learned layer can integrate more effectively than hand-tuned rules. Compared to an end-to-end MLP that treats raw features as opaque input, our hybrid approach achieves comparable prediction accuracy while maintaining full transparency at the agent and negotiation layers — each decision can be traced back to named agent interpretations and identified theoretical tensions."
