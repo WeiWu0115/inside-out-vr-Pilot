@@ -7,7 +7,39 @@ To ground the \textsc{Inside Out} framework in empirical data, we implement and 
 
 We conducted a study with 18 participants (11 female, 6 male, 1 non-binary; mean age = 25) in a VR escape room built in Unity and deployed on Meta Quest Pro headsets. The environment consists of four spatially distributed spoke puzzles requiring players to locate clues, interpret instructions, and manipulate objects, plus a central hub puzzle that integrates information from all four spokes (Figure~\ref{fig:vr_layout}). The task naturally elicits the kind of ambiguous cognitive states our framework targets: players frequently shift between exploration, focused problem-solving, and confusion in ways that resist singular classification~\cite{radianti2020systematic, jensen2018review}.
 
-For each participant, we recorded synchronized multimodal data streams: frame-level eye tracking (gaze position, fixation targets), interaction logs (object manipulation, puzzle events, errors), and task progression events (puzzle completion, state transitions). Of 18 participants, 11 yielded complete eye-tracking data; the remaining 7 experienced tracking failures but provided complete interaction logs.
+For each participant, we recorded synchronized multimodal data streams: frame-level eye tracking (gaze position, fixation targets), head tracking (position and orientation at 2--3~Hz), interaction logs (object manipulation, puzzle events, errors), and task progression events (puzzle completion, state transitions). Of 18 participants, 11 yielded complete eye-tracking data; the remaining 7 experienced tracking failures but provided complete interaction logs. All behavioral data was windowed into 5-second segments, producing 5,265 windows across the 11 eye-tracking participants.
+
+\subsubsection{Task Structure and Difficulty}
+
+The escape room presents a cooking-themed puzzle environment with varying difficulty levels (Table~\ref{tab:puzzle_difficulty}). Players spent an average of 20:13 completing all puzzles, with 37.5\% of time spent navigating between puzzle locations and 32.9\% on the integrative Hub Puzzle.
+
+\begin{table}[t]
+\centering
+\caption{Puzzle difficulty measured by average solve time and facilitator prompt frequency. The Hub Puzzle requires the most time and help; Sunlight is the easiest.}
+\label{tab:puzzle_difficulty}
+\small
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Puzzle} & \textbf{Avg. time} & \textbf{Reflective} & \textbf{Explicit} \\
+\midrule
+Spoke: Protein       & 3:11 & 1.4 & 1.1 \\
+Spoke: Pasta         & 2:46 & 1.5 & 0.3 \\
+Spoke: Water         & 2:54 & 1.8 & 0.3 \\
+Spoke: Sunlight      & 3:04 & 0.7 & 0.1 \\
+Hub: Cooking Pot     & 8:18 & 2.5 & 1.4 \\
+\midrule
+Overall              & 20:13 & 7.8 & 2.9 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Puzzle difficulty is non-uniform in revealing ways. The Hub Puzzle demanded the most facilitator help of both types---its integrative nature requires players to synthesize solutions from all four spokes, creating compound confusion states that single-puzzle analysis cannot capture. The Protein puzzle had the second-highest explicit prompt rate (1.1 per player) despite moderate solve times, suggesting players understood what to do but could not execute---a cognitive state qualitatively different from the disorientation observed in Sunlight (where prompts were rarely needed). This heterogeneity across puzzles provides natural variation in the types of struggle the system must detect.
+
+\subsubsection{Facilitator Ground Truth}
+
+A trained education researcher observed each session in real time and provided prompts when she judged a player needed help. She employed two prompt types: \emph{reflective prompts} (guiding questions such as ``What do you think this controls?'') and \emph{explicit prompts} (direct instructions such as ``Set the protein to 3''). Across 18 participants, the facilitator delivered 223 prompts: 154 reflective and 69 explicit, averaging 11.7 prompts per session. These prompt logs---with precise timestamps, prompt types, and matched puzzle contexts---serve as the ground truth for benchmarking automated intervention systems (Section~\ref{sec:facilitator_benchmark}).
+
+The facilitator's prompting behavior reveals a strong preference for reflective guidance: 69\% of all prompts were reflective, with explicit prompts reserved for persistent difficulty. This mirrors the pedagogical principle of scaffolding~\cite{wood1976role}---providing the minimum support needed for the learner to progress. Any automated system aiming to replicate this behavior must distinguish between moments requiring gentle probing and moments requiring direct intervention.
 
 \subsection{Two Systems, Two Philosophies}
 
@@ -15,7 +47,17 @@ This data configuration enables a principled comparison between two fundamentall
 
 \paragraph{The Expert System.} A human education expert observed all 18 participants during gameplay and iteratively developed a rule-based prompting engine. The system uses only game log variables---time since last action, puzzle interaction events, area type, and puzzle state---and implements 10 prioritized rules organized around three states: \textsc{Explore}, \textsc{Stuck}, and \textsc{Solving}. When the system detects a player is stuck (no action for 30+ seconds, no gaze on instructions, no object in hand), it triggers an escalating sequence of prompts: first a redirect to instructions, then a visual hint, then an explicit procedural hint. This engine represents the state of practice in adaptive game design~\cite{li2025adapting}: a sense $\rightarrow$ classify $\rightarrow$ act pipeline designed by a domain expert from direct observation.
 
-\paragraph{\textsc{Inside Out}.} Our multi-agent system runs on the 11 participants with complete eye-tracking data. Five agents---Attention, Action, Performance, Temporal, and Population---independently interpret each 5-second behavioral window. The first four are rule-based agents grounding their interpretations in gaze entropy, action frequency, error patterns, and temporal persistence respectively. The Population Agent is data-driven: it compares each window against cluster centroids derived from $K$-means clustering ($K=5$) of the full dataset~\cite{dmello2014confusion, bosch2017affective}, producing interpretations like ``this behavior most resembles exploration in the population'' or ``this matches the cognitive impasse pattern.'' A negotiation layer then detects pairwise tensions between agents and maps disagreement structures to three response categories: consensus-driven intervention, ambiguity-aware probing, or watchful non-intervention.
+\paragraph{\textsc{Inside Out}.} Our multi-agent system runs on the 11 participants with complete eye-tracking data. Five agents independently interpret each 5-second behavioral window, each reading an exclusive slice of the feature space to prevent \emph{echo consensus} (Section~\ref{sec:facilitator_benchmark}):
+
+\begin{itemize}
+    \item \textbf{Perceptual Agent}: reads gaze entropy, clue fixation ratio, and gaze switch rate to determine \emph{what the player is looking at} (focused / searching / locked).
+    \item \textbf{Behavioral Agent}: reads action count, idle time, and error count to determine \emph{what the player is doing} (active / hesitant / inactive / failing). Its output label---not the raw features---is passed to the Progress Agent via \emph{label flow}.
+    \item \textbf{Progress Agent}: reads time since last action, puzzle elapsed ratio, and the Behavioral Agent's label to determine \emph{whether the player is making real progress} (progressing / ineffective\_progress / stalled). The \emph{ineffective\_progress} state captures players who are active but not advancing---the primary source of missed detections in classification-based approaches.
+    \item \textbf{Temporal Agent}: reads Perceptual and Progress labels over a sliding window of 3 consecutive windows, plus puzzle elapsed ratio, to determine \emph{how long a state has persisted} (transient / persistent / looping).
+    \item \textbf{Population Agent}: compares each window against cluster centroids derived from $K$-means clustering ($K=5$) of the full dataset~\cite{dmello2014confusion, bosch2017affective}, producing interpretations like ``this behavior most resembles exploration in the population'' or ``this matches the cognitive impasse pattern.''
+\end{itemize}
+
+A negotiation layer detects pairwise tensions between agents and maps disagreement structures to three response categories: consensus-driven intervention, ambiguity-aware probing, or watchful non-intervention. A stateful Prompt Agent then applies cooldown (no repeated intervention within 15~seconds), escalation (sustained struggle upgrades probes to interventions), and recovery (resetting when the player improves)---mirroring how human facilitators modulate intervention intensity over time.
 
 \paragraph{Comparison design.} The expert system runs on all 18 participants using game logs alone. \textsc{Inside Out} runs on the 11 participants with eye tracking. We compare the two systems on the 11 overlapping participants (5,265 five-second windows), using nearest-window matching to align the independently generated time series.
 
