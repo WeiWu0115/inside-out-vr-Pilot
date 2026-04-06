@@ -1,99 +1,169 @@
-# Multi-Agent VR User-State Interpretation Pipeline
+# Inside Out VR: Multi-Agent Negotiation of Cognitive States
 
-A local, rule-based prototype for interpreting VR user states through multi-agent negotiation. Built for a CHI paper exploring the idea that adaptive support should emerge from disagreement among interpretive agents rather than from a single classifier.
+**CHI 2027 paper + working prototype.** Instead of classifying a VR player into a single cognitive state, multiple agents each produce their own interpretation, and the system acts based on the *pattern of their disagreement*.
+
+Inspired by Pixar's *Inside Out*: Joy and Sadness see the same memory but interpret it differently. That disagreement is the signal, not noise.
+
+## The Core Idea
+
+```
+Traditional:  sensor data → classifier → "stuck" → intervene
+Inside Out:   sensor data → 5 agents → they disagree → what does the disagreement mean?
+```
+
+A player who is **visually focused but physically idle** could be thinking (good) or frozen (bad). A single classifier must pick one. Inside Out keeps both interpretations and uses the *tension* between them to decide: watch, probe, or intervene.
+
+## What's in This Repo
+
+### Multi-Agent Pipeline (`src/`)
+
+Five agents interpret 5-second windows of VR gameplay:
+
+| Agent | Input | Question | Labels |
+|-------|-------|----------|--------|
+| Perceptual | gaze_entropy, clue_ratio, switch_rate | What is the player looking at? | focused / searching / locked |
+| Behavioral | action_count, idle_time, error_count | What is the player doing? | active / inactive / hesitant / failing |
+| Progress | behavioral_label + time_since_action | Is the player making progress? | progressing / stalled / ineffective_progress |
+| Temporal | history of agent labels | Is this pattern persistent? | transient / persistent / looping |
+| Population | distance to K=5 cluster centroids | How does this compare to other players? | exploring / disoriented / actively_solving / cognitively_stuck |
+
+Each agent reads **exclusive features** (no feature sharing) to prevent echo consensus.
+
+The **negotiation layer** detects pairwise tensions between agents:
+- `focused_but_idle` — Perceptual says focused, Behavioral says inactive
+- `scattered_but_progressing` — Perceptual says searching, Progress says progressing
+- `frozen_on_clue` — Perceptual says locked, Behavioral says inactive
+
+These tensions map to three responses:
+- **Watch** (79.5%) — agents agree player is OK
+- **Probe** (13.2%) — agents disagree, system explores instead of guessing
+- **Intervene** (7.3%) — agents agree player needs help
+
+### Rule-Based Baseline (`src/expert_engine.py`)
+
+Reimplementation of the Unity PromptStateMachine from the VR escape room. Per-puzzle state machine with escalating prompts: 3 Reflective → 2 Vague → unlimited Explicit.
+
+### Facilitator Benchmark (`src/facilitator_benchmark.py`)
+
+Compares both systems against **real facilitator prompts** (223 prompts from a human facilitator observing 18 players). At ±15s temporal tolerance:
+
+| System | Recall | Precision | F1 |
+|--------|--------|-----------|----|
+| Rule-Based | 37.7% | 32.1% | 0.347 |
+| Inside Out | 92.1% | 37.1% | 0.529 |
+
+### Streamlit App (`app.py`)
+
+Interactive dashboard with 7 tabs:
+
+```bash
+streamlit run app.py
+```
+
+| Tab | What it shows |
+|-----|--------------|
+| Study Overview | VR escape room layout, heatmaps, movement paths |
+| Agent Architecture | How the 5 agents work, IO motivation |
+| Agent Confidence | Per-agent scatter plots over time |
+| Negotiation Timeline | Disagreement intensity with intervention markers |
+| Rule-Based vs IO | Side-by-side decision comparison |
+| Facilitator Benchmark | Three-way comparison (facilitator vs rule-based vs IO) |
+| Future Work | Ablation study, gaze-focused V4, 80-person study plan |
+
+Password protected via Streamlit secrets.
+
+## Data
+
+- **18 participants** in VR escape room (Meta Quest Pro)
+- **11 with complete eye tracking** + game logs → used for Inside Out
+- **7 with game logs only** → used for rule-based system only
+- **5,265 five-second windows** across 11 players
+- Raw eye tracking at ~71Hz (PlayerTracking.csv per user)
 
 ## Quick Start
 
 ```bash
 pip install -r requirements.txt
+
+# Run the multi-agent pipeline
 python src/pipeline.py
-```
 
-Or with custom paths:
+# Run the rule-based expert engine
+python -c "import sys; sys.path.insert(0,'src'); from expert_from_logs import run_expert_on_all; run_expert_on_all()"
 
-```bash
-python src/pipeline.py --input data/windows.csv --output outputs/
-```
+# Run facilitator benchmark
+python -m src.facilitator_benchmark
 
-## Expected Input
-
-A CSV file (`data/windows.csv` by default) where each row is a 5-second window from a VR escape room session.
-
-**Required columns:**
-- `participant_id` — participant identifier
-- `puzzle_id` — which puzzle the window belongs to
-- `window_start` — timestamp or index for the window
-
-**Optional columns (used by agents):**
-- `gaze_entropy` — entropy of gaze distribution (0-1 scale)
-- `clue_ratio` — proportion of gaze on clue-relevant areas (0-1)
-- `switch_rate` — rate of gaze target switches (0-1)
-- `action_count` — number of actions in the window
-- `idle_time` — seconds of inactivity
-- `time_since_action` — seconds since last action
-- `error_count` — number of errors in the window
-- `puzzle_active` — boolean, whether puzzle is currently active
-
-Missing optional columns are handled gracefully — agents output `unknown` for states they cannot determine.
-
-## Agents
-
-| Agent | Features Used | Possible States |
-|-------|--------------|-----------------|
-| **AttentionAgent** | gaze_entropy, clue_ratio, switch_rate | focused, searching, locked, unknown |
-| **ActionAgent** | action_count, idle_time, time_since_action | active, hesitant, inactive, unknown |
-| **PerformanceAgent** | error_count, puzzle_active, action_count | progressing, failing, stalled, unknown |
-| **TemporalAgent** | consecutive window patterns | transient, persistent, looping, unknown |
-
-## Negotiation Layer
-
-After agents run independently, a negotiation module detects disagreement patterns:
-
-| Pattern | Conditions | Suggested Support |
-|---------|-----------|-------------------|
-| `focused_but_stuck` | focused + inactive/hesitant + stalled/failing | procedural_hint |
-| `searching_without_grounding` | searching + inactive + stalled | spatial_hint |
-| `active_but_unguided` | searching + active + failing | light_guidance |
-| `productive_struggle` | focused + active/hesitant + stalled + transient | wait |
-| `no_clear_pattern` | no rule matches | none |
-
-The `disagreement_score` counts how many distinct agent states are present (0-4).
-
-## Output Files
-
-| File | Contents |
-|------|----------|
-| `outputs/agent_outputs.csv` | All original columns + agent states + disagreement + support |
-| `outputs/disagreement_summary.csv` | Agent states, disagreement score, and pattern per window |
-| `outputs/support_summary.csv` | Disagreement pattern and suggested support per window |
-
-## Visualization App
-
-Interactive Streamlit app for exploring agent interpretations and intervention timing:
-
-```bash
-pip install streamlit plotly
+# Launch the app
 streamlit run app.py
 ```
 
-Features:
-- **Agent Timeline** — 4 agents' interpretations over time + support suggestions
-- **Disagreement & Interventions** — disagreement score timeline with intervention markers
-- **Cluster vs Agent Analysis** — K-means cluster vs agent disagreement pattern heatmap
-- **Playback** — step-by-step scrubbing through each time window
+## Key Results
 
-## Configuration
+### Ablation Study (±15s tolerance)
 
-All thresholds are in `src/config.py` — edit them to tune agent sensitivity.
+| Configuration | Eye Tracking | Game Logs | F1 |
+|---|---|---|---|
+| Rule-Based | No | Yes | 0.347 |
+| IO — Behavioral Only | No | Yes | 0.446 |
+| IO — Gaze Only | Yes | No | 0.422 |
+| IO — V4 Full | Yes | Yes | 0.521 |
+| IO — V3 (current) | Yes | Yes | **0.529** |
+| IO — Theory-Partitioned | Yes | Yes | **0.531** |
+
+**Key finding:** Gaze-only (0.422) and behavioral-only (0.446) are both limited. Combining them is **superadditive** (0.521) because the system detects *tensions between channels* that neither can see alone.
+
+### Two Performance Ceilings
+
+All architectures converge at F1 ≈ 0.52 due to:
+
+1. **Feature granularity** — `action_count=3` could be 3 correct interactions or 3 random clicks. 68% of missed windows show the player genuinely looked fine by every metric.
+
+2. **Ground truth noise** — Facilitator prompts mix reactive (detectable) and proactive (pedagogical, undetectable) types. Player 22 received 8 prompt episodes while performing well.
 
 ## Project Structure
 
 ```
 src/
-  config.py        — thresholds and file paths
-  load_data.py     — CSV loading and validation
-  agents.py        — four interpretive agents
-  negotiation.py   — disagreement scoring and pattern matching
-  support.py       — pattern-to-intervention mapping
-  pipeline.py      — main entry point
+  config.py              — agent thresholds (data-derived percentiles)
+  load_data.py           — CSV loading + safe_get helper
+  agents.py              — 4 rule-based agents with confidence scores
+  population_agent.py    — data-driven agent using K=5 cluster centroids
+  negotiation.py         — pairwise tension detection + disagreement structure
+  support.py             — maps disagreement patterns to adaptive responses
+  pipeline.py            — main entry: load → agents → negotiate → support → save
+  expert_engine.py       — Unity PromptStateMachine reimplementation
+  expert_from_logs.py    — builds expert windows from raw PuzzleLogs
+  facilitator_benchmark.py — three-way comparison + temporal tolerance
+  compare_systems.py     — expert vs IO detailed analysis
+  gaze_features.py       — extract 19 eye-tracking features from raw tracking
+  gaze_action_coupling.py — classify actions as informed/blind/misguided
+  ablation.py            — run all agent configurations and compare
+  validate.py            — distribution checks and threshold recommendations
+app.py                   — Streamlit visualization (7 tabs)
+data/
+  windows.csv            — 5,265 windowed features (11 players)
+  windows_enhanced.csv   — above + 19 gaze features + coupling
+  gaze_features.csv      — standalone gaze feature extraction
+  gaze_action_coupling.csv — per-window action quality classification
+outputs/
+  agent_outputs.csv      — full pipeline output
+  expert_all18_outputs.csv — rule-based on all 18 players
+  three_way_comparison.csv — merged IO + expert + facilitator
+  benchmark_report.md    — detailed benchmark analysis
+  ablation_results.csv   — all configurations compared
 ```
+
+## Branches
+
+| Branch | What |
+|--------|------|
+| `main` | V3 data-partitioned architecture (current best) |
+| `experiment/gaze-focused-agents` | V4 with 3 gaze agents + gaze-action coupling |
+| `experiment/theory-partitioned-agents` | 4 cognitive theory agents (shared features) |
+
+## Paper
+
+**Title:** *Inside Out: Multi-Agent Negotiation of Cognitive States in Virtual Reality*
+
+Target: CHI 2027. 18-person pilot complete. 80-person main study planned.
