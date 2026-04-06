@@ -1514,7 +1514,7 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
              "Eye Tracking": "Yes", "Game Logs": "Yes",
              "Recall (±15s)": "92.1%", "Precision (±15s)": "37.1%", "F1 (±15s)": "0.529"},
             {"Configuration": "IO — Theory-Partitioned",
-             "Agents": "4 cognitive theory agents (shared features)",
+             "Agents": "4 cognitive theory agents + Temporal (all share features)",
              "Eye Tracking": "Yes", "Game Logs": "Yes",
              "Recall (±15s)": "88.7%", "Precision (±15s)": "37.9%", "F1 (±15s)": "0.531"},
         ]
@@ -1523,7 +1523,7 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
         st.markdown(
             "**Key findings:**\n"
             "- **Either signal alone is limited** — gaze-only (F1=0.422) and behavioral-only (F1=0.446) both underperform\n"
-            "- **Combining them is much stronger** — V4 full (F1=0.521) is +0.075 over gaze-only and +0.075 over behavioral-only\n"
+            "- **Combining them is much stronger** — V4 full (F1=0.521) is +0.099 over gaze-only and +0.075 over behavioral-only\n"
             "- **The gain is superadditive** — the combination captures tensions *between* gaze and action "
             "(e.g., `focused_but_idle`, `acting_while_looking_away`) that neither channel can detect alone\n"
             "- **All multi-agent configurations beat rule-based** (F1=0.347) by a wide margin"
@@ -1575,7 +1575,7 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
             st.info("**Branch:** `experiment/theory-partitioned-agents`")
 
         # --- 2. Gaze-Focused Architecture ---
-        with st.expander("2. Gaze-Focused Architecture (V4) — F1=0.517, 3/5 agents use eye tracking", expanded=False):
+        with st.expander("2. Gaze-Focused Architecture (V4) — F1=0.521, 3/5 agents use eye tracking", expanded=False):
             st.markdown(
                 "VR is a **total-capture simulator** — ~71Hz eye tracking, head pose, hand tracking, object interaction. "
                 "A human facilitator only sees macro behavior. "
@@ -1608,7 +1608,7 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
 
             col1, col2 = st.columns(2)
             col1.metric("V3 F1 (1 gaze agent)", "0.529")
-            col2.metric("V4 F1 (3 gaze agents)", "0.517", "-0.012")
+            col2.metric("V4 F1 (3 gaze agents)", "0.521", "-0.008")
 
             st.markdown(
                 "Nearly identical F1 confirms **eye tracking alone carries most of the signal**. "
@@ -1641,11 +1641,11 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
             col3.metric("Misguided", "7.4%", help="Looked at wrong puzzle object")
 
             st.markdown(
-                "| | RightMove | WrongMove | Success Rate |\n"
-                "|---|---|---|---|\n"
-                "| **Informed** | 84 | 7 | **69%** |\n"
-                "| **Blind** | 302 | 126 | **52%** |\n"
-                "| **Misguided** | 32 | 11 | **57%** |\n\n"
+                "| | RightMove | WrongMove | Total | Success Rate |\n"
+                "|---|---|---|---|---|\n"
+                "| **Informed** | 84 | 7 | 121 | **69%** |\n"
+                "| **Blind** | 302 | 126 | 582 | **52%** |\n"
+                "| **Misguided** | 32 | 11 | 56 | **57%** |\n\n"
                 "Informed actions succeed at **69%** vs blind at **52%**. "
                 "But F1 improvement is modest (+0.004) because only 10.7% of windows contain actions, "
                 "and blind actions still succeed 52% of the time (spatial memory).\n\n"
