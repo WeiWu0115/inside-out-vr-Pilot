@@ -104,9 +104,10 @@ def load_comparison():
 
     def _expert_cat(row):
         if row.get("expert_action") == "PROMPT":
-            return "intervene"
-        if row.get("expert_state") == "STUCK":
-            return "intervene"
+            pt = str(row.get("expert_prompt_type", ""))
+            if pt == "E":
+                return "intervene"
+            return "probe"  # R, V, SpecialA/B/C
         return "watch"
     df["expert_cat"] = df.apply(_expert_cat, axis=1)
 
@@ -144,7 +145,7 @@ def make_three_way_timeline(tdf):
         ), row=1, col=1)
 
     # Expert
-    for cat in ["intervene", "watch"]:
+    for cat in ["intervene", "probe", "watch"]:
         mask = tdf["expert_cat"] == cat
         if mask.sum() == 0:
             continue
@@ -335,33 +336,31 @@ def make_disagreement_scatter(cdf):
         e, i = row["expert_cat"], row["io_cat"]
         if e == i:
             return "agree"
-        if e == "intervene" and i == "watch":
-            return "expert_only"
-        if e == "watch" and i == "intervene":
+        if e != "watch" and i == "watch":
+            return "rb_only"
+        if i != "watch" and e == "watch":
             return "io_only"
-        if i == "probe":
-            return "io_probes"
-        return "other"
+        # Both active but different level (e.g. probe vs intervene)
+        return "different_level"
 
     cdf = cdf.copy()
     cdf["disagree_type"] = cdf.apply(_disagree_type, axis=1)
 
     colors = {
         "agree": "#E0E0E0",
-        "expert_only": "#2196F3",
+        "rb_only": "#2196F3",
         "io_only": "#F44336",
-        "io_probes": "#FF9800",
-        "other": "#9E9E9E",
+        "different_level": "#9C27B0",
     }
     labels = {
-        "agree": "Agree (no action / both act)",
-        "expert_only": "Rule-based intervenes, IO doesn't",
-        "io_only": "IO intervenes, rule-based doesn't",
-        "io_probes": "IO probes (rule-based can't)",
+        "agree": "Agree (same category)",
+        "rb_only": "Rule-based acts, IO watches",
+        "io_only": "IO acts, rule-based watches",
+        "different_level": "Both act, different level",
     }
 
     fig = go.Figure()
-    for dtype in ["agree", "io_probes", "expert_only", "io_only"]:
+    for dtype in ["agree", "rb_only", "io_only", "different_level"]:
         mask = cdf["disagree_type"] == dtype
         if mask.sum() == 0:
             continue
@@ -1237,16 +1236,19 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
 
                 with col2:
                     st.subheader("Key Differences")
-                    # Expert intervenes, IO doesn't
-                    n_expert_only = ((comp_player["expert_cat"] == "intervene") & (comp_player["io_cat"] == "watch")).sum()
-                    n_io_only = ((comp_player["io_cat"] == "intervene") & (comp_player["expert_cat"] == "watch")).sum()
+                    n_both_intervene = ((comp_player["io_cat"] == "intervene") & (comp_player["expert_cat"] == "intervene")).sum()
+                    n_both_probe = ((comp_player["io_cat"] == "probe") & (comp_player["expert_cat"] == "probe")).sum()
+                    n_rb_active_io_watch = ((comp_player["expert_cat"] != "watch") & (comp_player["io_cat"] == "watch")).sum()
+                    n_io_active_rb_watch = ((comp_player["io_cat"] != "watch") & (comp_player["expert_cat"] == "watch")).sum()
+                    n_rb_probes = (comp_player["expert_cat"] == "probe").sum()
                     n_io_probes = (comp_player["io_cat"] == "probe").sum()
-                    n_both = ((comp_player["io_cat"] == "intervene") & (comp_player["expert_cat"] == "intervene")).sum()
 
-                    st.markdown(f"**Both intervene:** {n_both}")
-                    st.markdown(f"**Rule-based only:** {n_expert_only} — Rule-based prompts but IO sees no need")
-                    st.markdown(f"**IO only:** {n_io_only} — IO detects issues rule-based system misses")
-                    st.markdown(f"**IO probes:** {n_io_probes} — IO is uncertain, explores instead of guessing")
+                    st.markdown(f"**Both intervene:** {n_both_intervene}")
+                    st.markdown(f"**Both probe:** {n_both_probe}")
+                    st.markdown(f"**RB active, IO watch:** {n_rb_active_io_watch}")
+                    st.markdown(f"**IO active, RB watch:** {n_io_active_rb_watch}")
+                    st.markdown(f"**RB probes:** {n_rb_probes} — R/V/Special prompts")
+                    st.markdown(f"**IO probes:** {n_io_probes} — agent disagreement")
 
                 # All-player summary
                 st.subheader("All Players Summary")

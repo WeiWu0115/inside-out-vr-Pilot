@@ -27,22 +27,19 @@ def load_both():
 
 
 def map_to_action_category(row):
-    """Map both systems to comparable categories: intervene / probe / wait."""
+    """Map both systems to comparable categories: intervene / probe / watch."""
     # Inside Out
     io_cat = row.get("support_category", "watch")
 
-    # Expert
+    # Expert: R/V/Special prompts → probe, E prompt → intervene
     expert_action = row.get("expert_action", "NONE")
-    expert_state = row.get("expert_state", "EXPLORE")
+    expert_prompt_type = str(row.get("expert_prompt_type", ""))
 
     if expert_action == "PROMPT":
-        expert_cat = "intervene"
-    elif expert_state == "STUCK":
-        expert_cat = "intervene"  # stuck but waiting for timing
-    elif expert_state == "EXPLORE":
-        expert_cat = "watch"
-    elif expert_state == "SOLVING":
-        expert_cat = "watch"
+        if expert_prompt_type == "E":
+            expert_cat = "intervene"
+        else:
+            expert_cat = "probe"  # R, V, SpecialA/B/C
     else:
         expert_cat = "watch"
 
@@ -213,7 +210,7 @@ def run_comparison():
     # Save merged comparison
     out_cols = [
         "participant_id", "puzzle_id", "window_start",
-        "expert_state", "expert_action", "expert_rule",
+        "expert_state", "expert_action", "expert_prompt_type", "expert_rule",
         "attention_label", "attention_confidence",
         "action_label", "action_confidence",
         "performance_label", "performance_confidence",
@@ -223,8 +220,8 @@ def run_comparison():
         "io_category", "expert_category",
     ]
     out_cols = [c for c in out_cols if c in merged.columns]
-    merged[out_cols].to_csv("outputs/comparison_expert_vs_insideout.csv", index=False)
-    print(f"\nSaved comparison to outputs/comparison_expert_vs_insideout.csv")
+    merged[out_cols].to_csv("outputs/comparison_correct.csv", index=False)
+    print(f"\nSaved comparison to outputs/comparison_correct.csv")
 
 
 if __name__ == "__main__":
