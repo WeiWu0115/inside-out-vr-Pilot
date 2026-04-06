@@ -281,9 +281,11 @@ def motor_agent(row: pd.Series) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# 4. BehavioralAgent — what is the player doing? (game logs only)
-#    Exclusive features: action_count, idle_time, error_count, time_since_action
-#    Kept identical to V3 for ablation comparison.
+# 4. BehavioralAgent — what is the player doing?
+#    Features: action_count, idle_time, error_count, time_since_action
+#    + gaze-action coupling: informed_ratio, blind_ratio, blind_wrong
+#    The coupling features let us distinguish action_count=3 (informed)
+#    from action_count=3 (blind trial-and-error).
 # ---------------------------------------------------------------------------
 
 def behavioral_agent(row: pd.Series) -> dict:
@@ -291,6 +293,12 @@ def behavioral_agent(row: pd.Series) -> dict:
     idle_time = safe_get(row, "idle_time")
     error_count = safe_get(row, "error_count")
     time_since = safe_get(row, "time_since_action", 0.0)
+
+    # Gaze-action coupling features
+    informed_ratio = safe_get(row, "informed_ratio", 0.0)
+    blind_ratio = safe_get(row, "blind_ratio", 0.0)
+    blind_wrong = safe_get(row, "blind_wrong", 0)
+    n_actions = safe_get(row, "n_actions", 0)  # actions with coupling data
 
     if action_count is None:
         return {"label": "unknown", "confidence": 0.0, "evidence": {},
@@ -301,15 +309,23 @@ def behavioral_agent(row: pd.Series) -> dict:
         "idle_time": idle_time,
         "error_count": error_count,
         "time_since_action": time_since,
+        "informed_ratio": informed_ratio,
+        "blind_ratio": blind_ratio,
     }
 
     scores = {}
+    has_coupling = n_actions > 0
 
-    # Active
-    active_conf = _linear_scale(action_count, 0, ACTION["action_count_high"] * 1.5) * 0.5
+    # Active: many actions, little idle
+    active_conf = _linear_scale(action_count, 0, ACTION["action_count_high"] * 1.5) * 0.4
     if idle_time is not None:
-        active_conf += (1.0 - _linear_scale(idle_time, 0, 5.0)) * 0.3
-    active_conf += (1.0 - _linear_scale(time_since, 0, ACTION["time_since_action_moderate"])) * 0.2
+        active_conf += (1.0 - _linear_scale(idle_time, 0, 5.0)) * 0.2
+    active_conf += (1.0 - _linear_scale(time_since, 0, ACTION["time_since_action_moderate"])) * 0.15
+    # Boost if actions are informed (looked before acting)
+    if has_coupling:
+        active_conf += informed_ratio * 0.25
+    else:
+        active_conf += 0.1  # no coupling data, assume moderate
     scores["active"] = _clamp(active_conf, 0.1, 0.95)
 
     # Inactive
@@ -327,13 +343,24 @@ def behavioral_agent(row: pd.Series) -> dict:
     if idle_time is not None and idle_time > ACTION["idle_time_low"]:
         hesitant_conf += 0.15
     if time_since > ACTION["time_since_action_moderate"] * 0.5:
+        hesitant_conf += 0.1
+    # Misguided actions (looked at wrong object then acted) → hesitant
+    if has_coupling and blind_ratio > 0.5 and informed_ratio < 0.3:
         hesitant_conf += 0.15
     scores["hesitant"] = _clamp(hesitant_conf, 0.1, 0.90)
 
-    # Failing
+    # Failing: errors OR blind wrong actions
+    fail_conf = 0.0
     if error_count is not None and error_count >= PERFORMANCE["error_count_high"]:
-        fail_conf = _linear_scale(error_count, 0, 3) * 0.7
-        scores["failing"] = _clamp(max(fail_conf, 0.5), 0.3, 0.95)
+        fail_conf = _linear_scale(error_count, 0, 3) * 0.5
+    # Blind + wrong is a strong failing signal
+    if blind_wrong > 0:
+        fail_conf += _linear_scale(blind_wrong, 0, 3) * 0.4
+    # High blind ratio with actions = trial-and-error
+    if has_coupling and blind_ratio >= 0.8 and action_count >= 2:
+        fail_conf += 0.2
+    if fail_conf >= 0.3:
+        scores["failing"] = _clamp(fail_conf, 0.3, 0.95)
 
     best = max(scores, key=scores.get)
     conf = scores[best]
@@ -342,11 +369,15 @@ def behavioral_agent(row: pd.Series) -> dict:
     if len(sorted_s) > 1 and (sorted_s[0] - sorted_s[1]) < 0.1:
         conf *= 0.75
 
+    coupling_str = ""
+    if has_coupling:
+        coupling_str = f", informed={informed_ratio:.0%}, blind={blind_ratio:.0%}"
+
     reasons = {
-        "active": f"Actions={action_count}, {time_since:.0f}s since last",
+        "active": f"Actions={action_count}, {time_since:.0f}s since last{coupling_str}",
         "inactive": f"No actions, idle={idle_time:.1f}s, {time_since:.0f}s since last" if idle_time else f"No actions, {time_since:.0f}s since last",
-        "hesitant": f"Some actions ({action_count}) but with pauses",
-        "failing": f"Errors detected ({error_count})",
+        "hesitant": f"Actions={action_count} but uncertain{coupling_str}",
+        "failing": f"Errors={error_count}, blind_wrong={blind_wrong}{coupling_str}",
     }
 
     return {
