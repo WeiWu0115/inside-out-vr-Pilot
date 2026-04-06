@@ -1479,9 +1479,10 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
                 "**Ceiling 2: Ground Truth Noise**\n\n"
                 "Facilitator prompts include *reactive* (detectable) and *proactive* (pedagogical, undetectable) types.\n\n"
                 "Evidence: **Player 22** had `action_count=2.8`, `time_since=57s`, `elapsed_ratio=0.8` — "
-                "performing well by every measure, yet received **50 facilitator prompts**. "
-                "IO correctly identified 37 of these as *watch* (player OK). "
-                "13 of the 37 missed windows showed `focused_progress` — the facilitator was likely "
+                "performing well by every measure, yet the facilitator gave **8 prompt episodes** "
+                "(47 reflective + 3 explicit, spanning 50 five-second windows). "
+                "IO classified 37 of these windows as *watch* (player OK). "
+                "Of those 37, **13 showed `focused_progress`** — the facilitator was likely "
                 "giving proactive pedagogical guidance, not responding to confusion."
             )
 
