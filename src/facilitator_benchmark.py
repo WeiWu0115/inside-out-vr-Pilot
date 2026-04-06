@@ -152,15 +152,18 @@ def build_expert_windows():
     expert_path = os.path.join(OUTPUTS, "expert_all18_outputs.csv")
     df = pd.read_csv(expert_path)
     # Map expert_action + prompt_type to category
+    # R/V/SpecialA/SpecialB/SpecialC → probe (guidance, not direct answers)
+    # E → intervene (explicit solution)
     def expert_to_cat(row):
         if row["expert_action"] == "NONE":
             return "watch"
-        elif row.get("expert_prompt_type") in ("R", "V"):
+        pt = str(row.get("expert_prompt_type", ""))
+        if pt in ("R", "V", "SpecialA", "SpecialB", "SpecialC"):
             return "probe"
-        elif row.get("expert_prompt_type") == "E":
+        elif pt == "E":
             return "intervene"
         elif row["expert_action"] == "PROMPT":
-            return "intervene"  # fallback if prompt_type missing
+            return "probe"  # fallback
         else:
             return "watch"
     df["expert_cat"] = df.apply(expert_to_cat, axis=1)
