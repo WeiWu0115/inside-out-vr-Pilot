@@ -1743,6 +1743,81 @@ Inside Out V4 sees six *different* states, each requiring a different response.
             "full V4 implementation with 19 gaze features extraction pipeline."
         )
 
+        # --- Gaze-Action Coupling ---
+        st.markdown("---")
+        st.subheader("Gaze-Action Coupling: Can Eye Tracking Reveal Action Quality?")
+
+        st.markdown(
+            "A key limitation identified earlier: `action_count=3` could mean 3 correct puzzle interactions "
+            "or 3 random clicks. **No game-log feature can tell them apart.** "
+            "We tested whether eye tracking data can break through this ceiling by asking: "
+            "*what was the player looking at in the 3 seconds before each action?*"
+        )
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Informed Actions", "15.9%", help="Looked at relevant clue/puzzle object before acting")
+        col2.metric("Blind Actions", "76.7%", help="Looked at environment/unrelated before acting")
+        col3.metric("Misguided Actions", "7.4%", help="Looked at wrong puzzle object before acting")
+
+        with st.expander("Gaze-Action Coupling — Method and Findings", expanded=False):
+            st.markdown("""
+#### Method
+
+For each of the **759 interactions** in PuzzleLogs (11 users), we extract the gaze targets
+from PlayerTracking in the **3 seconds before** the action timestamp. Then classify:
+
+| Classification | Pre-action gaze | Example |
+|---------------|----------------|---------|
+| **Informed** | Looked at the clue or puzzle object being interacted with | Read "Pasta Note" diary → grabbed pasta bowl |
+| **Blind** | Looked at walls, floor, or unrelated objects | Stared at wall → grabbed random object |
+| **Misguided** | Looked at a different puzzle object | Looked at Water puzzle → interacted with Protein puzzle |
+
+#### Cross-tabulation with Outcome
+
+| | RightMove | WrongMove | Total |
+|---|---|---|---|
+| **Informed** | 84 (69%) | 7 (6%) | 121 |
+| **Blind** | 302 (52%) | 126 (22%) | 582 |
+| **Misguided** | 32 (57%) | 11 (20%) | 56 |
+
+Key findings:
+- **Informed actions have 69% success rate** vs blind actions at 52% — looking before acting works
+- **Blind + WrongMove = 126 cases** — the clearest "trial-and-error" signal
+- But **blind actions still succeed 52% of the time** — players use spatial memory, not just gaze
+
+#### Impact on Detection Performance
+
+| Version | F1 (±15s) | Change |
+|---------|-----------|--------|
+| V4 gaze agents only | 0.517 | baseline |
+| V4 + gaze-action coupling | 0.521 | +0.004 |
+
+**Modest improvement (+0.004 F1)** because:
+1. Only **10.7%** of 5-second windows contain any action — coupling features are zero for 89% of windows
+2. The distribution is heavily skewed (76.7% blind) — not enough variance to be discriminative
+3. Blind actions often succeed — "blind" does not always mean "struggling"
+
+#### Why This Matters Despite Small F1 Gain
+
+The finding that **76.7% of actions are blind** is itself a contribution — it reveals that:
+
+- Players in VR rely heavily on **spatial memory and proprioception**, not visual confirmation
+- The `action_count` feature in current systems (V3 and rule-based) fundamentally **cannot distinguish
+  informed problem-solving from random trial-and-error**
+- This distinction is **only possible because VR records both gaze and interaction simultaneously** —
+  a human facilitator cannot see where the player was looking at the moment they grabbed an object
+
+For the 80-person study, the coupling signal could become more powerful with:
+- **Per-puzzle coupling rates** — some puzzles may show stronger informed/blind differences
+- **Temporal coupling trends** — a player switching from informed to blind actions = frustration onset
+- **Richer action semantics** from Unity (correct object vs wrong object) instead of just RightMove/WrongMove
+""")
+
+        st.info(
+            "**Branch:** `experiment/gaze-focused-agents` — "
+            "includes gaze-action coupling extraction and integration."
+        )
+
         # --- Learnable Integration Weights ---
         st.markdown("---")
         st.subheader("Learnable Integration Weights: Neural Network Layer Analogy")
