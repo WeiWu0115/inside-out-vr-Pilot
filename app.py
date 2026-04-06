@@ -1466,7 +1466,13 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
                 "Current features capture *how much* a player acts, not *whether those actions are meaningful*.\n\n"
                 "Evidence: of **512 windows** where facilitator prompted but IO said *watch*, "
                 "**347 (68%)** showed progressing/active tensions — the player genuinely looked fine "
-                "by every available metric."
+                "by every available metric.\n\n"
+                "**Eye tracking partially addresses this.** Our gaze-action coupling experiment (see #3 below) "
+                "shows that checking *what the player looked at before acting* can distinguish informed actions "
+                "(69% success rate) from blind trial-and-error (52% success). "
+                "However, the effect is limited in the pilot: only 10.7% of windows contain actions, "
+                "and 76.7% of actions are blind — the 80-person study with richer action semantics "
+                "from Unity could make this signal much stronger."
             )
         with col2:
             st.warning(
