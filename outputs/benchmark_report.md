@@ -1,6 +1,6 @@
 # Facilitator Benchmark Report
 
-Generated: 2026-04-04 19:38
+Generated: 2026-04-06 11:14
 
 ## 1. Facilitator Prompt Overview (18 users)
 
@@ -33,8 +33,8 @@ Generated: 2026-04-04 19:38
 | Category | IO | Expert | Facilitator |
 |----------|-----|--------|-------------|
 | watch | 3028 (57.5%) | 4930 (93.6%) | 4172 (79.2%) |
-| probe | 1272 (24.2%) | 0 (0.0%) | 1027 (19.5%) |
-| intervene | 965 (18.3%) | 335 (6.4%) | 66 (1.3%) |
+| probe | 1272 (24.2%) | 335 (6.4%) | 1027 (19.5%) |
+| intervene | 965 (18.3%) | 0 (0.0%) | 66 (1.3%) |
 
 ## 4. Intervention Detection (Facilitator as Ground Truth)
 
@@ -58,11 +58,11 @@ Facilitator categories: watch=no prompt, probe=reflective, intervene=explicit
 | Class | IO Precision | IO Recall | IO F1 | Expert Precision | Expert Recall | Expert F1 |
 |-------|-------------|-----------|-------|-----------------|---------------|-----------|
 | watch | 0.831 | 0.603 | 0.699 | 0.794 | 0.938 | 0.86 |
-| probe | 0.211 | 0.262 | 0.234 | 0 | 0.0 | 0 |
-| intervene | 0.032 | 0.47 | 0.06 | 0.006 | 0.03 | 0.01 |
+| probe | 0.211 | 0.262 | 0.234 | 0.221 | 0.072 | 0.109 |
+| intervene | 0.032 | 0.47 | 0.06 | 0 | 0.0 | 0 |
 
 - IO overall accuracy: **0.535**
-- Expert overall accuracy: **0.744**
+- Expert overall accuracy: **0.757**
 
 ## 6. Per-Puzzle Breakdown
 
@@ -134,7 +134,7 @@ IO's decision at facilitator prompt moments:
 Expert's decision at facilitator prompt moments:
 
 - **watch**: 1017 (93.0%)
-- **intervene**: 76 (7.0%)
+- **probe**: 76 (7.0%)
 
 ## 10. Temporal Tolerance Analysis (Event-Level)
 

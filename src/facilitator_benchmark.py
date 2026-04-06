@@ -151,15 +151,19 @@ def build_expert_windows():
     """Load expert outputs and build window-level data for all 18 participants."""
     expert_path = os.path.join(OUTPUTS, "expert_all18_outputs.csv")
     df = pd.read_csv(expert_path)
-    # Map expert_action to category
-    def expert_to_cat(action):
-        if action == "NONE":
+    # Map expert_action + prompt_type to category
+    def expert_to_cat(row):
+        if row["expert_action"] == "NONE":
             return "watch"
-        elif action == "PROMPT":
+        elif row.get("expert_prompt_type") in ("R", "V"):
+            return "probe"
+        elif row.get("expert_prompt_type") == "E":
             return "intervene"
+        elif row["expert_action"] == "PROMPT":
+            return "intervene"  # fallback if prompt_type missing
         else:
             return "watch"
-    df["expert_cat"] = df["expert_action"].apply(expert_to_cat)
+    df["expert_cat"] = df.apply(expert_to_cat, axis=1)
     return df
 
 
