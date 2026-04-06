@@ -1625,6 +1625,52 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
             "- This isolates the contribution of the multi-agent structure vs learned integration"
         )
 
+        # --- 80-Person Study Plan ---
+        st.markdown("---")
+        st.subheader("80-Person Study: From Pilot to Main Evaluation")
+
+        st.markdown(
+            "The 18-person pilot (11 with eye tracking) served as a **formative evaluation** — "
+            "iterating the system design, diagnosing failure modes, and calibrating agent thresholds. "
+            "The planned 80-person study is the **main evaluation** that addresses the pilot's limitations."
+        )
+
+        st.markdown("### What 80 Participants Changes")
+        change_data = [
+            {"Pilot Limitation": "n=11 with eye tracking",
+             "80-Person Study": "n=60+ with full eye tracking (assuming ~75% capture rate)",
+             "Impact": "~25,000+ windows across 60+ independent participants; per-participant bootstrap for confidence intervals"},
+            {"Pilot Limitation": "Rule-based STUCK rarely triggered",
+             "80-Person Study": "More diverse player behaviors across 80 sessions",
+             "Impact": "Full R→V→E escalation coverage; stronger baseline comparison"},
+            {"Pilot Limitation": "No user outcome data",
+             "80-Person Study": "Completion rate, time-to-solve, error recovery, post-task surveys",
+             "Impact": "Can link IO decisions to actual learning/performance outcomes"},
+            {"Pilot Limitation": "Single facilitator as ground truth",
+             "80-Person Study": "Two facilitators independently observing (at least 20 overlapping sessions)",
+             "Impact": "Inter-rater reliability (Cohen's kappa); validates ground truth quality"},
+            {"Pilot Limitation": "Offline analysis only",
+             "80-Person Study": "A/B deployment: 40 facilitator-only vs 40 IO-assisted",
+             "Impact": "Causal evidence that IO improves facilitator decision-making"},
+        ]
+        st.dataframe(pd.DataFrame(change_data), use_container_width=True, hide_index=True)
+
+        st.markdown("### Study Design Recommendations")
+        st.markdown(
+            "1. **Tag facilitator prompt intent** — At each prompt, facilitator marks: "
+            "*reactive* (responding to observed struggle) vs *proactive* (pedagogical guidance). "
+            "This separates detectable from undetectable prompts and eliminates the ground truth noise ceiling.\n\n"
+            "2. **A/B condition** — 40 participants with facilitator only, 40 with IO assisting the facilitator. "
+            "Even if IO only serves as a second opinion (not autonomous), this yields causal user outcome data.\n\n"
+            "3. **Inter-rater reliability** — Two facilitators independently observe at least 20 sessions. "
+            "Report Cohen's kappa to validate that facilitator prompts are a reliable ground truth.\n\n"
+            "4. **Richer features** — Add semantic action labels (correct vs wrong object), "
+            "gaze-action coupling (looked at clue then acted?), and spatial trajectory "
+            "(toward solution vs wandering) to break through the feature granularity ceiling.\n\n"
+            "5. **Paper structure** — 18-person pilot → formative evaluation (system design iteration). "
+            "80-person study → main evaluation (validation). Two-phase design is standard at CHI."
+        )
+
 
 if __name__ == "__main__":
     main()
