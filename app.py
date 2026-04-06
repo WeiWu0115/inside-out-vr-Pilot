@@ -918,7 +918,7 @@ def main():
 
             st.markdown(
                 "**Inside Out** is a multi-agent system for interpreting cognitive states in VR, "
-                "inspired by Pixar's *Inside Out* (头脑特工队). Instead of classifying a player into "
+                "inspired by Pixar's *Inside Out*. Instead of classifying a player into "
                 "a single state (e.g. \"stuck\" or \"not stuck\"), multiple agents each produce their own "
                 "interpretation from different sensory channels — perception, action, performance, "
                 "temporal context, and population norms. The system's key insight is that **disagreement "
