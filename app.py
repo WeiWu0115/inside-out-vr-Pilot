@@ -1138,6 +1138,61 @@ def main():
             "The rule-based system uses only game logs; Inside Out also uses eye tracking."
         )
 
+        # --- Rule-Based System Logic ---
+        with st.expander("How the Rule-Based System Works", expanded=False):
+            st.markdown("""
+#### State Machine (per puzzle)
+
+Each puzzle has its own independent state machine that tracks the player's engagement:
+
+```
+InBetween ──[enter zone]──→ TriggerCheck ──[solvable]──→ Explore
+                                 │                          │
+                            [hub blocked]          [grab / gaze / 90s]
+                                 │                          │
+                            SpecialB prompt                 ▼
+                            (every 30s)                  Solving
+                                                        ↕     ↕
+                                                 [engaged]  [3s idle]
+                                                        ↕     ↕
+                                                     Solving ← PossiblyStuck
+                                                               │
+                                                          [30s timeout]
+                                                               │
+                                                        Escalated Prompt
+```
+
+#### Prompt Escalation (per puzzle, never resets)
+
+When a player stays in **PossiblyStuck** for 30 seconds without re-engaging, the system fires an escalated prompt:
+
+| Prompt # | Type | Category | Description |
+|----------|------|----------|-------------|
+| 1–3 | **R** (Reflective) | probe | Open-ended: *"Maybe check the instructions again?"* |
+| 4–5 | **V** (Vague) | probe | More specific: *"Something here might be useful"* |
+| 6+ | **E** (Explicit) | intervene | Direct solution: *"Use the available clues to proceed"* |
+
+Escalation counters are **per puzzle** and **never reset** — if a player leaves and returns to a puzzle, the count picks up where it left off.
+
+#### Special Prompts (bypass escalation)
+
+| Prompt | Trigger | Category |
+|--------|---------|----------|
+| **SpecialA** | Wandering for 300s (first) / 30s (repeat) without entering any zone | probe |
+| **SpecialB** | In hub area but hub puzzle not yet solvable (need 4 spokes) | probe |
+| **SpecialC** | In puzzle zone for 90s without grabbing anything | probe |
+
+#### Key Differences from Inside Out
+
+| Aspect | Rule-Based | Inside Out |
+|--------|-----------|------------|
+| **Input** | Game logs only (actions, timing) | Game logs + eye tracking (5 agents) |
+| **Decision** | Binary idle detection (3s cooldown → 30s stuck) | Multi-agent negotiation with tension patterns |
+| **Probe** | Only after entering PossiblyStuck | Detects uncertainty via agent disagreement |
+| **Intervene** | Only after 5+ escalations on same puzzle | Consensus among agents that player needs help |
+| **Granularity** | One state per puzzle | Rich tension patterns across all features |
+""")
+
         if comp_df is None or len(comp_df) == 0:
             st.warning("No comparison data found. Run `python3 src/compare_systems.py` first.")
         else:
@@ -1157,7 +1212,7 @@ def main():
                 st.subheader("Decision Timeline")
                 st.markdown(
                     "Top row = rule-based decisions. Bottom row = Inside Out decisions. "
-                    "**Red** = intervene, **Orange** = probe (IO only), **Green** = watch."
+                    "**Red** = intervene, **Orange** = probe, **Green** = watch."
                 )
                 fig = make_comparison_timeline(comp_player)
                 st.plotly_chart(fig, use_container_width=True)
@@ -1166,9 +1221,9 @@ def main():
                 st.subheader("Where Do They Disagree?")
                 st.markdown(
                     "Each dot = one time window. "
-                    "**Blue** = rule-based intervenes but IO doesn't. "
+                    "**Blue** = rule-based acts but IO doesn't. "
                     "**Red** = IO intervenes but rule-based doesn't. "
-                    "**Orange** = IO probes (rule-based can't)."
+                    "**Orange** = IO probes but rule-based doesn't."
                 )
                 fig = make_disagreement_scatter(comp_player)
                 st.plotly_chart(fig, use_container_width=True)
@@ -1200,9 +1255,10 @@ def main():
                     pf = comp_df[comp_df["participant_id"] == pid]
                     summary_rows.append({
                         "Player": f"P{pid}",
-                        "Rule-Based Prompts": int((pf["expert_cat"] == "intervene").sum()),
-                        "IO Intervene": int((pf["io_cat"] == "intervene").sum()),
+                        "RB Probe": int((pf["expert_cat"] == "probe").sum()),
+                        "RB Intervene": int((pf["expert_cat"] == "intervene").sum()),
                         "IO Probe": int((pf["io_cat"] == "probe").sum()),
+                        "IO Intervene": int((pf["io_cat"] == "intervene").sum()),
                         "Agreement": f"{(pf['io_cat'] == pf['expert_cat']).mean():.0%}",
                     })
                 st.dataframe(pd.DataFrame(summary_rows), use_container_width=True, hide_index=True)
