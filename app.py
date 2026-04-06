@@ -1450,483 +1450,215 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
 
 
     with tab_fw:
-        st.subheader("🔮 Future Work: Theory-Partitioned Agents")
+        st.subheader("🔮 Future Work")
 
+        # --- Performance Ceilings ---
         st.markdown(
-            "We explored an alternative architecture where agents share **all data** "
-            "but interpret through different **cognitive theories** — more faithful to the "
-            "Inside Out metaphor (Joy and Sadness see the same memory, but interpret differently)."
-        )
-
-        # Theory agents table
-        st.markdown("### Four Theory Agents")
-        theory_data = [
-            {"Agent": "Attention Theory", "Theory": "Posner, Lavie",
-             "Question": "Is attention appropriately allocated?",
-             "States": "engaged / overloaded / fixated / decoupled"},
-            {"Agent": "Self-Regulation", "Theory": "Zimmerman, Pintrich",
-             "Question": "Is the player adjusting their strategy?",
-             "States": "self_regulated / impulsive / disengaged / reflective"},
-            {"Agent": "Flow Theory", "Theory": "Csikszentmihalyi",
-             "Question": "Is the challenge-skill balance right?",
-             "States": "flow / anxiety / frustration / boredom"},
-            {"Agent": "Cognitive Load", "Theory": "Sweller",
-             "Question": "Is working memory capacity exceeded?",
-             "States": "manageable / overloaded / fragmented / automated"},
-        ]
-        st.dataframe(pd.DataFrame(theory_data), use_container_width=True, hide_index=True)
-
-        # Same data, different interpretation example
-        st.markdown("### Same Data, Different Interpretation")
-        st.markdown("**Example window:** `action_count=3, time_since=90s, gaze_entropy=1.2`")
-        interp_data = [
-            {"Agent": "Attention Theory", "Label": "engaged",
-             "Reasoning": "Moderate entropy, player is looking at relevant areas"},
-            {"Agent": "Self-Regulation", "Label": "impulsive",
-             "Reasoning": "3 actions after 90s gap = reactive trial-and-error, not strategic"},
-            {"Agent": "Flow Theory", "Label": "anxiety",
-             "Reasoning": "Active but time_since is high = challenge exceeding skill"},
-            {"Agent": "Cognitive Load", "Label": "manageable",
-             "Reasoning": "Low entropy + some actions + no errors = within capacity"},
-        ]
-        st.dataframe(pd.DataFrame(interp_data), use_container_width=True, hide_index=True)
-        st.markdown(
-            "Result: 2 agents say OK, 2 say problem → **contradictory tension** → "
-            "system probes instead of guessing. This is genuine disagreement from "
-            "independent theoretical frameworks, not echo consensus."
-        )
-
-        # Results comparison
-        st.markdown("---")
-        st.markdown("### Experiment Results (±15s tolerance)")
-
-        col1, col2 = st.columns(2)
-        col1.markdown("**V3 (Data-Partitioned, current)**")
-        col1.metric("F1", "0.529")
-        col1.metric("Recall", "92.1%")
-        col1.metric("Precision", "37.1%")
-
-        col2.markdown("**Theory-Partitioned (experiment)**")
-        col2.metric("F1", "0.531", "+0.002")
-        col2.metric("Recall", "88.7%", "-3.4pp")
-        col2.metric("Precision", "37.9%", "+0.8pp")
-
-        # Two ceilings
-        st.markdown("---")
-        st.subheader("Why Not a Bigger Improvement? Two Performance Ceilings")
-
-        st.error(
-            "**Ceiling 1: Feature Granularity**\n\n"
-            "In 90%+ of missed windows, ALL four theory agents agreed the player was OK "
-            "(engaged + self_regulated + flow + manageable). The features showed: "
-            "`action_count=2.78` (active), `time_since=86s` (moderate), "
-            "`elapsed_ratio=1.15` (near median).\n\n"
-            "**The problem is not the theories — it's the data.** "
-            "All features capture *how much* the player acts, not *whether those actions are meaningful*. "
-            "`action_count=3` could be 3 correct puzzle interactions or 3 random clicks. "
-            "No cognitive theory can distinguish these without richer signals:\n"
-            "- Semantic action labels (correct vs. wrong object)\n"
-            "- Gaze-action coupling (looked at clue then acted on it?)\n"
-            "- Spatial trajectory (moving toward solution vs. wandering)"
-        )
-
-        st.warning(
-            "**Ceiling 2: Ground Truth Noise**\n\n"
-            "The facilitator's prompts include two types:\n"
-            "1. **Reactive** — responding to observed struggle (detectable)\n"
-            "2. **Proactive** — guiding a functioning player toward deeper understanding (undetectable)\n\n"
-            "Example: Player 22 had `action_count=5.8, time_since=24s, elapsed_ratio=0.8` — "
-            "performing well by every measure — but received 4 facilitator prompts. "
-            "These were likely pedagogical guidance, not confusion detection. "
-            "No automated system should be expected to detect proactive prompts."
-        )
-
-        # Recommendations
-        st.markdown("---")
-        st.subheader("Recommendations for 80-Person Study")
-        st.markdown(
-            "1. **Richer features**: Add semantic action labels, gaze-action coupling, "
-            "and spatial trajectory to break through the feature granularity ceiling\n"
-            "2. **Ground truth refinement**: Tag facilitator prompts as reactive vs. proactive "
-            "to eliminate noise ceiling\n"
-            "3. **Dual architecture evaluation**: Run both V3 and theory-partitioned on same data "
-            "to determine which generalizes better\n"
-            "4. **Per-theory calibration**: With more data, identify which cognitive theory "
-            "best predicts each *type* of confusion"
-        )
-
-        st.info(
-            "**Branch:** `experiment/theory-partitioned-agents` — "
-            "full implementation available for comparison. "
-            "See `docs/future_work_theory_agents.md` for detailed analysis."
-        )
-
-        # --- Gaze-Focused Architecture (V4) ---
-        st.markdown("---")
-        st.subheader("Gaze-Focused Architecture: VR as Total Capture Environment")
-
-        st.markdown(
-            "VR is fundamentally a **total-capture simulator** — it records every gaze direction, "
-            "head movement, hand position, and object interaction at **~71Hz**. A human facilitator "
-            "observing the same player only sees macro behavior (idle, moving, interacting). "
-            "The key question: **can richer eye-tracking features close the gap between IO and a human observer?**"
-        )
-        st.markdown(
-            "We tested a V4 architecture that restructures agents around eye tracking, "
-            "extracting **19 gaze features** from raw PlayerTracking data (~1.8M gaze samples across 11 users). "
-            "3 out of 5 agents now read exclusively from eye tracking."
-        )
-
-        # --- Results first ---
-        st.markdown("### Results (±15s tolerance)")
-        col1, col2 = st.columns(2)
-        col1.markdown("**V3 (1 gaze agent / 5)**")
-        col1.metric("F1", "0.529")
-        col1.metric("Recall", "92.1%")
-        col1.metric("Precision", "37.1%")
-
-        col2.markdown("**V4 (3 gaze agents / 5)**")
-        col2.metric("F1", "0.517", "-0.012")
-        col2.metric("Recall", "90.7%", "-1.4pp")
-        col2.metric("Precision", "36.2%", "-0.9pp")
-
-        st.markdown(
-            "Nearly identical F1 confirms: **eye tracking alone carries most of the signal**. "
-            "The multi-agent framework is robust across different agent configurations."
-        )
-
-        # --- Detailed agent documentation in expander ---
-        with st.expander("V4 Agent Architecture — Detailed Documentation", expanded=False):
-            st.markdown("""
-#### Data Pipeline
-
-Raw `PlayerTracking.csv` (~71Hz per user) is windowed into **5-second segments** matching the existing pipeline.
-19 features are extracted per window from binocular gaze position, gaze direction, head pose, and gaze target hit names.
-
----
-
-#### Agent 1: Fixation Agent
-
-**Question:** *How is the player distributing their visual attention?*
-
-**Exclusive features:**
-
-| Feature | Source | What it measures |
-|---------|--------|-----------------|
-| `fixation_count` | Consecutive frames on same target | Number of distinct fixations in 5s window |
-| `fixation_duration_mean` | Duration of each fixation | Average time spent per fixation (deep processing vs skimming) |
-| `fixation_duration_max` | Longest single fixation | Whether gaze is "stuck" on one object |
-| `fixation_duration_std` | Variance of fixation durations | Regular rhythm (low) vs mixed pattern (high) |
-| `revisit_rate` | Proportion of fixations on previously viewed targets | Rechecking behavior — uncertainty signal |
-
-**Output labels:**
-
-| Label | Pattern | Interpretation |
-|-------|---------|---------------|
-| `focused` | Moderate count, long duration, low revisit | Sustained attention on task-relevant content |
-| `scanning` | High count, short duration | Rapid visual search — exploring or lost |
-| `locked` | Very long single fixation (>4s), few total | Gaze stuck on one object — processing or frozen |
-| `revisiting` | High revisit rate | Repeatedly checking same targets — uncertainty or verification |
-
----
-
-#### Agent 2: Gaze Semantics Agent
-
-**Question:** *What is the player looking at?*
-
-Uses the VR engine's `GazeTarget_ObjectName` raycast hit (364 unique objects across 11 users),
-categorized into: **clue** (diaries, hints, instructions), **puzzle** (interactive objects, snap points),
-**environment** (walls, floor, exterior), **other**.
-
-**Exclusive features:**
-
-| Feature | Source | What it measures |
-|---------|--------|-----------------|
-| `gaze_target_entropy` | Shannon entropy over target name distribution | Diversity of viewed objects (low = concentrated, high = scattered) |
-| `clue_dwell` | Proportion of frames on clue objects | Time spent reading instructions/hints |
-| `puzzle_dwell` | Proportion of frames on puzzle objects | Time spent looking at interactive elements |
-| `env_dwell` | Proportion of frames on environment | Time spent looking at walls/floor (not task-relevant) |
-| `puzzle_object_ratio` | (clue + puzzle) / total | Overall task-relevance of gaze |
-| `n_unique_targets` | Count of distinct objects viewed | Breadth of visual exploration |
-
-**Output labels:**
-
-| Label | Pattern | Interpretation |
-|-------|---------|---------------|
-| `fixated_on_clue` | High clue_dwell (>35%), low entropy | Deep engagement with instructions |
-| `task_focused` | High puzzle_object_ratio, moderate entropy | Looking at task-relevant objects |
-| `environmental_scanning` | High env_dwell (>85%), many targets | Looking at walls/floor — navigating or lost |
-| `unfocused` | High entropy + low puzzle_object_ratio | Scattered gaze with no task focus |
-
----
-
-#### Agent 3: Gaze-Motor Agent
-
-**Question:** *Is the player's gaze purposeful or passive?*
-
-Analyzes the *motor dynamics* of eye movement — not what they look at, but *how* they look.
-
-**Exclusive features:**
-
-| Feature | Source | What it measures |
-|---------|--------|-----------------|
-| `gaze_head_coupling` | Correlation of gaze direction change vs head rotation change | Low = eyes explore independently (purposeful); High = eyes follow head (passive) |
-| `saccade_amplitude_mean` | Mean angular change between consecutive gaze directions | Size of eye jumps — small (detail scanning) vs large (searching) |
-| `saccade_amplitude_max` | Largest single angular change | Sudden large eye movement — surprise or reorientation |
-| `gaze_dispersion` | Spatial spread of gaze hit points | Tight cluster (concentrated) vs wide spread (dispersed) |
-
-**Output labels:**
-
-| Label | Pattern | Interpretation |
-|-------|---------|---------------|
-| `purposeful` | Low coupling, moderate saccades | Eyes explore independently of head — active visual search |
-| `passive_scanning` | High coupling (>0.30), low saccades | Eyes just follow head rotation — not actively looking |
-| `erratic` | Very high saccade amplitude, high dispersion | Rapid random eye movements — overwhelmed or panicking |
-| `concentrated` | Low dispersion, low saccades | Tight gaze focus — fixated on one area |
-
----
-
-#### Agent 4: Behavioral Agent (Game Logs Only)
-
-**Question:** *What is the player physically doing?*
-
-Identical to V3 — uses only game interaction logs, no eye tracking.
-Kept unchanged for **ablation**: comparing V4-full (all 5 agents) vs V4-gaze-only (agents 1-3 + temporal).
-
-**Exclusive features:**
-
-| Feature | Source | What it measures |
-|---------|--------|-----------------|
-| `action_count` | PuzzleLogs interactions per window | Physical actions in 5s |
-| `idle_time` | Seconds without any interaction | Inactivity within window |
-| `error_count` | Wrong moves per window | Mistakes |
-| `time_since_action` | Seconds since last interaction (any window) | Macro-level inactivity |
-
-**Output labels:** `active` / `inactive` / `hesitant` / `failing`
-
----
-
-#### Agent 5: Temporal Agent
-
-**Question:** *Is the current pattern new or has it been going on?*
-
-Reads **labels** (not raw features) from agents 1-4 over the past 3 windows.
-Detects persistence and looping.
-
-**Output labels:**
-- `transient` — pattern just appeared, may resolve on its own
-- `persistent` — 2+ agents stable for 3+ windows
-- `looping` — stuck-related labels repeating (e.g., `locked`, `inactive`, `passive_scanning`)
-
----
-
-#### New Tension Patterns (Gaze-Specific)
-
-These tensions are **only possible with rich gaze data** — a human facilitator or
-game-log-only system cannot detect them:
-
-| Tension | Agents | What it means | V4 Frequency |
-|---------|--------|---------------|-------------|
-| `acting_while_looking_away` | Semantics (env_scanning) vs Behavioral (active) | Hands busy but eyes on walls — blind trial-and-error | 856 (16.3%) |
-| `focused_but_idle` | Fixation (focused) vs Behavioral (inactive) | Focused gaze but no physical action — thinking or stuck? | 630 (12.0%) |
-| `uncertain_checking` | Fixation (revisiting) + Behavioral (hesitant) | Rechecking targets with tentative action — unsure | 615 (11.7%) |
-| `watching_task_but_idle` | Semantics (task_focused) vs Behavioral (inactive) | Looking at puzzle objects but not touching — intimidated? | 553 (10.5%) |
-| `frozen` | Fixation (locked) vs Behavioral (inactive) | Gaze stuck + body still — frozen, needs help | 286 (5.4%) |
-| `reading_but_not_acting` | Semantics (fixated_on_clue) vs Behavioral (inactive) | Reading instructions but not acting — doesn't understand? | 29 (0.6%) |
-
-A facilitator sees "the player is standing still" for all six patterns above.
-Inside Out V4 sees six *different* states, each requiring a different response.
-""")
-
-        st.info(
-            "**Branch:** `experiment/gaze-focused-agents` — "
-            "full V4 implementation with 19 gaze features extraction pipeline."
-        )
-
-        # --- Gaze-Action Coupling ---
-        st.markdown("---")
-        st.subheader("Gaze-Action Coupling: Can Eye Tracking Reveal Action Quality?")
-
-        st.markdown(
-            "A key limitation identified earlier: `action_count=3` could mean 3 correct puzzle interactions "
-            "or 3 random clicks. **No game-log feature can tell them apart.** "
-            "We tested whether eye tracking data can break through this ceiling by asking: "
-            "*what was the player looking at in the 3 seconds before each action?*"
-        )
-
-        col1, col2, col3 = st.columns(3)
-        col1.metric("Informed Actions", "15.9%", help="Looked at relevant clue/puzzle object before acting")
-        col2.metric("Blind Actions", "76.7%", help="Looked at environment/unrelated before acting")
-        col3.metric("Misguided Actions", "7.4%", help="Looked at wrong puzzle object before acting")
-
-        with st.expander("Gaze-Action Coupling — Method and Findings", expanded=False):
-            st.markdown("""
-#### Method
-
-For each of the **759 interactions** in PuzzleLogs (11 users), we extract the gaze targets
-from PlayerTracking in the **3 seconds before** the action timestamp. Then classify:
-
-| Classification | Pre-action gaze | Example |
-|---------------|----------------|---------|
-| **Informed** | Looked at the clue or puzzle object being interacted with | Read "Pasta Note" diary → grabbed pasta bowl |
-| **Blind** | Looked at walls, floor, or unrelated objects | Stared at wall → grabbed random object |
-| **Misguided** | Looked at a different puzzle object | Looked at Water puzzle → interacted with Protein puzzle |
-
-#### Cross-tabulation with Outcome
-
-| | RightMove | WrongMove | Total |
-|---|---|---|---|
-| **Informed** | 84 (69%) | 7 (6%) | 121 |
-| **Blind** | 302 (52%) | 126 (22%) | 582 |
-| **Misguided** | 32 (57%) | 11 (20%) | 56 |
-
-Key findings:
-- **Informed actions have 69% success rate** vs blind actions at 52% — looking before acting works
-- **Blind + WrongMove = 126 cases** — the clearest "trial-and-error" signal
-- But **blind actions still succeed 52% of the time** — players use spatial memory, not just gaze
-
-#### Impact on Detection Performance
-
-| Version | F1 (±15s) | Change |
-|---------|-----------|--------|
-| V4 gaze agents only | 0.517 | baseline |
-| V4 + gaze-action coupling | 0.521 | +0.004 |
-
-**Modest improvement (+0.004 F1)** because:
-1. Only **10.7%** of 5-second windows contain any action — coupling features are zero for 89% of windows
-2. The distribution is heavily skewed (76.7% blind) — not enough variance to be discriminative
-3. Blind actions often succeed — "blind" does not always mean "struggling"
-
-#### Why This Matters Despite Small F1 Gain
-
-The finding that **76.7% of actions are blind** is itself a contribution — it reveals that:
-
-- Players in VR rely heavily on **spatial memory and proprioception**, not visual confirmation
-- The `action_count` feature in current systems (V3 and rule-based) fundamentally **cannot distinguish
-  informed problem-solving from random trial-and-error**
-- This distinction is **only possible because VR records both gaze and interaction simultaneously** —
-  a human facilitator cannot see where the player was looking at the moment they grabbed an object
-
-For the 80-person study, the coupling signal could become more powerful with:
-- **Per-puzzle coupling rates** — some puzzles may show stronger informed/blind differences
-- **Temporal coupling trends** — a player switching from informed to blind actions = frustration onset
-- **Richer action semantics** from Unity (correct object vs wrong object) instead of just RightMove/WrongMove
-""")
-
-        st.info(
-            "**Branch:** `experiment/gaze-focused-agents` — "
-            "includes gaze-action coupling extraction and integration."
-        )
-
-        # --- Learnable Integration Weights ---
-        st.markdown("---")
-        st.subheader("Learnable Integration Weights: Neural Network Layer Analogy")
-
-        st.markdown(
-            "The current system already has a **layered structure** analogous to a neural network — "
-            "but all weights between layers are hand-tuned, not learned from data."
-        )
-
-        st.markdown(
-            "```\n"
-            "Layer 1 (Input):       Raw features (8 values per 5s window)\n"
-            "    ↓  rule-based, interpretable\n"
-            "Layer 2 (Agents):      5 interpretations (label + confidence)\n"
-            "    ↓  rule-based, interpretable\n"
-            "Layer 3 (Negotiation): Tension type, intensity, confidence spread\n"
-            "    ↓  LEARNABLE weights ← this is the only layer that changes\n"
-            "Layer 4 (Decision):    P(watch), P(probe), P(intervene)\n"
-            "```"
+            "Three architecture variants (V3 data-partitioned, theory-partitioned, V4 gaze-focused) "
+            "all converge at **F1 ≈ 0.52**. This plateau is caused by two ceilings:"
         )
 
         col1, col2 = st.columns(2)
         with col1:
-            st.markdown("**Current (Hand-Tuned)**")
-            st.code(
-                "score = 0.30 * struggle\n"
-                "      + 0.20 * temporal\n"
-                "      + 0.15 * elapsed\n"
-                "      + 0.15 * momentum\n"
-                "      + 0.10 * pre_collapse\n"
-                "# weights chosen by trial-and-error",
-                language="python"
+            st.error(
+                "**Ceiling 1: Feature Granularity**\n\n"
+                "`action_count=3` could be 3 correct interactions or 3 random clicks. "
+                "Current features capture *how much* a player acts, not *whether those actions are meaningful*."
             )
         with col2:
-            st.markdown("**Proposed (Learned)**")
-            st.code(
-                "score = W[0] * struggle\n"
-                "      + W[1] * temporal\n"
-                "      + W[2] * elapsed\n"
-                "      + W[3] * momentum\n"
-                "      + W[4] * pre_collapse\n"
-                "# W learned from facilitator data",
-                language="python"
+            st.warning(
+                "**Ceiling 2: Ground Truth Noise**\n\n"
+                "Facilitator prompts include *reactive* (detectable) and *proactive* (pedagogical, undetectable) types. "
+                "No system should be expected to predict proactive prompts."
             )
 
-        st.success(
-            "**Why this is NOT just an MLP:**\n\n"
-            "A standard neural network takes raw features and outputs a decision — "
-            "the intermediate representations are opaque. Our approach keeps **Layers 1-3 "
-            "fully interpretable**: you can always trace a decision back to named agent labels "
-            "and identified tensions. Only the **final weighting** (how to combine these "
-            "interpretable signals) is learned from data.\n\n"
-            "This preserves the core contribution — multi-agent negotiation with interpretable "
-            "disagreement — while allowing data-driven optimization of how disagreements are resolved."
-        )
-
-        st.markdown(
-            "**Requirements for implementation:**\n"
-            "- 80-person study data (~25,000+ windows) for sufficient training examples\n"
-            "- Leave-one-participant-out cross-validation\n"
-            "- Comparison: hand-tuned vs learned vs end-to-end MLP baseline\n"
-            "- This isolates the contribution of the multi-agent structure vs learned integration"
-        )
-
-        # --- 80-Person Study Plan ---
+        st.markdown("The experiments below explore different strategies to address these ceilings.")
         st.markdown("---")
-        st.subheader("80-Person Study: From Pilot to Main Evaluation")
 
-        st.markdown(
-            "The 18-person pilot (11 with eye tracking) served as a **formative evaluation** — "
-            "iterating the system design, diagnosing failure modes, and calibrating agent thresholds. "
-            "The planned 80-person study is the **main evaluation** that addresses the pilot's limitations."
-        )
+        # --- 1. Theory-Partitioned Agents ---
+        with st.expander("1. Theory-Partitioned Agents — F1=0.531 (+0.002)", expanded=False):
+            st.markdown(
+                "Agents share **all data** but interpret through different **cognitive theories** — "
+                "more faithful to the Inside Out metaphor."
+            )
+            theory_data = [
+                {"Agent": "Attention Theory", "Theory": "Posner, Lavie",
+                 "Question": "Is attention appropriately allocated?",
+                 "States": "engaged / overloaded / fixated / decoupled"},
+                {"Agent": "Self-Regulation", "Theory": "Zimmerman, Pintrich",
+                 "Question": "Is the player adjusting their strategy?",
+                 "States": "self_regulated / impulsive / disengaged / reflective"},
+                {"Agent": "Flow Theory", "Theory": "Csikszentmihalyi",
+                 "Question": "Is the challenge-skill balance right?",
+                 "States": "flow / anxiety / frustration / boredom"},
+                {"Agent": "Cognitive Load", "Theory": "Sweller",
+                 "Question": "Is working memory capacity exceeded?",
+                 "States": "manageable / overloaded / fragmented / automated"},
+            ]
+            st.dataframe(pd.DataFrame(theory_data), use_container_width=True, hide_index=True)
 
-        st.markdown("### What 80 Participants Changes")
-        change_data = [
-            {"Pilot Limitation": "n=11 with eye tracking",
-             "80-Person Study": "n=60+ with full eye tracking (assuming ~75% capture rate)",
-             "Impact": "~25,000+ windows across 60+ independent participants; per-participant bootstrap for confidence intervals"},
-            {"Pilot Limitation": "Rule-based STUCK rarely triggered",
-             "80-Person Study": "More diverse player behaviors across 80 sessions",
-             "Impact": "Full R→V→E escalation coverage; stronger baseline comparison"},
-            {"Pilot Limitation": "No user outcome data",
-             "80-Person Study": "Completion rate, time-to-solve, error recovery, post-task surveys",
-             "Impact": "Can link IO decisions to actual learning/performance outcomes"},
-            {"Pilot Limitation": "Single facilitator as ground truth",
-             "80-Person Study": "Two facilitators independently observing (at least 20 overlapping sessions)",
-             "Impact": "Inter-rater reliability (Cohen's kappa); validates ground truth quality"},
-            {"Pilot Limitation": "Offline analysis only",
-             "80-Person Study": "A/B deployment: 40 facilitator-only vs 40 IO-assisted",
-             "Impact": "Causal evidence that IO improves facilitator decision-making"},
-        ]
-        st.dataframe(pd.DataFrame(change_data), use_container_width=True, hide_index=True)
+            st.markdown("**Example:** `action_count=3, time_since=90s, gaze_entropy=1.2`")
+            interp_data = [
+                {"Agent": "Attention Theory", "Label": "engaged",
+                 "Reasoning": "Moderate entropy, player is looking at relevant areas"},
+                {"Agent": "Self-Regulation", "Label": "impulsive",
+                 "Reasoning": "3 actions after 90s gap = reactive trial-and-error, not strategic"},
+                {"Agent": "Flow Theory", "Label": "anxiety",
+                 "Reasoning": "Active but time_since is high = challenge exceeding skill"},
+                {"Agent": "Cognitive Load", "Label": "manageable",
+                 "Reasoning": "Low entropy + some actions + no errors = within capacity"},
+            ]
+            st.dataframe(pd.DataFrame(interp_data), use_container_width=True, hide_index=True)
+            st.markdown(
+                "2 say OK, 2 say problem → **contradictory tension** → probe instead of guessing."
+            )
 
-        st.markdown("### Study Design Recommendations")
-        st.markdown(
-            "1. **Tag facilitator prompt intent** — At each prompt, facilitator marks: "
-            "*reactive* (responding to observed struggle) vs *proactive* (pedagogical guidance). "
-            "This separates detectable from undetectable prompts and eliminates the ground truth noise ceiling.\n\n"
-            "2. **A/B condition** — 40 participants with facilitator only, 40 with IO assisting the facilitator. "
-            "Even if IO only serves as a second opinion (not autonomous), this yields causal user outcome data.\n\n"
-            "3. **Inter-rater reliability** — Two facilitators independently observe at least 20 sessions. "
-            "Report Cohen's kappa to validate that facilitator prompts are a reliable ground truth.\n\n"
-            "4. **Richer features** — Add semantic action labels (correct vs wrong object), "
-            "gaze-action coupling (looked at clue then acted?), and spatial trajectory "
-            "(toward solution vs wandering) to break through the feature granularity ceiling.\n\n"
-            "5. **Paper structure** — 18-person pilot → formative evaluation (system design iteration). "
-            "80-person study → main evaluation (validation). Two-phase design is standard at CHI."
-        )
+            col1, col2 = st.columns(2)
+            col1.metric("V3 F1", "0.529")
+            col2.metric("Theory F1", "0.531", "+0.002")
+
+            st.info("**Branch:** `experiment/theory-partitioned-agents`")
+
+        # --- 2. Gaze-Focused Architecture ---
+        with st.expander("2. Gaze-Focused Architecture (V4) — F1=0.517, 3/5 agents use eye tracking", expanded=False):
+            st.markdown(
+                "VR is a **total-capture simulator** — ~71Hz eye tracking, head pose, hand tracking, object interaction. "
+                "A human facilitator only sees macro behavior. "
+                "V4 restructures agents around **19 gaze features** extracted from ~1.8M raw gaze samples."
+            )
+
+            v4_agents = [
+                {"Agent": "Fixation Agent", "Input": "Eye tracking",
+                 "Features": "fixation_count, duration (mean/max/std), revisit_rate",
+                 "Question": "How is visual attention distributed?",
+                 "Labels": "focused / scanning / locked / revisiting"},
+                {"Agent": "Gaze Semantics Agent", "Input": "Eye tracking",
+                 "Features": "gaze_target_entropy, clue_dwell, puzzle_dwell, env_dwell, puzzle_object_ratio",
+                 "Question": "What is the player looking at?",
+                 "Labels": "fixated_on_clue / task_focused / environmental_scanning / unfocused"},
+                {"Agent": "Gaze-Motor Agent", "Input": "Eye tracking",
+                 "Features": "gaze_head_coupling, saccade_amplitude (mean/max), gaze_dispersion",
+                 "Question": "Is gaze purposeful or passive?",
+                 "Labels": "purposeful / passive_scanning / erratic / concentrated"},
+                {"Agent": "Behavioral Agent", "Input": "Game logs only",
+                 "Features": "action_count, idle_time, error_count, time_since_action",
+                 "Question": "What is the player doing?",
+                 "Labels": "active / inactive / hesitant / failing"},
+                {"Agent": "Temporal Agent", "Input": "Agent labels",
+                 "Features": "History of above labels across windows",
+                 "Question": "Is this pattern new or persistent?",
+                 "Labels": "transient / persistent / looping"},
+            ]
+            st.dataframe(pd.DataFrame(v4_agents), use_container_width=True, hide_index=True)
+
+            col1, col2 = st.columns(2)
+            col1.metric("V3 F1 (1 gaze agent)", "0.529")
+            col2.metric("V4 F1 (3 gaze agents)", "0.517", "-0.012")
+
+            st.markdown(
+                "Nearly identical F1 confirms **eye tracking alone carries most of the signal**. "
+                "V4 also detects gaze-specific tensions invisible to V3:"
+            )
+            st.markdown(
+                "| Tension | Meaning | Frequency |\n"
+                "|---------|---------|----------|\n"
+                "| `acting_while_looking_away` | Hands active, eyes on walls | 856 (16.3%) |\n"
+                "| `focused_but_idle` | Focused gaze, no physical action | 630 (12.0%) |\n"
+                "| `uncertain_checking` | Revisiting targets + hesitant | 615 (11.7%) |\n"
+                "| `watching_task_but_idle` | Looking at puzzle, not touching | 553 (10.5%) |\n"
+                "| `frozen` | Locked gaze + completely still | 286 (5.4%) |\n"
+                "| `reading_but_not_acting` | Fixated on clues, no action | 29 (0.6%) |\n\n"
+                "A facilitator sees *\"standing still\"* for all six. IO V4 sees six different states."
+            )
+
+            st.info("**Branch:** `experiment/gaze-focused-agents`")
+
+        # --- 3. Gaze-Action Coupling ---
+        with st.expander("3. Gaze-Action Coupling — Can eye tracking reveal action quality?", expanded=False):
+            st.markdown(
+                "`action_count=3` is ambiguous. We tested whether **pre-action gaze** (3 seconds before each interaction) "
+                "can distinguish informed actions from blind trial-and-error."
+            )
+
+            col1, col2, col3 = st.columns(3)
+            col1.metric("Informed", "15.9%", help="Looked at relevant object before acting")
+            col2.metric("Blind", "76.7%", help="Looked at environment before acting")
+            col3.metric("Misguided", "7.4%", help="Looked at wrong puzzle object")
+
+            st.markdown(
+                "| | RightMove | WrongMove | Success Rate |\n"
+                "|---|---|---|---|\n"
+                "| **Informed** | 84 | 7 | **69%** |\n"
+                "| **Blind** | 302 | 126 | **52%** |\n"
+                "| **Misguided** | 32 | 11 | **57%** |\n\n"
+                "Informed actions succeed at **69%** vs blind at **52%**. "
+                "But F1 improvement is modest (+0.004) because only 10.7% of windows contain actions, "
+                "and blind actions still succeed 52% of the time (spatial memory).\n\n"
+                "**The key finding**: 76.7% of all VR actions happen without visual confirmation — "
+                "players rely on spatial memory and proprioception. This is only visible because "
+                "VR records gaze and interaction simultaneously."
+            )
+
+            st.info("**Branch:** `experiment/gaze-focused-agents`")
+
+        # --- 4. Learnable Integration Weights ---
+        with st.expander("4. Learnable Integration Weights — Replace hand-tuned rules with data", expanded=False):
+            st.markdown(
+                "The system has a **layered structure** analogous to a neural network, "
+                "but all weights are hand-tuned:"
+            )
+            st.markdown(
+                "```\n"
+                "Layer 1 (Input):       Raw features (8 values per 5s window)\n"
+                "    ↓  rule-based, interpretable\n"
+                "Layer 2 (Agents):      5 interpretations (label + confidence)\n"
+                "    ↓  rule-based, interpretable\n"
+                "Layer 3 (Negotiation): Tension type, intensity, confidence spread\n"
+                "    ↓  LEARNABLE weights ← only this layer changes\n"
+                "Layer 4 (Decision):    P(watch), P(probe), P(intervene)\n"
+                "```"
+            )
+            st.markdown(
+                "**Why this is NOT just an MLP:** Layers 1-3 remain fully interpretable — "
+                "every decision traces back to named agent labels and identified tensions. "
+                "Only the final weighting is learned from data.\n\n"
+                "**Requirements:** 80-person study data (~25,000+ windows), "
+                "leave-one-participant-out CV, comparison with end-to-end MLP baseline."
+            )
+
+        # --- 5. 80-Person Study Plan ---
+        with st.expander("5. 80-Person Study — From Pilot to Main Evaluation", expanded=False):
+            st.markdown(
+                "The 18-person pilot served as **formative evaluation**. "
+                "The 80-person study is the **main evaluation**."
+            )
+            change_data = [
+                {"Pilot Limitation": "n=11 with eye tracking",
+                 "80-Person Study": "n=60+ with full eye tracking (~75% capture rate)",
+                 "Impact": "~25,000+ windows; per-participant bootstrap for CIs"},
+                {"Pilot Limitation": "Rule-based STUCK rarely triggered",
+                 "80-Person Study": "More diverse behaviors across 80 sessions",
+                 "Impact": "Full R→V→E escalation; stronger baseline"},
+                {"Pilot Limitation": "No user outcome data",
+                 "80-Person Study": "Completion rate, time-to-solve, error recovery, surveys",
+                 "Impact": "Link IO decisions to actual learning outcomes"},
+                {"Pilot Limitation": "Single facilitator as ground truth",
+                 "80-Person Study": "Two facilitators (20+ overlapping sessions)",
+                 "Impact": "Inter-rater reliability (Cohen's kappa)"},
+                {"Pilot Limitation": "Offline analysis only",
+                 "80-Person Study": "A/B: 40 facilitator-only vs 40 IO-assisted",
+                 "Impact": "Causal evidence that IO improves decisions"},
+            ]
+            st.dataframe(pd.DataFrame(change_data), use_container_width=True, hide_index=True)
+
+            st.markdown(
+                "**Study design recommendations:**\n\n"
+                "1. **Tag facilitator prompt intent** — reactive vs proactive (eliminates ground truth noise)\n"
+                "2. **A/B condition** — 40 facilitator-only vs 40 IO-assisted (causal user outcome data)\n"
+                "3. **Inter-rater reliability** — two facilitators on 20+ sessions (validates ground truth)\n"
+                "4. **Richer features** — semantic action labels, gaze-action coupling, spatial trajectory\n"
+                "5. **Paper structure** — pilot as formative + 80-person as summative (standard CHI)"
+            )
 
 
 if __name__ == "__main__":
