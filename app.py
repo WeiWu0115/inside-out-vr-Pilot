@@ -1463,13 +1463,20 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
             st.error(
                 "**Ceiling 1: Feature Granularity**\n\n"
                 "`action_count=3` could be 3 correct interactions or 3 random clicks. "
-                "Current features capture *how much* a player acts, not *whether those actions are meaningful*."
+                "Current features capture *how much* a player acts, not *whether those actions are meaningful*.\n\n"
+                "Evidence: of **512 windows** where facilitator prompted but IO said *watch*, "
+                "**347 (68%)** showed progressing/active tensions — the player genuinely looked fine "
+                "by every available metric."
             )
         with col2:
             st.warning(
                 "**Ceiling 2: Ground Truth Noise**\n\n"
-                "Facilitator prompts include *reactive* (detectable) and *proactive* (pedagogical, undetectable) types. "
-                "No system should be expected to predict proactive prompts."
+                "Facilitator prompts include *reactive* (detectable) and *proactive* (pedagogical, undetectable) types.\n\n"
+                "Evidence: **Player 22** had `action_count=2.8`, `time_since=57s`, `elapsed_ratio=0.8` — "
+                "performing well by every measure, yet received **50 facilitator prompts**. "
+                "IO correctly identified 37 of these as *watch* (player OK). "
+                "13 of the 37 missed windows showed `focused_progress` — the facilitator was likely "
+                "giving proactive pedagogical guidance, not responding to confusion."
             )
 
         st.markdown("The experiments below explore different strategies to address these ceilings.")
