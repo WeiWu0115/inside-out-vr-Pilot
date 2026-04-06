@@ -1567,88 +1567,176 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
 
         st.markdown(
             "VR is fundamentally a **total-capture simulator** — it records every gaze direction, "
-            "head movement, hand position, and object interaction at ~71Hz. A human facilitator "
+            "head movement, hand position, and object interaction at **~71Hz**. A human facilitator "
             "observing the same player only sees macro behavior (idle, moving, interacting). "
             "The key question: **can richer eye-tracking features close the gap between IO and a human observer?**"
         )
-
         st.markdown(
             "We tested a V4 architecture that restructures agents around eye tracking, "
-            "extracting **19 gaze features** from raw PlayerTracking data (~1.8M gaze samples across 11 users):"
+            "extracting **19 gaze features** from raw PlayerTracking data (~1.8M gaze samples across 11 users). "
+            "3 out of 5 agents now read exclusively from eye tracking."
         )
 
-        st.markdown("### V4 Agent Architecture (3 gaze + 1 behavioral + 1 temporal)")
-        v4_agents = [
-            {"Agent": "Fixation Agent", "Input": "Eye tracking",
-             "Features": "fixation_count, duration (mean/max/std), revisit_rate",
-             "Question": "How is visual attention distributed?",
-             "Labels": "focused / scanning / locked / revisiting"},
-            {"Agent": "Gaze Semantics Agent", "Input": "Eye tracking",
-             "Features": "gaze_target_entropy, clue_dwell, puzzle_dwell, env_dwell, puzzle_object_ratio",
-             "Question": "What is the player looking at?",
-             "Labels": "fixated_on_clue / task_focused / environmental_scanning / unfocused"},
-            {"Agent": "Gaze-Motor Agent", "Input": "Eye tracking",
-             "Features": "gaze_head_coupling, saccade_amplitude (mean/max), gaze_dispersion",
-             "Question": "Is gaze purposeful or passive?",
-             "Labels": "purposeful / passive_scanning / erratic / concentrated"},
-            {"Agent": "Behavioral Agent", "Input": "Game logs only",
-             "Features": "action_count, idle_time, error_count, time_since_action",
-             "Question": "What is the player doing?",
-             "Labels": "active / inactive / hesitant / failing"},
-            {"Agent": "Temporal Agent", "Input": "Agent labels",
-             "Features": "History of above agent labels across windows",
-             "Question": "Is this pattern new or persistent?",
-             "Labels": "transient / persistent / looping"},
-        ]
-        st.dataframe(pd.DataFrame(v4_agents), use_container_width=True, hide_index=True)
-
-        st.markdown(
-            "**Key design choice:** Each gaze agent reads a *different dimension* of eye tracking — "
-            "fixation patterns, semantic targets, and motor dynamics. No feature is shared between agents. "
-            "The Behavioral Agent uses only game logs, enabling a clean **ablation study**."
-        )
-
-        st.markdown("### Results Comparison (±15s tolerance)")
+        # --- Results first ---
+        st.markdown("### Results (±15s tolerance)")
         col1, col2 = st.columns(2)
-        col1.markdown("**V3 (Data-Partitioned, 1 gaze agent)**")
+        col1.markdown("**V3 (1 gaze agent / 5)**")
         col1.metric("F1", "0.529")
         col1.metric("Recall", "92.1%")
         col1.metric("Precision", "37.1%")
-        col1.metric("Gaze agents", "1 / 5")
 
-        col2.markdown("**V4 (Gaze-Focused, 3 gaze agents)**")
+        col2.markdown("**V4 (3 gaze agents / 5)**")
         col2.metric("F1", "0.517", "-0.012")
         col2.metric("Recall", "90.7%", "-1.4pp")
         col2.metric("Precision", "36.2%", "-0.9pp")
-        col2.metric("Gaze agents", "3 / 5")
 
-        st.markdown("### New Tension Patterns")
         st.markdown(
-            "V4 detects gaze-specific tensions invisible to V3:\n\n"
-            "| Tension | What it means | Frequency |\n"
-            "|---------|---------------|-----------|\n"
-            "| `acting_while_looking_away` | Hands active but eyes on environment | 856 (16.3%) |\n"
-            "| `focused_but_idle` | Focused gaze but no physical action | 630 (12.0%) |\n"
-            "| `uncertain_checking` | Revisiting targets + hesitant action | 615 (11.7%) |\n"
-            "| `watching_task_but_idle` | Looking at puzzle but not interacting | 553 (10.5%) |\n"
-            "| `frozen` | Locked gaze + completely inactive | 286 (5.4%) |\n"
-            "| `reading_but_not_acting` | Fixated on clues + no action | 29 (0.6%) |\n\n"
-            "These patterns are **only possible with rich gaze data** — a human facilitator or "
-            "game-log-only system cannot distinguish `focused_but_idle` (thinking) from `frozen` (stuck), "
-            "or `uncertain_checking` (rechecking clues) from `scanning` (lost)."
+            "Nearly identical F1 confirms: **eye tracking alone carries most of the signal**. "
+            "The multi-agent framework is robust across different agent configurations."
         )
 
-        st.markdown("### Why Similar F1 Matters")
-        st.markdown(
-            "V4 achieves **nearly identical F1** (0.517 vs 0.529) despite using a completely "
-            "different feature set and agent structure. This confirms:\n\n"
-            "1. **Eye tracking alone carries most of the signal** — 3 gaze agents + 1 game log agent "
-            "≈ 1 gaze agent + 3 game log agents + 1 population agent\n"
-            "2. **The multi-agent negotiation framework is robust** — it works across different "
-            "agent configurations, not just the original design\n"
-            "3. **Ablation is now possible** — remove the Behavioral Agent to test: "
-            "can pure gaze data match a human facilitator?"
-        )
+        # --- Detailed agent documentation in expander ---
+        with st.expander("V4 Agent Architecture — Detailed Documentation", expanded=False):
+            st.markdown("""
+#### Data Pipeline
+
+Raw `PlayerTracking.csv` (~71Hz per user) is windowed into **5-second segments** matching the existing pipeline.
+19 features are extracted per window from binocular gaze position, gaze direction, head pose, and gaze target hit names.
+
+---
+
+#### Agent 1: Fixation Agent
+
+**Question:** *How is the player distributing their visual attention?*
+
+**Exclusive features:**
+
+| Feature | Source | What it measures |
+|---------|--------|-----------------|
+| `fixation_count` | Consecutive frames on same target | Number of distinct fixations in 5s window |
+| `fixation_duration_mean` | Duration of each fixation | Average time spent per fixation (deep processing vs skimming) |
+| `fixation_duration_max` | Longest single fixation | Whether gaze is "stuck" on one object |
+| `fixation_duration_std` | Variance of fixation durations | Regular rhythm (low) vs mixed pattern (high) |
+| `revisit_rate` | Proportion of fixations on previously viewed targets | Rechecking behavior — uncertainty signal |
+
+**Output labels:**
+
+| Label | Pattern | Interpretation |
+|-------|---------|---------------|
+| `focused` | Moderate count, long duration, low revisit | Sustained attention on task-relevant content |
+| `scanning` | High count, short duration | Rapid visual search — exploring or lost |
+| `locked` | Very long single fixation (>4s), few total | Gaze stuck on one object — processing or frozen |
+| `revisiting` | High revisit rate | Repeatedly checking same targets — uncertainty or verification |
+
+---
+
+#### Agent 2: Gaze Semantics Agent
+
+**Question:** *What is the player looking at?*
+
+Uses the VR engine's `GazeTarget_ObjectName` raycast hit (364 unique objects across 11 users),
+categorized into: **clue** (diaries, hints, instructions), **puzzle** (interactive objects, snap points),
+**environment** (walls, floor, exterior), **other**.
+
+**Exclusive features:**
+
+| Feature | Source | What it measures |
+|---------|--------|-----------------|
+| `gaze_target_entropy` | Shannon entropy over target name distribution | Diversity of viewed objects (low = concentrated, high = scattered) |
+| `clue_dwell` | Proportion of frames on clue objects | Time spent reading instructions/hints |
+| `puzzle_dwell` | Proportion of frames on puzzle objects | Time spent looking at interactive elements |
+| `env_dwell` | Proportion of frames on environment | Time spent looking at walls/floor (not task-relevant) |
+| `puzzle_object_ratio` | (clue + puzzle) / total | Overall task-relevance of gaze |
+| `n_unique_targets` | Count of distinct objects viewed | Breadth of visual exploration |
+
+**Output labels:**
+
+| Label | Pattern | Interpretation |
+|-------|---------|---------------|
+| `fixated_on_clue` | High clue_dwell (>35%), low entropy | Deep engagement with instructions |
+| `task_focused` | High puzzle_object_ratio, moderate entropy | Looking at task-relevant objects |
+| `environmental_scanning` | High env_dwell (>85%), many targets | Looking at walls/floor — navigating or lost |
+| `unfocused` | High entropy + low puzzle_object_ratio | Scattered gaze with no task focus |
+
+---
+
+#### Agent 3: Gaze-Motor Agent
+
+**Question:** *Is the player's gaze purposeful or passive?*
+
+Analyzes the *motor dynamics* of eye movement — not what they look at, but *how* they look.
+
+**Exclusive features:**
+
+| Feature | Source | What it measures |
+|---------|--------|-----------------|
+| `gaze_head_coupling` | Correlation of gaze direction change vs head rotation change | Low = eyes explore independently (purposeful); High = eyes follow head (passive) |
+| `saccade_amplitude_mean` | Mean angular change between consecutive gaze directions | Size of eye jumps — small (detail scanning) vs large (searching) |
+| `saccade_amplitude_max` | Largest single angular change | Sudden large eye movement — surprise or reorientation |
+| `gaze_dispersion` | Spatial spread of gaze hit points | Tight cluster (concentrated) vs wide spread (dispersed) |
+
+**Output labels:**
+
+| Label | Pattern | Interpretation |
+|-------|---------|---------------|
+| `purposeful` | Low coupling, moderate saccades | Eyes explore independently of head — active visual search |
+| `passive_scanning` | High coupling (>0.30), low saccades | Eyes just follow head rotation — not actively looking |
+| `erratic` | Very high saccade amplitude, high dispersion | Rapid random eye movements — overwhelmed or panicking |
+| `concentrated` | Low dispersion, low saccades | Tight gaze focus — fixated on one area |
+
+---
+
+#### Agent 4: Behavioral Agent (Game Logs Only)
+
+**Question:** *What is the player physically doing?*
+
+Identical to V3 — uses only game interaction logs, no eye tracking.
+Kept unchanged for **ablation**: comparing V4-full (all 5 agents) vs V4-gaze-only (agents 1-3 + temporal).
+
+**Exclusive features:**
+
+| Feature | Source | What it measures |
+|---------|--------|-----------------|
+| `action_count` | PuzzleLogs interactions per window | Physical actions in 5s |
+| `idle_time` | Seconds without any interaction | Inactivity within window |
+| `error_count` | Wrong moves per window | Mistakes |
+| `time_since_action` | Seconds since last interaction (any window) | Macro-level inactivity |
+
+**Output labels:** `active` / `inactive` / `hesitant` / `failing`
+
+---
+
+#### Agent 5: Temporal Agent
+
+**Question:** *Is the current pattern new or has it been going on?*
+
+Reads **labels** (not raw features) from agents 1-4 over the past 3 windows.
+Detects persistence and looping.
+
+**Output labels:**
+- `transient` — pattern just appeared, may resolve on its own
+- `persistent` — 2+ agents stable for 3+ windows
+- `looping` — stuck-related labels repeating (e.g., `locked`, `inactive`, `passive_scanning`)
+
+---
+
+#### New Tension Patterns (Gaze-Specific)
+
+These tensions are **only possible with rich gaze data** — a human facilitator or
+game-log-only system cannot detect them:
+
+| Tension | Agents | What it means | V4 Frequency |
+|---------|--------|---------------|-------------|
+| `acting_while_looking_away` | Semantics (env_scanning) vs Behavioral (active) | Hands busy but eyes on walls — blind trial-and-error | 856 (16.3%) |
+| `focused_but_idle` | Fixation (focused) vs Behavioral (inactive) | Focused gaze but no physical action — thinking or stuck? | 630 (12.0%) |
+| `uncertain_checking` | Fixation (revisiting) + Behavioral (hesitant) | Rechecking targets with tentative action — unsure | 615 (11.7%) |
+| `watching_task_but_idle` | Semantics (task_focused) vs Behavioral (inactive) | Looking at puzzle objects but not touching — intimidated? | 553 (10.5%) |
+| `frozen` | Fixation (locked) vs Behavioral (inactive) | Gaze stuck + body still — frozen, needs help | 286 (5.4%) |
+| `reading_but_not_acting` | Semantics (fixated_on_clue) vs Behavioral (inactive) | Reading instructions but not acting — doesn't understand? | 29 (0.6%) |
+
+A facilitator sees "the player is standing still" for all six patterns above.
+Inside Out V4 sees six *different* states, each requiring a different response.
+""")
 
         st.info(
             "**Branch:** `experiment/gaze-focused-agents` — "
