@@ -272,7 +272,7 @@ def make_comparison_timeline(cdf):
     }
 
     # Expert row
-    for cat in ["intervene", "watch"]:
+    for cat in ["intervene", "probe", "watch"]:
         mask = cdf["expert_cat"] == cat
         if mask.sum() == 0:
             continue
