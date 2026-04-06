@@ -915,6 +915,26 @@ def main():
         ])
         with tab_arch:
             st.subheader("Inside Out V3: Agent Architecture")
+
+            st.markdown(
+                "**Inside Out** is a multi-agent system for interpreting cognitive states in VR, "
+                "inspired by Pixar's *Inside Out* (头脑特工队). Instead of classifying a player into "
+                "a single state (e.g. \"stuck\" or \"not stuck\"), multiple agents each produce their own "
+                "interpretation from different sensory channels — perception, action, performance, "
+                "temporal context, and population norms. The system's key insight is that **disagreement "
+                "between agents is informative**: when the Perceptual Agent says the player is searching "
+                "but the Action Agent says they are active, that *tension* reveals something a single "
+                "classifier would flatten into an ambiguous average."
+            )
+            st.markdown(
+                "The motivation is that real cognitive states are **multidimensional** — a player can be "
+                "visually focused but physically idle, or actively exploring but making no progress. "
+                "A single-label system must pick one; Inside Out preserves the full pattern of agreement "
+                "and contradiction across agents. The **negotiation layer** then maps these tension patterns "
+                "to adaptive responses: consensus triggers intervention, disagreement triggers a probe "
+                "(ask before assuming), and alignment means watch."
+            )
+            st.markdown("---")
             st.markdown(
                 "Each agent reads an **exclusive** set of raw features and outputs a label + confidence. "
                 "No raw feature is shared between agents — this prevents **echo consensus** "
