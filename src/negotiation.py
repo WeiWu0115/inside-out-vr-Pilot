@@ -1,11 +1,8 @@
 """
-Negotiation layer: agents challenge each other based on evidence and confidence.
+V4 Negotiation layer: gaze-dominant agent tensions.
 
-Instead of simple pattern matching, the negotiation process:
-1. Detects pairwise tensions between agents
-2. Classifies disagreement type (contradictory, constructive, consensus)
-3. Computes overall disagreement intensity
-4. Produces a negotiation transcript showing the "debate"
+Agents: fixation, semantics, motor, behavioral (action), temporal.
+Detects pairwise tensions between agents and computes disagreement structure.
 """
 
 import pandas as pd
@@ -13,44 +10,61 @@ import numpy as np
 
 
 # ---------------------------------------------------------------------------
-# Tension definitions: which agent-label pairs conflict
+# Tension definitions: which agent-label pairs conflict or align
 # ---------------------------------------------------------------------------
 
 CONTRADICTIONS = {
-    # Attention × Behavioral
-    ("attention", "searching", "action", "inactive"): "scanning_but_passive",
-    ("attention", "focused", "action", "inactive"): "focused_but_idle",
-    ("attention", "locked", "action", "active"): "fixated_but_acting",
-    # Attention × Progress
-    ("attention", "focused", "performance", "failing"): "focused_but_failing",
-    ("attention", "searching", "performance", "progressing"): "scattered_but_progressing",
-    ("attention", "focused", "performance", "ineffective_progress"): "focused_but_ineffective",
-    ("attention", "searching", "performance", "ineffective_progress"): "scattered_and_ineffective",
-    # Behavioral × Progress
-    ("action", "active", "performance", "stalled"): "acting_without_progress",
-    ("action", "active", "performance", "failing"): "active_but_failing",
-    ("action", "inactive", "performance", "progressing"): "idle_but_progressing",
-    # Population agent conflicts (kept for backward compat)
-    ("population", "exploring", "attention", "focused"): "pop_says_exploring_but_focused",
-    ("population", "disoriented", "attention", "searching"): "pop_says_stuck_but_searching",
-    ("population", "actively_solving", "performance", "stalled"): "pop_says_solving_but_stalled",
-    ("population", "cognitively_stuck", "action", "active"): "pop_says_stuck_but_active",
-    ("population", "exploring", "action", "inactive"): "pop_says_exploring_but_inactive",
+    # Fixation × Behavioral: gaze pattern contradicts physical action
+    ("fixation", "locked", "action", "active"): "locked_gaze_but_active",
+    ("fixation", "scanning", "action", "inactive"): "scanning_but_passive",
+    ("fixation", "focused", "action", "inactive"): "focused_but_idle",
+    ("fixation", "locked", "action", "inactive"): "frozen",
+
+    # Fixation × Semantics: gaze pattern contradicts what's being looked at
+    ("fixation", "scanning", "semantics", "fixated_on_clue"): "rapid_clue_switching",
+    ("fixation", "locked", "semantics", "environmental_scanning"): "locked_on_environment",
+    ("fixation", "locked", "semantics", "unfocused"): "locked_but_unfocused",
+
+    # Semantics × Behavioral: looking at task but not acting (or vice versa)
+    ("semantics", "fixated_on_clue", "action", "inactive"): "reading_but_not_acting",
+    ("semantics", "task_focused", "action", "inactive"): "watching_task_but_idle",
+    ("semantics", "environmental_scanning", "action", "active"): "acting_while_looking_away",
+    ("semantics", "unfocused", "action", "active"): "acting_without_looking",
+
+    # Motor × Behavioral: gaze motor pattern contradicts physical action
+    ("motor", "passive_scanning", "action", "active"): "passive_gaze_active_hands",
+    ("motor", "erratic", "action", "inactive"): "erratic_gaze_no_action",
+    ("motor", "concentrated", "action", "failing"): "concentrated_but_failing",
+
+    # Motor × Fixation: motor pattern contradicts fixation pattern
+    ("motor", "erratic", "fixation", "focused"): "erratic_motor_focused_fixation",
+    ("motor", "concentrated", "fixation", "scanning"): "concentrated_motor_scanning_fixation",
+
+    # Semantics × Motor: what you look at contradicts how you look
+    ("semantics", "fixated_on_clue", "motor", "erratic"): "erratic_clue_reading",
+    ("semantics", "unfocused", "motor", "concentrated"): "concentrated_but_off_task",
 }
 
 CONSTRUCTIVE_PAIRS = {
-    ("attention", "focused", "action", "active"): "engaged_and_active",
-    ("attention", "focused", "performance", "progressing"): "focused_progress",
-    ("attention", "searching", "action", "active"): "active_exploration",
-    ("action", "inactive", "performance", "stalled"): "passive_and_stuck",
-    ("action", "inactive", "performance", "ineffective_progress"): "passive_and_ineffective",
-    ("action", "hesitant", "performance", "ineffective_progress"): "hesitant_and_ineffective",
-    ("attention", "locked", "action", "inactive"): "frozen_on_clue",
-    # Population agent agreements
-    ("population", "exploring", "attention", "searching"): "pop_confirms_exploration",
-    ("population", "cognitively_stuck", "attention", "locked"): "pop_confirms_impasse",
-    ("population", "disoriented", "action", "inactive"): "pop_confirms_disorientation",
-    ("population", "actively_solving", "performance", "progressing"): "pop_confirms_progress",
+    # Positive engagement: gaze + action aligned
+    ("fixation", "focused", "action", "active"): "engaged_and_active",
+    ("semantics", "task_focused", "action", "active"): "task_engaged",
+    ("semantics", "fixated_on_clue", "fixation", "focused"): "deep_clue_reading",
+    ("motor", "purposeful", "action", "active"): "purposeful_action",
+    ("motor", "purposeful", "semantics", "task_focused"): "purposeful_task_gaze",
+
+    # Stuck patterns: multiple agents agree player is stuck
+    ("fixation", "locked", "semantics", "fixated_on_clue"): "frozen_on_clue",
+    ("semantics", "environmental_scanning", "action", "inactive"): "lost_and_passive",
+    ("semantics", "unfocused", "action", "inactive"): "disengaged",
+    ("motor", "passive_scanning", "action", "inactive"): "passive_and_idle",
+    ("motor", "erratic", "action", "failing"): "panicking",
+    ("fixation", "revisiting", "action", "hesitant"): "uncertain_checking",
+
+    # Exploration: healthy searching
+    ("fixation", "scanning", "action", "active"): "active_exploration",
+    ("semantics", "environmental_scanning", "fixation", "scanning"): "systematic_search",
+    ("motor", "purposeful", "fixation", "scanning"): "purposeful_scanning",
 }
 
 
@@ -65,17 +79,16 @@ def _get_agent_output(row, agent_name):
 def detect_tensions(row: pd.Series) -> list:
     """Find all pairwise tensions between agents."""
     agents = {}
-    for name in ["attention", "action", "performance", "population"]:
+    for name in ["fixation", "semantics", "motor", "action"]:
         agents[name] = _get_agent_output(row, name)
 
     tensions = []
 
-    # Check contradictions
     for (a1, l1, a2, l2), tension_name in CONTRADICTIONS.items():
-        if agents[a1]["label"] == l1 and agents[a2]["label"] == l2:
+        if agents.get(a1, {}).get("label") == l1 and agents.get(a2, {}).get("label") == l2:
             conf_a1 = agents[a1]["confidence"]
             conf_a2 = agents[a2]["confidence"]
-            intensity = (conf_a1 + conf_a2) / 2  # both confident = high tension
+            intensity = (conf_a1 + conf_a2) / 2
             tensions.append({
                 "type": "contradictory",
                 "name": tension_name,
@@ -85,9 +98,8 @@ def detect_tensions(row: pd.Series) -> list:
                 "intensity": round(intensity, 3),
             })
 
-    # Check constructive alignments
     for (a1, l1, a2, l2), align_name in CONSTRUCTIVE_PAIRS.items():
-        if agents[a1]["label"] == l1 and agents[a2]["label"] == l2:
+        if agents.get(a1, {}).get("label") == l1 and agents.get(a2, {}).get("label") == l2:
             conf_a1 = agents[a1]["confidence"]
             conf_a2 = agents[a2]["confidence"]
             intensity = (conf_a1 + conf_a2) / 2
@@ -104,144 +116,86 @@ def detect_tensions(row: pd.Series) -> list:
 
 
 def compute_disagreement(row: pd.Series) -> dict:
-    """
-    Compute the full disagreement structure for a time window.
-    Returns type, intensity, dominant tension, and confidence spread.
-    """
+    """Compute full disagreement structure for a time window."""
     agents = {}
-    for name in ["attention", "action", "performance", "temporal"]:
+    for name in ["fixation", "semantics", "motor", "action"]:
         agents[name] = _get_agent_output(row, name)
 
     tensions = detect_tensions(row)
-
     contradictions = [t for t in tensions if t["type"] == "contradictory"]
     constructive = [t for t in tensions if t["type"] == "constructive"]
 
-    # Confidence spread: how much do agents' confidences vary?
     confidences = [a["confidence"] for a in agents.values() if a["confidence"] > 0]
     conf_spread = float(np.std(confidences)) if len(confidences) > 1 else 0.0
 
-    # Overall disagreement intensity
     if contradictions:
-        # Weighted by the confidence of contradicting agents
         max_contradiction = max(c["intensity"] for c in contradictions)
-        disagreement_intensity = max_contradiction
-        disagreement_type = "contradictory"
-        dominant_tension = max(contradictions, key=lambda c: c["intensity"])["name"]
+        return {
+            "disagreement_type": "contradictory",
+            "disagreement_intensity": round(max_contradiction, 3),
+            "dominant_tension": max(contradictions, key=lambda c: c["intensity"])["name"],
+            "n_contradictions": len(contradictions),
+            "n_constructive": len(constructive),
+            "confidence_spread": round(conf_spread, 3),
+            "tensions": tensions,
+        }
     elif constructive:
-        disagreement_intensity = 1.0 - max(c["intensity"] for c in constructive)
-        disagreement_type = "constructive"
-        dominant_tension = max(constructive, key=lambda c: c["intensity"])["name"]
+        return {
+            "disagreement_type": "constructive",
+            "disagreement_intensity": round(1.0 - max(c["intensity"] for c in constructive), 3),
+            "dominant_tension": max(constructive, key=lambda c: c["intensity"])["name"],
+            "n_contradictions": 0,
+            "n_constructive": len(constructive),
+            "confidence_spread": round(conf_spread, 3),
+            "tensions": tensions,
+        }
     else:
-        # No recognized pairwise pattern
-        labels = [a["label"] for a in agents.values() if a["label"] not in ("unknown", "ambiguous")]
+        labels = [a["label"] for a in agents.values() if a["label"] not in ("unknown", "ambiguous", "no_data")]
         n_unique = len(set(labels))
-        disagreement_intensity = min(n_unique / 4.0, 1.0)
-        disagreement_type = "unstructured"
-        dominant_tension = "none"
-
-    return {
-        "disagreement_type": disagreement_type,
-        "disagreement_intensity": round(disagreement_intensity, 3),
-        "dominant_tension": dominant_tension,
-        "n_contradictions": len(contradictions),
-        "n_constructive": len(constructive),
-        "confidence_spread": round(conf_spread, 3),
-        "tensions": tensions,
-    }
+        return {
+            "disagreement_type": "unstructured",
+            "disagreement_intensity": round(min(n_unique / 4.0, 1.0), 3),
+            "dominant_tension": "none",
+            "n_contradictions": 0,
+            "n_constructive": 0,
+            "confidence_spread": round(conf_spread, 3),
+            "tensions": tensions,
+        }
 
 
 def generate_negotiation_transcript(row: pd.Series) -> str:
-    """
-    Generate a human-readable transcript of the negotiation process.
-    Shows how agents "debate" the interpretation.
-    """
+    """Generate human-readable negotiation transcript."""
     agents = {}
-    for name in ["attention", "action", "performance", "temporal"]:
+    for name in ["fixation", "semantics", "motor", "action", "temporal"]:
         agents[name] = {
             "label": row.get(f"{name}_label", "unknown"),
             "confidence": row.get(f"{name}_confidence", 0.0),
             "reasoning": row.get(f"{name}_reasoning", ""),
         }
 
-    lines = []
-    lines.append("=== Agent Interpretations ===")
+    lines = ["=== Agent Interpretations ==="]
     for name, a in agents.items():
-        lines.append(
-            f"  {name.title()} Agent: \"{a['label']}\" "
-            f"(confidence: {a['confidence']:.0%}) — {a['reasoning']}"
-        )
+        lines.append(f"  {name.title()} Agent: \"{a['label']}\" ({a['confidence']:.0%}) — {a['reasoning']}")
 
     tensions = detect_tensions(row)
     contradictions = [t for t in tensions if t["type"] == "contradictory"]
     constructive = [t for t in tensions if t["type"] == "constructive"]
 
     if contradictions:
-        lines.append("")
-        lines.append("=== Conflicts Detected ===")
+        lines.append("\n=== Conflicts ===")
         for c in sorted(contradictions, key=lambda x: -x["intensity"]):
-            a1, a2 = c["agents"]
-            l1, l2 = c["labels"]
-            c1, c2 = c["confidences"]
-            lines.append(
-                f"  CONFLICT [{c['name']}]: "
-                f"{a1.title()} says \"{l1}\" ({c1:.0%}) vs "
-                f"{a2.title()} says \"{l2}\" ({c2:.0%}) "
-                f"— intensity: {c['intensity']:.0%}"
-            )
-
-            # Agent "arguments"
-            r1 = agents[a1]["reasoning"]
-            r2 = agents[a2]["reasoning"]
-            if r1:
-                lines.append(f"    {a1.title()}: \"{r1}\"")
-            if r2:
-                lines.append(f"    {a2.title()}: \"{r2}\"")
+            lines.append(f"  [{c['name']}]: {c['agents'][0]}.{c['labels'][0]} vs {c['agents'][1]}.{c['labels'][1]} — {c['intensity']:.0%}")
 
     if constructive:
-        lines.append("")
-        lines.append("=== Agreements ===")
+        lines.append("\n=== Agreements ===")
         for c in constructive:
-            a1, a2 = c["agents"]
-            l1, l2 = c["labels"]
-            lines.append(
-                f"  ALIGN [{c['name']}]: "
-                f"{a1.title()} ({l1}) + {a2.title()} ({l2}) "
-                f"— strength: {c['intensity']:.0%}"
-            )
-
-    # Resolution
-    lines.append("")
-    lines.append("=== Negotiation Outcome ===")
-    d = compute_disagreement(row)
-    support = row.get("suggested_support", "none")
-    pattern = row.get("disagreement_pattern", "none")
-
-    if d["disagreement_type"] == "contradictory":
-        lines.append(
-            f"  Agents cannot agree (type: {d['dominant_tension']}). "
-            f"Intensity: {d['disagreement_intensity']:.0%}. "
-            f"Decision: {support} (probe rather than assert)"
-        )
-    elif d["disagreement_type"] == "constructive":
-        lines.append(
-            f"  Agents align on {d['dominant_tension']}. "
-            f"Confidence is convergent. "
-            f"Decision: {support}"
-        )
-    else:
-        lines.append(
-            f"  No strong inter-agent pattern. "
-            f"Decision: {support}"
-        )
+            lines.append(f"  [{c['name']}]: {c['agents'][0]}.{c['labels'][0]} + {c['agents'][1]}.{c['labels'][1]} — {c['intensity']:.0%}")
 
     return "\n".join(lines)
 
 
 def run_negotiation(df: pd.DataFrame) -> pd.DataFrame:
-    """Run the full negotiation layer on the dataframe."""
-
-    # Compute disagreement structure for each row
+    """Run the full negotiation layer."""
     disagreements = df.apply(compute_disagreement, axis=1)
 
     df["disagreement_type"] = disagreements.apply(lambda d: d["disagreement_type"])
@@ -251,7 +205,7 @@ def run_negotiation(df: pd.DataFrame) -> pd.DataFrame:
     df["n_constructive"] = disagreements.apply(lambda d: d["n_constructive"])
     df["confidence_spread"] = disagreements.apply(lambda d: d["confidence_spread"])
 
-    # Keep legacy columns for backward compat
+    # Legacy compat
     df["disagreement_score"] = df["n_contradictions"] + (df["disagreement_intensity"] * 4).round().astype(int)
     df["disagreement_pattern"] = df["dominant_tension"]
 

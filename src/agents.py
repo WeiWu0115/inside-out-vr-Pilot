@@ -1,23 +1,21 @@
 """
-V3 Agents: Label-flow architecture with stateful awareness.
+V4 Agents: Gaze-dominant architecture.
 
-Design principles:
-  1. Each raw feature is owned by ONE primary agent
-  2. Downstream agents read pre-interpreted LABELS, not raw features
-  3. puzzle_elapsed_ratio integrated at agent level, not post-hoc
-  4. New state: ineffective_progress (active but not making real progress)
+3 gaze agents + 1 behavioral agent + 1 temporal agent.
+Each raw feature is owned by ONE agent — no feature sharing.
 
 Data flow:
-  Raw features → Attention Agent  (gaze_entropy, clue_ratio, switch_rate)
-  Raw features → Behavioral Agent (action_count, idle_time, error_count)
-  Labels      → Progress Agent    (behavioral_label + time_since_action + puzzle_elapsed_ratio)
-  Labels      → Temporal Agent    (attention_label + progress_label history)
+  Gaze features  → Fixation Agent     (fixation_count, duration_*, revisit_rate)
+  Gaze features  → Semantics Agent    (target_entropy, clue/puzzle/env_dwell, puzzle_object_ratio, n_unique_targets)
+  Gaze features  → Gaze-Motor Agent   (gaze_head_coupling, saccade_amplitude_*, gaze_dispersion)
+  Game logs      → Behavioral Agent   (action_count, idle_time, error_count, time_since_action)
+  Labels         → Temporal Agent     (history of above agent labels)
 """
 
 import pandas as pd
 import numpy as np
 from load_data import safe_get
-from config import ATTENTION, ACTION, PERFORMANCE, TEMPORAL
+from config import FIXATION, SEMANTICS, MOTOR, ACTION, TEMPORAL
 
 
 def _clamp(v, lo=0.0, hi=1.0):
@@ -25,394 +23,436 @@ def _clamp(v, lo=0.0, hi=1.0):
 
 
 def _linear_scale(value, low, high):
-    """Map value to 0-1 range between low and high."""
     if high == low:
         return 0.5
     return _clamp((value - low) / (high - low))
 
 
 # ---------------------------------------------------------------------------
-# 1. AttentionAgent — interprets gaze distribution
-#    Exclusive raw features: gaze_entropy, clue_ratio, switch_rate
+# 1. FixationAgent — how is visual attention distributed?
+#    Exclusive features: fixation_count, fixation_duration_mean/max/std, revisit_rate
 # ---------------------------------------------------------------------------
 
-def attention_agent(row: pd.Series) -> dict:
-    entropy = safe_get(row, "gaze_entropy")
-    clue_ratio = safe_get(row, "clue_ratio")
-    switch_rate = safe_get(row, "switch_rate")
-
-    if entropy is None or clue_ratio is None:
-        return {
-            "label": "ambiguous",
-            "confidence": 0.0,
-            "evidence": {},
-            "reasoning": "Missing gaze data",
-        }
+def fixation_agent(row: pd.Series) -> dict:
+    fix_count = safe_get(row, "fixation_count", 0)
+    dur_mean = safe_get(row, "fixation_duration_mean", 0.0)
+    dur_max = safe_get(row, "fixation_duration_max", 0.0)
+    dur_std = safe_get(row, "fixation_duration_std", 0.0)
+    revisit = safe_get(row, "revisit_rate", 0.0)
 
     evidence = {
-        "gaze_entropy": entropy,
-        "clue_ratio": clue_ratio,
-        "switch_rate": switch_rate,
+        "fixation_count": fix_count,
+        "fixation_duration_mean": dur_mean,
+        "fixation_duration_max": dur_max,
+        "fixation_duration_std": dur_std,
+        "revisit_rate": revisit,
     }
+
+    if fix_count == 0:
+        return {"label": "no_data", "confidence": 0.0, "evidence": evidence,
+                "reasoning": "No fixations detected", "all_scores": {}}
 
     scores = {}
 
-    # Locked: very high clue fixation + low entropy (pure visual fixation)
-    if clue_ratio >= ATTENTION["clue_ratio_very_high"] and entropy <= ATTENTION["entropy_low"]:
+    # Locked: very long single fixation, few fixations total
+    if dur_max >= FIXATION["duration_max_locked"] or (dur_mean >= FIXATION["duration_very_long"] and fix_count <= FIXATION["count_low"]):
         locked_conf = (
-            _linear_scale(clue_ratio, ATTENTION["clue_ratio_high"], 1.0) * 0.6
-            + (1.0 - _linear_scale(entropy, 0, ATTENTION["entropy_low"])) * 0.4
+            _linear_scale(dur_max, FIXATION["duration_long"], 5.0) * 0.5
+            + (1.0 - _linear_scale(fix_count, 0, FIXATION["count_high"])) * 0.3
+            + _linear_scale(dur_mean, FIXATION["duration_long"], 5.0) * 0.2
         )
-        scores["locked"] = _clamp(locked_conf, 0.3, 0.95)
+        scores["locked"] = _clamp(locked_conf, 0.4, 0.95)
 
-    # Focused: low entropy + meaningful clue engagement
+    # Focused: moderate fixation count, long mean duration, low revisit
     focused_conf = (
-        (1.0 - _linear_scale(entropy, 0, ATTENTION["entropy_high"])) * 0.5
-        + _linear_scale(clue_ratio, 0, ATTENTION["clue_ratio_high"]) * 0.5
+        _linear_scale(dur_mean, FIXATION["duration_short"], FIXATION["duration_very_long"]) * 0.4
+        + (1.0 - _linear_scale(fix_count, FIXATION["count_low"], FIXATION["count_high"] * 1.5)) * 0.3
+        + (1.0 - _linear_scale(revisit, 0, FIXATION["revisit_high"])) * 0.3
     )
-    if entropy <= ATTENTION["entropy_high"]:
+    if dur_mean >= FIXATION["duration_short"]:
         scores["focused"] = _clamp(focused_conf, 0.2, 0.95)
 
-    # Searching: high entropy + high switch rate
-    search_conf = _linear_scale(entropy, ATTENTION["entropy_low"], ATTENTION["entropy_high"] * 1.5) * 0.5
-    if switch_rate is not None:
-        search_conf += _linear_scale(switch_rate, 0, ATTENTION["switch_rate_high"] * 1.2) * 0.5
-    else:
-        search_conf += 0.2
-    if entropy >= ATTENTION["entropy_low"]:
-        scores["searching"] = _clamp(search_conf, 0.2, 0.95)
+    # Scanning: many short fixations, high fixation count
+    scanning_conf = (
+        _linear_scale(fix_count, FIXATION["count_low"], FIXATION["count_high"] * 1.5) * 0.4
+        + (1.0 - _linear_scale(dur_mean, 0, FIXATION["duration_long"])) * 0.4
+        + _linear_scale(dur_std, 0, 1.0) * 0.2
+    )
+    if fix_count >= FIXATION["count_low"]:
+        scores["scanning"] = _clamp(scanning_conf, 0.2, 0.95)
+
+    # Revisiting: high revisit rate — checking and rechecking
+    if revisit >= FIXATION["revisit_low"]:
+        revisit_conf = (
+            _linear_scale(revisit, FIXATION["revisit_low"], 1.0) * 0.6
+            + _linear_scale(fix_count, FIXATION["count_low"], FIXATION["count_high"]) * 0.4
+        )
+        scores["revisiting"] = _clamp(revisit_conf, 0.2, 0.90)
 
     if not scores:
-        return {
-            "label": "ambiguous",
-            "confidence": 0.2,
-            "evidence": evidence,
-            "reasoning": f"Entropy={entropy:.2f} in middle range, no clear pattern",
-        }
+        return {"label": "ambiguous", "confidence": 0.2, "evidence": evidence,
+                "reasoning": "No clear fixation pattern", "all_scores": {}}
 
-    best_label = max(scores, key=scores.get)
-    best_conf = scores[best_label]
+    best = max(scores, key=scores.get)
+    conf = scores[best]
 
-    sorted_scores = sorted(scores.values(), reverse=True)
-    if len(sorted_scores) > 1:
-        gap = sorted_scores[0] - sorted_scores[1]
-        if gap < 0.15:
-            best_conf *= 0.7
+    # Reduce confidence if close competition
+    sorted_s = sorted(scores.values(), reverse=True)
+    if len(sorted_s) > 1 and (sorted_s[0] - sorted_s[1]) < 0.15:
+        conf *= 0.7
 
     reasons = {
-        "locked": f"High clue fixation ({clue_ratio:.2f}) + low entropy ({entropy:.2f})",
-        "focused": f"Low entropy ({entropy:.2f}) with clue engagement ({clue_ratio:.2f})",
-        "searching": f"High entropy ({entropy:.2f}), scanning environment",
+        "locked": f"Very long fixation (max={dur_max:.1f}s, mean={dur_mean:.1f}s), {fix_count} fixations",
+        "focused": f"Sustained attention (mean={dur_mean:.1f}s), {fix_count} fixations, revisit={revisit:.0%}",
+        "scanning": f"Rapid scanning ({fix_count} fixations, mean={dur_mean:.2f}s)",
+        "revisiting": f"Frequently rechecking targets (revisit={revisit:.0%}, {fix_count} fixations)",
     }
 
     return {
-        "label": best_label,
-        "confidence": round(_clamp(best_conf), 3),
+        "label": best,
+        "confidence": round(_clamp(conf), 3),
         "evidence": evidence,
-        "reasoning": reasons.get(best_label, ""),
+        "reasoning": reasons.get(best, ""),
         "all_scores": {k: round(v, 3) for k, v in scores.items()},
     }
 
 
 # ---------------------------------------------------------------------------
-# 2. BehavioralAgent (was ActionAgent)
-#    Exclusive raw features: action_count, idle_time, error_count
-#    Outputs label consumed by Progress Agent via label flow.
+# 2. GazeSemanticsAgent — what is the player looking at?
+#    Exclusive features: gaze_target_entropy, clue_dwell, puzzle_dwell,
+#                        env_dwell, puzzle_object_ratio, n_unique_targets
+# ---------------------------------------------------------------------------
+
+def semantics_agent(row: pd.Series) -> dict:
+    entropy = safe_get(row, "gaze_target_entropy", 0.0)
+    clue = safe_get(row, "clue_dwell", 0.0)
+    puzzle = safe_get(row, "puzzle_dwell", 0.0)
+    env = safe_get(row, "env_dwell", 0.0)
+    ratio = safe_get(row, "puzzle_object_ratio", 0.0)
+    n_targets = safe_get(row, "n_unique_targets", 0)
+
+    evidence = {
+        "gaze_target_entropy": entropy,
+        "clue_dwell": clue,
+        "puzzle_dwell": puzzle,
+        "env_dwell": env,
+        "puzzle_object_ratio": ratio,
+        "n_unique_targets": n_targets,
+    }
+
+    scores = {}
+
+    # Fixated on clue: very high clue dwell
+    if clue >= SEMANTICS["clue_dwell_high"]:
+        clue_conf = (
+            _linear_scale(clue, SEMANTICS["clue_dwell_high"], 1.0) * 0.6
+            + (1.0 - _linear_scale(entropy, 0, SEMANTICS["target_entropy_high"])) * 0.4
+        )
+        scores["fixated_on_clue"] = _clamp(clue_conf, 0.3, 0.95)
+
+    # Task-focused: high puzzle_object_ratio, moderate entropy
+    if ratio >= SEMANTICS["puzzle_ratio_low"]:
+        task_conf = (
+            _linear_scale(ratio, SEMANTICS["puzzle_ratio_low"], 1.0) * 0.5
+            + (1.0 - _linear_scale(env, 0, 1.0)) * 0.3
+            + _linear_scale(puzzle + clue, 0, 1.0) * 0.2
+        )
+        scores["task_focused"] = _clamp(task_conf, 0.2, 0.95)
+
+    # Environmental scanning: high env_dwell, high entropy, many targets
+    env_conf = (
+        _linear_scale(env, SEMANTICS["env_dwell_high"], 1.0) * 0.4
+        + _linear_scale(entropy, SEMANTICS["target_entropy_low"], SEMANTICS["target_entropy_high"]) * 0.3
+        + _linear_scale(n_targets, SEMANTICS["n_targets_low"], SEMANTICS["n_targets_high"]) * 0.3
+    )
+    if env >= 0.5:
+        scores["environmental_scanning"] = _clamp(env_conf, 0.2, 0.95)
+
+    # Unfocused: high entropy + low task relevance
+    if entropy >= SEMANTICS["target_entropy_high"] and ratio < SEMANTICS["puzzle_ratio_high"]:
+        unfocused_conf = (
+            _linear_scale(entropy, SEMANTICS["target_entropy_high"], 4.0) * 0.5
+            + (1.0 - _linear_scale(ratio, 0, SEMANTICS["puzzle_ratio_high"])) * 0.5
+        )
+        scores["unfocused"] = _clamp(unfocused_conf, 0.3, 0.90)
+
+    if not scores:
+        return {"label": "ambiguous", "confidence": 0.2, "evidence": evidence,
+                "reasoning": f"Entropy={entropy:.2f}, clue={clue:.0%}, env={env:.0%}", "all_scores": {}}
+
+    best = max(scores, key=scores.get)
+    conf = scores[best]
+
+    sorted_s = sorted(scores.values(), reverse=True)
+    if len(sorted_s) > 1 and (sorted_s[0] - sorted_s[1]) < 0.15:
+        conf *= 0.7
+
+    reasons = {
+        "fixated_on_clue": f"High clue engagement ({clue:.0%} dwell), entropy={entropy:.2f}",
+        "task_focused": f"Looking at task objects ({ratio:.0%}), clue={clue:.0%}, puzzle={puzzle:.0%}",
+        "environmental_scanning": f"Mostly viewing environment ({env:.0%}), {n_targets} targets, entropy={entropy:.2f}",
+        "unfocused": f"High entropy ({entropy:.2f}) with low task focus ({ratio:.0%})",
+    }
+
+    return {
+        "label": best,
+        "confidence": round(_clamp(conf), 3),
+        "evidence": evidence,
+        "reasoning": reasons.get(best, ""),
+        "all_scores": {k: round(v, 3) for k, v in scores.items()},
+    }
+
+
+# ---------------------------------------------------------------------------
+# 3. GazeMotorAgent — is gaze purposeful or passive?
+#    Exclusive features: gaze_head_coupling, saccade_amplitude_mean/max, gaze_dispersion
+# ---------------------------------------------------------------------------
+
+def motor_agent(row: pd.Series) -> dict:
+    coupling = safe_get(row, "gaze_head_coupling", 0.0)
+    sacc_mean = safe_get(row, "saccade_amplitude_mean", 0.0)
+    sacc_max = safe_get(row, "saccade_amplitude_max", 0.0)
+    dispersion = safe_get(row, "gaze_dispersion", 0.0)
+
+    evidence = {
+        "gaze_head_coupling": coupling,
+        "saccade_amplitude_mean": sacc_mean,
+        "saccade_amplitude_max": sacc_max,
+        "gaze_dispersion": dispersion,
+    }
+
+    scores = {}
+
+    # Purposeful: low coupling (eyes explore independently), moderate saccades
+    purposeful_conf = (
+        (1.0 - _linear_scale(coupling, 0, MOTOR["coupling_high"])) * 0.4
+        + _linear_scale(sacc_mean, MOTOR["saccade_amp_low"], MOTOR["saccade_amp_high"]) * 0.3
+        + _linear_scale(dispersion, MOTOR["dispersion_low"], MOTOR["dispersion_high"]) * 0.3
+    )
+    scores["purposeful"] = _clamp(purposeful_conf, 0.15, 0.95)
+
+    # Passive scanning: high coupling (eyes follow head), low independent saccades
+    passive_conf = (
+        _linear_scale(coupling, MOTOR["coupling_high"], 1.0) * 0.5
+        + (1.0 - _linear_scale(sacc_mean, 0, MOTOR["saccade_amp_high"])) * 0.3
+        + _linear_scale(dispersion, MOTOR["dispersion_low"], MOTOR["dispersion_high"]) * 0.2
+    )
+    if coupling >= MOTOR["coupling_low"]:
+        scores["passive_scanning"] = _clamp(passive_conf, 0.15, 0.95)
+
+    # Erratic: very high saccade amplitude, high dispersion
+    if sacc_mean >= MOTOR["saccade_amp_high"] or sacc_max >= 25.0:
+        erratic_conf = (
+            _linear_scale(sacc_mean, MOTOR["saccade_amp_high"], MOTOR["saccade_amp_very_high"] * 1.5) * 0.4
+            + _linear_scale(dispersion, MOTOR["dispersion_high"], 1.0) * 0.3
+            + _linear_scale(sacc_max, 20, 40) * 0.3
+        )
+        scores["erratic"] = _clamp(erratic_conf, 0.2, 0.90)
+
+    # Concentrated: low dispersion, low saccade amplitude — fixated in one spot
+    if dispersion <= MOTOR["dispersion_high"] and sacc_mean <= MOTOR["saccade_amp_high"]:
+        conc_conf = (
+            (1.0 - _linear_scale(dispersion, 0, MOTOR["dispersion_high"])) * 0.5
+            + (1.0 - _linear_scale(sacc_mean, 0, MOTOR["saccade_amp_high"])) * 0.5
+        )
+        scores["concentrated"] = _clamp(conc_conf, 0.15, 0.90)
+
+    best = max(scores, key=scores.get)
+    conf = scores[best]
+
+    sorted_s = sorted(scores.values(), reverse=True)
+    if len(sorted_s) > 1 and (sorted_s[0] - sorted_s[1]) < 0.12:
+        conf *= 0.75
+
+    reasons = {
+        "purposeful": f"Independent eye movement (coupling={coupling:.2f}), moderate saccades ({sacc_mean:.1f}°)",
+        "passive_scanning": f"Eyes follow head (coupling={coupling:.2f}), low independent saccades",
+        "erratic": f"Large saccades (mean={sacc_mean:.1f}°, max={sacc_max:.0f}°), high dispersion ({dispersion:.2f})",
+        "concentrated": f"Tight gaze (dispersion={dispersion:.2f}), small saccades ({sacc_mean:.1f}°)",
+    }
+
+    return {
+        "label": best,
+        "confidence": round(_clamp(conf), 3),
+        "evidence": evidence,
+        "reasoning": reasons.get(best, ""),
+        "all_scores": {k: round(v, 3) for k, v in scores.items()},
+    }
+
+
+# ---------------------------------------------------------------------------
+# 4. BehavioralAgent — what is the player doing? (game logs only)
+#    Exclusive features: action_count, idle_time, error_count, time_since_action
+#    Kept identical to V3 for ablation comparison.
 # ---------------------------------------------------------------------------
 
 def behavioral_agent(row: pd.Series) -> dict:
     action_count = safe_get(row, "action_count")
     idle_time = safe_get(row, "idle_time")
     error_count = safe_get(row, "error_count")
+    time_since = safe_get(row, "time_since_action", 0.0)
 
     if action_count is None:
-        return {
-            "label": "unknown",
-            "confidence": 0.0,
-            "evidence": {},
-            "reasoning": "Missing behavioral data",
-        }
+        return {"label": "unknown", "confidence": 0.0, "evidence": {},
+                "reasoning": "Missing behavioral data", "all_scores": {}}
 
     evidence = {
         "action_count": action_count,
         "idle_time": idle_time,
         "error_count": error_count,
+        "time_since_action": time_since,
     }
 
     scores = {}
 
-    # Active: many actions, little idle
-    active_conf = _linear_scale(action_count, 0, ACTION["action_count_high"] * 1.5) * 0.6
+    # Active
+    active_conf = _linear_scale(action_count, 0, ACTION["action_count_high"] * 1.5) * 0.5
     if idle_time is not None:
-        active_conf += (1.0 - _linear_scale(idle_time, 0, 5.0)) * 0.4
+        active_conf += (1.0 - _linear_scale(idle_time, 0, 5.0)) * 0.3
+    active_conf += (1.0 - _linear_scale(time_since, 0, ACTION["time_since_action_moderate"])) * 0.2
     scores["active"] = _clamp(active_conf, 0.1, 0.95)
 
-    # Inactive: no actions + high idle
-    inactive_conf = (1.0 - _linear_scale(action_count, 0, ACTION["action_count_high"])) * 0.5
+    # Inactive
+    inactive_conf = (1.0 - _linear_scale(action_count, 0, ACTION["action_count_high"])) * 0.4
     if idle_time is not None:
-        inactive_conf += _linear_scale(idle_time, ACTION["idle_time_low"], 5.0) * 0.5
+        inactive_conf += _linear_scale(idle_time, ACTION["idle_time_low"], 5.0) * 0.3
+    inactive_conf += _linear_scale(time_since, ACTION["time_since_action_moderate"],
+                                    ACTION["time_since_action_moderate"] * 3) * 0.3
     scores["inactive"] = _clamp(inactive_conf, 0.1, 0.95)
 
-    # Hesitant: moderate activity with delays
-    hesitant_conf = 0.3
-    if action_count > 0 and action_count < ACTION["action_count_high"]:
-        hesitant_conf += 0.25
-    if idle_time is not None and idle_time > ACTION["idle_time_low"]:
+    # Hesitant
+    hesitant_conf = 0.25
+    if 0 < action_count < ACTION["action_count_high"]:
         hesitant_conf += 0.2
+    if idle_time is not None and idle_time > ACTION["idle_time_low"]:
+        hesitant_conf += 0.15
+    if time_since > ACTION["time_since_action_moderate"] * 0.5:
+        hesitant_conf += 0.15
     scores["hesitant"] = _clamp(hesitant_conf, 0.1, 0.90)
 
-    # Failing: errors during interaction
+    # Failing
     if error_count is not None and error_count >= PERFORMANCE["error_count_high"]:
         fail_conf = _linear_scale(error_count, 0, 3) * 0.7
-        fail_conf = max(fail_conf, 0.5)
-        scores["failing"] = _clamp(fail_conf, 0.3, 0.95)
+        scores["failing"] = _clamp(max(fail_conf, 0.5), 0.3, 0.95)
 
-    best_label = max(scores, key=scores.get)
-    best_conf = scores[best_label]
+    best = max(scores, key=scores.get)
+    conf = scores[best]
 
-    sorted_scores = sorted(scores.values(), reverse=True)
-    if len(sorted_scores) > 1:
-        gap = sorted_scores[0] - sorted_scores[1]
-        if gap < 0.1:
-            best_conf *= 0.75
+    sorted_s = sorted(scores.values(), reverse=True)
+    if len(sorted_s) > 1 and (sorted_s[0] - sorted_s[1]) < 0.1:
+        conf *= 0.75
 
     reasons = {
-        "active": f"High action count ({action_count}) with engagement",
-        "inactive": f"Low/no actions, idle_time={idle_time:.1f}s" if idle_time else "No actions detected",
-        "hesitant": f"Some actions ({action_count}) but with idle periods",
-        "failing": f"Errors detected ({error_count}) during interaction",
+        "active": f"Actions={action_count}, {time_since:.0f}s since last",
+        "inactive": f"No actions, idle={idle_time:.1f}s, {time_since:.0f}s since last" if idle_time else f"No actions, {time_since:.0f}s since last",
+        "hesitant": f"Some actions ({action_count}) but with pauses",
+        "failing": f"Errors detected ({error_count})",
     }
 
     return {
-        "label": best_label,
-        "confidence": round(_clamp(best_conf), 3),
+        "label": best,
+        "confidence": round(_clamp(conf), 3),
         "evidence": evidence,
-        "reasoning": reasons.get(best_label, ""),
+        "reasoning": reasons.get(best, ""),
         "all_scores": {k: round(v, 3) for k, v in scores.items()},
     }
 
 
-# Backward compat alias — column names stay "action_*" for app.py
+# Backward compat aliases
 action_agent = behavioral_agent
+from config import PERFORMANCE
 
 
 # ---------------------------------------------------------------------------
-# 3. ProgressAgent (was PerformanceAgent)
-#    LABEL FLOW: reads behavioral_label (not raw action_count)
-#    Own raw features: time_since_action, puzzle_elapsed_ratio
-#    Key addition: "ineffective_progress" state
-# ---------------------------------------------------------------------------
-
-def progress_agent(row: pd.Series) -> dict:
-    # Label flow: read Behavioral Agent's pre-interpreted label
-    behavioral_label = row.get("action_label", "unknown")
-    behavioral_conf = row.get("action_confidence", 0.5)
-
-    # Own exclusive raw features
-    time_since = safe_get(row, "time_since_action") or 0.0
-    elapsed_ratio = safe_get(row, "puzzle_elapsed_ratio") or 0.0
-    puzzle_active = safe_get(row, "puzzle_active")
-
-    evidence = {
-        "behavioral_label": behavioral_label,
-        "behavioral_confidence": behavioral_conf,
-        "time_since_action": time_since,
-        "puzzle_elapsed_ratio": elapsed_ratio,
-    }
-
-    scores = {}
-
-    # --- Progressing: recent action + not over time ---
-    prog_conf = 0.3
-    if behavioral_label in ("active", "hesitant"):
-        prog_conf += 0.25
-    if time_since < ACTION["time_since_action_moderate"] * 0.5:
-        prog_conf += 0.25
-    elif time_since < ACTION["time_since_action_moderate"]:
-        prog_conf += 0.1
-    if elapsed_ratio < 1.0:
-        prog_conf += 0.1
-    # Penalize if over time even with activity
-    if elapsed_ratio > 2.0:
-        prog_conf -= 0.15
-    if elapsed_ratio > 3.0:
-        prog_conf -= 0.15
-    scores["progressing"] = _clamp(prog_conf, 0.1, 0.95)
-
-    # --- Ineffective Progress (NEW): active but not making real progress ---
-    # Player is doing things but has been at this puzzle too long / too long since
-    # meaningful action — the actions are likely exploratory or repetitive
-    ineff_conf = 0.1
-    if behavioral_label in ("active", "hesitant"):
-        # Active but time_since_action is high → sporadic actions after long gap
-        if time_since > ACTION["time_since_action_moderate"]:
-            ineff_conf += _linear_scale(time_since,
-                                         ACTION["time_since_action_moderate"],
-                                         ACTION["time_since_action_moderate"] * 3) * 0.3
-        # Active but over median puzzle time → struggling despite activity
-        if elapsed_ratio > 1.5:
-            ineff_conf += _linear_scale(elapsed_ratio, 1.5, 3.0) * 0.3
-        # Failing behavior boosts ineffective
-        if behavioral_label == "failing":
-            ineff_conf += 0.2
-        # Combined: high elapsed + high time_since = strong signal
-        if elapsed_ratio > 2.0 and time_since > ACTION["time_since_action_moderate"]:
-            ineff_conf += 0.15
-    scores["ineffective_progress"] = _clamp(ineff_conf, 0.05, 0.95)
-
-    # --- Stalled: behavioral inactive + macro signals ---
-    stall_conf = 0.2
-    if behavioral_label == "inactive":
-        stall_conf += 0.35
-    elif behavioral_label == "hesitant":
-        stall_conf += 0.1
-    if time_since > ACTION["time_since_action_moderate"]:
-        stall_conf += _linear_scale(time_since,
-                                     ACTION["time_since_action_moderate"],
-                                     ACTION["time_since_action_moderate"] * 3) * 0.3
-    if elapsed_ratio > 1.5:
-        stall_conf += _linear_scale(elapsed_ratio, 1.5, 3.0) * 0.15
-    if elapsed_ratio > 3.0:
-        stall_conf += 0.1
-    scores["stalled"] = _clamp(stall_conf, 0.1, 0.95)
-
-    best_label = max(scores, key=scores.get)
-    best_conf = scores[best_label]
-
-    sorted_scores = sorted(scores.values(), reverse=True)
-    if len(sorted_scores) > 1:
-        gap = sorted_scores[0] - sorted_scores[1]
-        if gap < 0.1:
-            best_conf *= 0.75
-
-    reasons = {
-        "progressing": f"Behavioral={behavioral_label}, recent activity ({time_since:.0f}s ago), {elapsed_ratio:.1f}x median",
-        "ineffective_progress": (
-            f"Behavioral={behavioral_label} but progress doubtful: "
-            f"{time_since:.0f}s since sustained action, {elapsed_ratio:.1f}x median puzzle time"
-        ),
-        "stalled": f"Behavioral={behavioral_label}, {time_since:.0f}s since action, {elapsed_ratio:.1f}x median",
-    }
-
-    return {
-        "label": best_label,
-        "confidence": round(_clamp(best_conf), 3),
-        "evidence": evidence,
-        "reasoning": reasons.get(best_label, ""),
-        "all_scores": {k: round(v, 3) for k, v in scores.items()},
-    }
-
-
-# Backward compat alias
-performance_agent = progress_agent
-
-
-# ---------------------------------------------------------------------------
-# 4. TemporalAgent — interprets patterns over time
-#    V3: uses puzzle_elapsed_ratio to boost looping detection
+# 5. TemporalAgent — is this pattern new or persistent?
+#    Reads labels from fixation, semantics, motor, behavioral agents.
 # ---------------------------------------------------------------------------
 
 def temporal_agent(current_idx: int, df: pd.DataFrame, state_columns: dict) -> dict:
     row = df.loc[current_idx]
     pid = safe_get(row, "participant_id")
     if pid is None:
-        return {
-            "label": "unknown",
-            "confidence": 0.0,
-            "evidence": {},
-            "reasoning": "Missing participant ID",
-        }
+        return {"label": "unknown", "confidence": 0.0, "evidence": {},
+                "reasoning": "Missing participant ID"}
 
     participant_df = df[df["participant_id"] == pid].sort_values("window_start")
     indices = participant_df.index.tolist()
 
     if current_idx not in indices:
-        return {
-            "label": "unknown",
-            "confidence": 0.0,
-            "evidence": {},
-            "reasoning": "Index not found in participant data",
-        }
+        return {"label": "unknown", "confidence": 0.0, "evidence": {},
+                "reasoning": "Index not found"}
 
     pos = indices.index(current_idx)
     window = TEMPORAL["persistence_window"]
-    elapsed_ratio = safe_get(row, "puzzle_elapsed_ratio") or 0.0
 
     if pos < 1:
-        # Even first window: if elapsed_ratio is very high, flag it
-        if elapsed_ratio > 3.0:
-            return {
-                "label": "persistent",
-                "confidence": 0.6,
-                "evidence": {"history_length": 0, "puzzle_elapsed_ratio": elapsed_ratio},
-                "reasoning": f"First window but puzzle already at {elapsed_ratio:.1f}x median",
-            }
-        return {
-            "label": "transient",
-            "confidence": 0.5,
-            "evidence": {"history_length": 0},
-            "reasoning": "First window, no history available",
-        }
+        return {"label": "transient", "confidence": 0.5,
+                "evidence": {"history_length": 0},
+                "reasoning": "First window, no history"}
 
     start = max(0, pos - window + 1)
     recent = participant_df.iloc[start:pos + 1]
 
-    att_col = state_columns.get("attention", "attention_label")
-    perf_col = state_columns.get("performance", "performance_label")
+    # Check multiple agent columns for persistence
+    agent_cols = [
+        state_columns.get("fixation", "fixation_label"),
+        state_columns.get("semantics", "semantics_label"),
+        state_columns.get("behavioral", "action_label"),
+    ]
+    agent_cols = [c for c in agent_cols if c in recent.columns]
 
-    evidence = {"history_length": len(recent), "puzzle_elapsed_ratio": elapsed_ratio}
+    evidence = {"history_length": len(recent)}
 
-    # Check persistence
-    if len(recent) >= window and att_col in recent.columns and perf_col in recent.columns:
-        att_stable = recent[att_col].nunique() == 1
-        perf_stable = recent[perf_col].nunique() == 1
+    if len(recent) >= window and agent_cols:
+        # Check if any agent has been stable
+        stable_agents = []
+        looping_detected = False
 
-        if att_stable and perf_stable:
-            perf_val = recent[perf_col].iloc[-1]
-            if perf_val in TEMPORAL["looping_keywords"]:
-                conf = 0.85
-                # V3: boost if also over time on puzzle
-                if elapsed_ratio > 2.0:
-                    conf = min(conf + 0.1, 0.95)
-                return {
-                    "label": "looping",
-                    "confidence": conf,
-                    "evidence": {**evidence, "repeated_state": perf_val, "streak": len(recent)},
-                    "reasoning": f"Stuck in '{perf_val}' for {len(recent)} windows (puzzle at {elapsed_ratio:.1f}x median)",
-                }
+        for col in agent_cols:
+            if col in recent.columns:
+                vals = recent[col].tolist()
+                if len(set(vals)) == 1:
+                    stable_agents.append((col, vals[-1]))
+                    if vals[-1] in TEMPORAL["looping_keywords"]:
+                        looping_detected = True
+
+        if looping_detected:
+            return {
+                "label": "looping",
+                "confidence": 0.85,
+                "evidence": {**evidence, "stable_agents": stable_agents},
+                "reasoning": f"Stuck pattern persisting for {len(recent)} windows: {stable_agents}",
+            }
+
+        if len(stable_agents) >= 2:
             return {
                 "label": "persistent",
                 "confidence": 0.75,
-                "evidence": {**evidence, "stable_attention": recent[att_col].iloc[-1], "streak": len(recent)},
-                "reasoning": f"Stable state for {len(recent)} windows",
+                "evidence": {**evidence, "stable_agents": stable_agents},
+                "reasoning": f"Stable pattern across {len(stable_agents)} agents for {len(recent)} windows",
             }
 
-    # Check looping even with shorter window
-    if len(recent) >= 2 and perf_col in recent.columns:
-        perf_vals = recent[perf_col].tolist()
-        if all(v in TEMPORAL["looping_keywords"] for v in perf_vals):
-            conf = 0.65
-            if elapsed_ratio > 2.0:
-                conf = min(conf + 0.15, 0.85)
-            return {
-                "label": "looping",
-                "confidence": conf,
-                "evidence": {**evidence, "pattern": perf_vals},
-                "reasoning": f"Repeated difficulty states: {perf_vals} (puzzle at {elapsed_ratio:.1f}x median)",
-            }
+    # Check for recent looping keywords even with shorter window
+    if len(recent) >= 2 and agent_cols:
+        for col in agent_cols:
+            if col in recent.columns:
+                vals = recent[col].tolist()
+                if all(v in TEMPORAL["looping_keywords"] for v in vals):
+                    return {
+                        "label": "looping",
+                        "confidence": 0.65,
+                        "evidence": {**evidence, "pattern": vals},
+                        "reasoning": f"Repeated difficulty: {vals}",
+                    }
 
-    # V3: if no temporal pattern but elapsed_ratio is very high, flag as persistent
-    if elapsed_ratio > 3.0:
-        return {
-            "label": "persistent",
-            "confidence": 0.6,
+    return {"label": "transient", "confidence": 0.4,
             "evidence": evidence,
-            "reasoning": f"No pattern but puzzle at {elapsed_ratio:.1f}x median — prolonged engagement",
-        }
+            "reasoning": "No persistent pattern"}
 
-    return {
-        "label": "transient",
-        "confidence": 0.4,
-        "evidence": evidence,
-        "reasoning": "No persistent pattern detected",
-    }
+
+# ---------------------------------------------------------------------------
+# Backward compat aliases for pipeline/app
+# ---------------------------------------------------------------------------
+attention_agent = fixation_agent
+performance_agent = behavioral_agent
+progress_agent = behavioral_agent
