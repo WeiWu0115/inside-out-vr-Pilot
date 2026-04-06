@@ -1642,35 +1642,80 @@ Escalation counters are **per puzzle** and **never reset** — if a player leave
         # --- 5. 80-Person Study Plan ---
         with st.expander("5. 80-Person Study — From Pilot to Main Evaluation", expanded=False):
             st.markdown(
-                "The 18-person pilot served as **formative evaluation**. "
-                "The 80-person study is the **main evaluation**."
+                "The 18-person pilot (11 with eye tracking) served as a **formative evaluation** — "
+                "iterating the system design, diagnosing failure modes (echo consensus, label granularity), "
+                "and calibrating agent thresholds across V0→V3. "
+                "The planned 80-person study is the **main evaluation** that addresses the pilot's limitations "
+                "and provides the statistical power needed for CHI-level claims."
             )
+
+            st.markdown("#### What 80 Participants Changes")
             change_data = [
                 {"Pilot Limitation": "n=11 with eye tracking",
-                 "80-Person Study": "n=60+ with full eye tracking (~75% capture rate)",
-                 "Impact": "~25,000+ windows; per-participant bootstrap for CIs"},
+                 "80-Person Study": "n=60+ with full eye tracking (assuming ~75% capture rate)",
+                 "Impact": "~25,000+ windows across 60+ independent participants; per-participant bootstrap for confidence intervals"},
                 {"Pilot Limitation": "Rule-based STUCK rarely triggered",
-                 "80-Person Study": "More diverse behaviors across 80 sessions",
-                 "Impact": "Full R→V→E escalation; stronger baseline"},
+                 "80-Person Study": "More diverse player behaviors across 80 sessions",
+                 "Impact": "Full R→V→E escalation coverage; stronger baseline comparison"},
                 {"Pilot Limitation": "No user outcome data",
-                 "80-Person Study": "Completion rate, time-to-solve, error recovery, surveys",
-                 "Impact": "Link IO decisions to actual learning outcomes"},
+                 "80-Person Study": "Completion rate, time-to-solve, error recovery, post-task surveys",
+                 "Impact": "Can link IO decisions to actual learning/performance outcomes"},
                 {"Pilot Limitation": "Single facilitator as ground truth",
-                 "80-Person Study": "Two facilitators (20+ overlapping sessions)",
-                 "Impact": "Inter-rater reliability (Cohen's kappa)"},
+                 "80-Person Study": "Two facilitators independently observing (at least 20 overlapping sessions)",
+                 "Impact": "Inter-rater reliability (Cohen's kappa); validates ground truth quality"},
                 {"Pilot Limitation": "Offline analysis only",
-                 "80-Person Study": "A/B: 40 facilitator-only vs 40 IO-assisted",
-                 "Impact": "Causal evidence that IO improves decisions"},
+                 "80-Person Study": "A/B deployment: 40 facilitator-only vs 40 IO-assisted",
+                 "Impact": "Causal evidence that IO improves facilitator decision-making"},
             ]
             st.dataframe(pd.DataFrame(change_data), use_container_width=True, hide_index=True)
 
+            st.markdown("#### Study Design Recommendations")
+
             st.markdown(
-                "**Study design recommendations:**\n\n"
-                "1. **Tag facilitator prompt intent** — reactive vs proactive (eliminates ground truth noise)\n"
-                "2. **A/B condition** — 40 facilitator-only vs 40 IO-assisted (causal user outcome data)\n"
-                "3. **Inter-rater reliability** — two facilitators on 20+ sessions (validates ground truth)\n"
-                "4. **Richer features** — semantic action labels, gaze-action coupling, spatial trajectory\n"
-                "5. **Paper structure** — pilot as formative + 80-person as summative (standard CHI)"
+                "**1. Tag facilitator prompt intent**\n\n"
+                "At each prompt, the facilitator marks whether it was *reactive* (responding to observed struggle) "
+                "or *proactive* (pedagogical guidance for a functioning player). "
+                "This directly eliminates Ceiling 2 — the current ground truth mixes detectable and undetectable prompts. "
+                "Example: Player 22 received 50 prompts while performing well (`elapsed_ratio=0.8`); "
+                "many were likely proactive, inflating the false-negative count for all systems."
+            )
+
+            st.markdown(
+                "**2. A/B condition**\n\n"
+                "40 participants with facilitator only, 40 with IO assisting the facilitator in real time. "
+                "IO serves as a **dashboard** — highlighting moments of detected tension without autonomous intervention. "
+                "This design has low risk (facilitator ignores false positives) but high upside "
+                "(facilitator catches moments they would have missed). "
+                "Compare: completion rate, time-to-solve, number of facilitator prompts, post-task survey scores."
+            )
+
+            st.markdown(
+                "**3. Inter-rater reliability**\n\n"
+                "Two facilitators independently observe at least 20 sessions. "
+                "Report Cohen's kappa to validate that facilitator prompts are a reliable ground truth. "
+                "If kappa < 0.6, the ground truth itself is noisy and F1 comparisons need to be interpreted cautiously. "
+                "This also reveals *which types of moments* facilitators disagree on — "
+                "IO's tension patterns could explain facilitator disagreement."
+            )
+
+            st.markdown(
+                "**4. Richer features from VR**\n\n"
+                "The current feature granularity ceiling can be lowered with:\n"
+                "- **Semantic action labels** from Unity — `correct_grab=1, wrong_grab=2` instead of `action_count=3`\n"
+                "- **Gaze-action coupling** — did the player look at the clue before acting? "
+                "(Pilot finding: informed actions succeed at 69% vs blind at 52%)\n"
+                "- **Spatial trajectory** — moving toward the solution vs wandering in circles\n"
+                "- **Per-puzzle coupling rates** — some puzzles may show stronger informed/blind differences\n"
+                "- **Temporal coupling trends** — switching from informed to blind actions = frustration onset"
+            )
+
+            st.markdown(
+                "**5. Paper structure**\n\n"
+                "18-person pilot → **formative evaluation** (system design iteration, failure mode diagnosis). "
+                "80-person study → **main evaluation** (validation, user outcomes, A/B comparison). "
+                "This two-phase design is standard at CHI and allows the pilot's iterative work "
+                "(V0→V3, echo consensus discovery, ceiling analysis) to serve as methodological contribution "
+                "rather than a limitation."
             )
 
 
