@@ -832,23 +832,20 @@ def main():
             "The game consists of **4 spoke puzzles** and **1 hub puzzle** that integrates them all."
         )
 
-        # Room layout + heatmap side by side
+        # Room layout + heatmap + movement paths in one row
         st.markdown("---")
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         with col1:
             st.markdown("#### VR Escape Room Layout")
             st.image("assets/EscapeRoom_HeattMapBG_20250813.png", use_container_width=True)
         with col2:
-            st.markdown("#### Player Position Heatmap (All 18 Players)")
+            st.markdown("#### Player Position Heatmap")
             st.image("assets/aggregate_heatmap_overlaid.png", use_container_width=True)
+        with col3:
+            st.markdown("#### Player Movement Paths")
+            st.image("assets/All_User_Paths.png", use_container_width=True)
 
-        st.caption("Left: top-down view of the VR escape room. Right: aggregate heatmap showing where players spent the most time (yellow = high density).")
-
-        # Movement paths
-        st.markdown("---")
-        st.markdown("#### Player Movement Paths")
-        st.image("assets/All_User_Paths.png", use_container_width=True)
-        st.caption("Smoothed head-tracking trajectories for all players. Each color = one player. Dense areas indicate puzzle locations; long traversals indicate navigation between puzzles.")
+        st.caption("Left: top-down view of the VR escape room. Center: aggregate heatmap (yellow = high density). Right: smoothed head-tracking trajectories (each color = one player).")
 
         # Time distribution
         st.markdown("---")
